@@ -1,0 +1,10 @@
+{
+  "levelName": "Livello 1",
+  "mapWidth": 20,
+  "mapHeight": 20,
+  "enemies": {
+    "BASIC": 5,
+    "ADVANCED": 0
+  }
+
+}

@@ -7,10 +7,10 @@ import java.util.Map;
 public class LevelSettings {
     @SerializedName("levelName")
     private String levelName;
-    @SerializedName("mapWidth")
-    private int mapWidth;
-    @SerializedName("mapHeight")
-    private int mapHeight;
+    @SerializedName("mapColumns")
+    private int mapColumns;
+    @SerializedName("mapRows")
+    private int mapRows;
     @SerializedName("enemies")
     private Map<EnemyType, Integer> enemies;
 
@@ -19,12 +19,12 @@ public class LevelSettings {
         return levelName;
     }
 
-    public int getMapWidth() {
-        return mapWidth;
+    public int getMapColumns() {
+        return mapColumns;
     }
 
-    public int getMapHeight() {
-        return mapHeight;
+    public int getMapRows() {
+        return mapRows;
     }
 
     public Map<EnemyType, Integer> getEnemies() {
@@ -35,8 +35,8 @@ public class LevelSettings {
     public String toString() {
         return "LevelSettings{ \n" +
                 "levelName='" + levelName + '\'' +
-                ",\n mapWidth=" + mapWidth +
-                ",\n mapHeight=" + mapHeight + "\n" +
+                ",\n mapWidth=" + mapColumns +
+                ",\n mapRows=" + mapRows + "\n" +
                 enemies.toString() + "\n" +
                 '}';
     }

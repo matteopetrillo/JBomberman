@@ -1,4 +1,4 @@
-package it.petrillo.jbomberman.model;
+package it.petrillo.jbomberman.util;
 
 public class Position {
     int x;

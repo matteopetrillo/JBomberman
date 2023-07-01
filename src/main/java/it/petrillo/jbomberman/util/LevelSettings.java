@@ -1,10 +1,14 @@
-package it.petrillo.jbomberman.model;
+package it.petrillo.jbomberman.util;
 
 import com.google.gson.annotations.SerializedName;
+import it.petrillo.jbomberman.model.EnemyType;
 
 import java.util.Map;
 
 public class LevelSettings {
+    /*
+    Fields
+     */
     @SerializedName("levelName")
     private String levelName;
     @SerializedName("mapColumns")
@@ -14,23 +18,21 @@ public class LevelSettings {
     @SerializedName("enemies")
     private Map<EnemyType, Integer> enemies;
 
-
+    /*
+    Methods
+     */
     public String getLevelName() {
         return levelName;
     }
-
     public int getMapColumns() {
         return mapColumns;
     }
-
     public int getMapRows() {
         return mapRows;
     }
-
     public Map<EnemyType, Integer> getEnemies() {
         return enemies;
     }
-
     @Override
     public String toString() {
         return "LevelSettings{ \n" +

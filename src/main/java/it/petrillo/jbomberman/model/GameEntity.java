@@ -2,8 +2,10 @@ package it.petrillo.jbomberman.model;
 
 import it.petrillo.jbomberman.util.CustomObservable;
 import it.petrillo.jbomberman.util.GameUtils;
+import it.petrillo.jbomberman.util.Position;
+
 import java.awt.*;
-public abstract class GameEntity extends CustomObservable {
+public abstract class GameEntity extends CustomObservable implements Collidable{
     Position position;
     Rectangle collisionBox;
     boolean isVisible;
@@ -11,8 +13,8 @@ public abstract class GameEntity extends CustomObservable {
         this.position = new Position(x,y);
         this.collisionBox = new Rectangle(position.getX(),
                 position.getY(),
-                GameUtils.TILE_SIZE.getValue(),
-                GameUtils.TILE_SIZE.getValue());
+                GameUtils.Tile.SIZE.getValue(),
+                GameUtils.Tile.SIZE.getValue());
     }
 
     public Position getPosition() {

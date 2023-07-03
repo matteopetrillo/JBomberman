@@ -18,9 +18,9 @@ public class CustomObservable {
         observers.remove(observer);
     }
 
-    public void notifyObservers(NotificationType notificationType, Object arg) {
+    public void notifyObservers(SenderType senderType, Object arg) {
         for (CustomObserver observer : observers) {
-            observer.update(notificationType, arg);
+            observer.update(senderType, arg);
         }
     }
 }

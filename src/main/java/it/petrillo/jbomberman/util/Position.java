@@ -8,6 +8,8 @@ public class Position {
         this.y = y;
     }
 
+    public Position() {};
+
     public int getX() {
         return x;
     }
@@ -22,5 +24,10 @@ public class Position {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    @Override
+    public String toString() {
+        return "Position - X: "+x+" / Y: "+y;
     }
 }

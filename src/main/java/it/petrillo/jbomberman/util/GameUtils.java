@@ -22,4 +22,9 @@ public class GameUtils {
             return value;
         }
     }
+
+    public enum ObjectVisibility {
+        VISIBLE, NOT_VISIBLE
+    }
+
 }

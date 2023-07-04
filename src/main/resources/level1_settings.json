@@ -1,10 +1,9 @@
 {
   "levelName": "Livello 1",
-  "mapRows": 30,
-  "mapColumns": 20,
   "enemies": {
     "BASIC": 5,
     "ADVANCED": 0
-  }
+  },
+  "mapFilePath": "src/main/resources/map_test.txt"
 
 }

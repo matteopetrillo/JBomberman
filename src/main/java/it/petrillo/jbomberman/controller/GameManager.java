@@ -1,9 +1,10 @@
 package it.petrillo.jbomberman.controller;
 
+import it.petrillo.jbomberman.model.GameMap;
 import it.petrillo.jbomberman.model.Player;
 import it.petrillo.jbomberman.util.GameUtils;
 import it.petrillo.jbomberman.util.JsonLoader;
-import it.petrillo.jbomberman.util.LevelSettings;
+import it.petrillo.jbomberman.util.Settings;
 import it.petrillo.jbomberman.view.GameFrame;
 import it.petrillo.jbomberman.view.GamePanel;
 
@@ -27,10 +28,15 @@ public class GameManager implements Runnable {
     }
 
     public void startGame() {
-        LevelSettings levelSettings = getSettings(GameUtils.LevelSettings.LEVEL_1.getValue());
+        Settings settings = getSettings(GameUtils.LevelSettings.LEVEL_1.getValue());
+        GameMap gameMap = new GameMap(settings.getMapFilePath());
+        collisionManager = new CollisionManager(gameMap);
+        collisionManager.addCollidable(playerInstance);
+        playerInstance.setCollisionListener(collisionManager);
+        gamePanel.setMapTiles(gameMap.getMapTiles());
         new Thread(this).start();
         running = true;
-        gamePanel.initialize(levelSettings);
+        gamePanel.initialize(settings);
         gameFrame.pack();
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);
@@ -41,10 +47,9 @@ public class GameManager implements Runnable {
         playerInstance.updateStatus();
     }
 
-    private LevelSettings getSettings(String path) {
-        return JsonLoader.loadJson(path, LevelSettings.class);
+    private Settings getSettings(String path) {
+        return JsonLoader.loadJson(path, Settings.class);
     }
-
     @Override
     public void run() {
         long lastTime = System.nanoTime();

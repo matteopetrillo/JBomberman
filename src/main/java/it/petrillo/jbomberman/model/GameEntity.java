@@ -6,17 +6,25 @@ import it.petrillo.jbomberman.util.GameUtils.ObjectVisibility;
 import it.petrillo.jbomberman.util.Position;
 
 import java.awt.*;
+
+import static it.petrillo.jbomberman.util.GameUtils.*;
+
 public abstract class GameEntity extends CustomObservable implements Collidable{
     private Position position;
-    private Rectangle collisionBox;
+    protected Rectangle collisionBox;
     private ObjectVisibility objectVisibility;
-    public GameEntity(int x, int y, ObjectVisibility objectVisibility) {
+    protected CollisionListener collisionListener;
+    public GameEntity(int x, int y, ObjectVisibility objectVisibility ) {
         this.position = new Position(x,y);
         this.collisionBox = new Rectangle(position.getX(),
                 position.getY(),
-                GameUtils.Tile.SIZE.getValue(),
-                GameUtils.Tile.SIZE.getValue());
+                Tile.SIZE.getValue(),
+                Tile.SIZE.getValue());
         this.objectVisibility = objectVisibility;
+    }
+
+    public void setCollisionListener(CollisionListener collisionListener) {
+        this.collisionListener = collisionListener;
     }
 
     public Position getPosition() {

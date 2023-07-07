@@ -5,9 +5,13 @@ import it.petrillo.jbomberman.model.GameEntity;
 import it.petrillo.jbomberman.model.GameMap;
 import it.petrillo.jbomberman.model.MapTile;
 import it.petrillo.jbomberman.util.GameUtils;
+import it.petrillo.jbomberman.util.Settings;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class CollisionManager implements CollisionListener {
     private List<GameEntity> gameEntities = new ArrayList();
@@ -21,7 +25,7 @@ public class CollisionManager implements CollisionListener {
         gameEntities.add(gameEntity);
     }
     private static boolean isWalkable(int x, int y) {
-        int tileSize = GameUtils.Tile.SIZE.getValue();
+        int tileSize = Settings.TILE_SIZE;
         int xIndex = (int) (x / tileSize);
         int yIndex = (int) (y / tileSize);
         MapTile tile = mapTiles[yIndex][xIndex];

@@ -2,11 +2,12 @@ package it.petrillo.jbomberman.controller;
 
 import it.petrillo.jbomberman.model.GameMap;
 import it.petrillo.jbomberman.model.Player;
-import it.petrillo.jbomberman.util.GameUtils;
 import it.petrillo.jbomberman.util.JsonLoader;
 import it.petrillo.jbomberman.util.Settings;
 import it.petrillo.jbomberman.view.GameFrame;
 import it.petrillo.jbomberman.view.GamePanel;
+
+import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class GameManager implements Runnable {
 
@@ -28,7 +29,8 @@ public class GameManager implements Runnable {
     }
 
     public void startGame() {
-        Settings settings = getSettings(GameUtils.LevelSettings.LEVEL_1.getValue());
+        Settings settings = importSettings(SettingsPath.LEVEL_1.getValue());
+        System.out.println(settings.getMapColumns() + " r:"+settings.getMapRows());
         GameMap gameMap = new GameMap(settings.getMapFilePath());
         collisionManager = new CollisionManager(gameMap);
         collisionManager.addCollidable(playerInstance);
@@ -47,7 +49,7 @@ public class GameManager implements Runnable {
         playerInstance.updateStatus();
     }
 
-    private Settings getSettings(String path) {
+    private Settings importSettings(String path) {
         return JsonLoader.loadJson(path, Settings.class);
     }
     @Override

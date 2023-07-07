@@ -2,9 +2,11 @@ package it.petrillo.jbomberman.util;
 
 import com.google.gson.annotations.SerializedName;
 import it.petrillo.jbomberman.model.EnemyType;
+import it.petrillo.jbomberman.model.Player;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -17,13 +19,16 @@ public class Settings {
     @SerializedName("levelName")
     private String levelName;
     @SerializedName("enemies")
-    private Map<EnemyType, Integer> enemies;
+    private Map<EnemyType, Integer> enemies = new HashMap<>();
     @SerializedName("mapFilePath")
     private String mapFilePath;
     private int screenHeight;
     private int screenWidth;
     private int mapColumns;
     private int mapRows;
+    public static final int DEFAULT_TILE_SIZE = 32;
+    public static final double SCALE = 2.0d;
+    public static final int TILE_SIZE = (int) (DEFAULT_TILE_SIZE * SCALE);
 
 
     /*
@@ -50,11 +55,11 @@ public class Settings {
     }
 
     public int getScreenHeight() {
-        return getMapRows()* Tile.SIZE.getValue();
+        return getMapRows()* TILE_SIZE;
     }
 
     public int getScreenWidth() {
-        return getMapColumns()* Tile.SIZE.getValue();
+        return getMapColumns()* TILE_SIZE;
     }
 
     public Map<EnemyType, Integer> getEnemies() {
@@ -77,7 +82,6 @@ public class Settings {
         }
 
         scanner.close();
-        System.out.println("rows: "+mapRows+" col: "+mapColumns);
     }
 
     public String getMapFilePath() {
@@ -93,4 +97,5 @@ public class Settings {
                 enemies.toString() + "\n" +
                 '}';
     }
+
 }

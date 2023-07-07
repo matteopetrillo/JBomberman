@@ -4,6 +4,7 @@ import it.petrillo.jbomberman.controller.CollisionManager;
 import it.petrillo.jbomberman.util.GameUtils;
 import it.petrillo.jbomberman.util.SenderType;
 import it.petrillo.jbomberman.util.GameUtils.ObjectVisibility;
+import it.petrillo.jbomberman.util.Settings;
 
 import java.awt.*;
 
@@ -13,15 +14,11 @@ public class Player extends GameEntity {
 
     private static Player playerInstance;
     String playerName;
-    private int x, y;
     private int xSpeed, ySpeed, playerSpeed;
     private boolean movingUp, movingDown, movingLeft, movingRight;
     private Player(int x, int y, ObjectVisibility visible) {
         super(x, y, visible);
-        super.setCollisionBox(new Rectangle(x,y, Tile.SIZE.getValue(), Tile.SIZE.getValue()));
-        this.x = x;
-        this.y = y;
-        this.playerSpeed = 4;
+        this.playerSpeed = 5;
     }
 
     public void updateStatus() {
@@ -42,9 +39,9 @@ public class Player extends GameEntity {
             xSpeed = playerSpeed;
 
         if(collisionListener != null && collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
-            this.x += xSpeed;
-            this.y += ySpeed;
-            collisionBox.setLocation(this.x, this.y);
+            super.x += xSpeed;
+            super.y += ySpeed;
+            collisionBox.setLocation(super.x, super.y);
         }
     }
 
@@ -52,16 +49,9 @@ public class Player extends GameEntity {
         this.playerName = playerName;
     }
 
-    public int getX() {
-        return x;
-    }
-    public int getY() {
-        return y;
-    }
-
     public static Player getPlayerInstance() {
         if(playerInstance == null) {
-            playerInstance = new Player(100,100, ObjectVisibility.VISIBLE);
+            playerInstance = new Player(3*Settings.TILE_SIZE,3*Settings.TILE_SIZE, ObjectVisibility.VISIBLE);
         }
         return playerInstance;
     }

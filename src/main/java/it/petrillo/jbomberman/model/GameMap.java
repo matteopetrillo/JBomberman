@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import static it.petrillo.jbomberman.util.GameUtils.*;
+
 public class GameMap {
     private MapTile[][] mapTiles;
     private int rows;
@@ -18,20 +20,6 @@ public class GameMap {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    public MapTile getTileFromCoordinates(int x, int y) {
-        int tileSize = GameUtils.Tile.SIZE.getValue();
-        int row = (int) (y/tileSize);
-        int column = (int) (x/tileSize);
-        return mapTiles[column][row];
-    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
-    public void setColumns(int columns) {
-        this.columns = columns;
     }
 
     private void loadMapFromFile(String filename) throws FileNotFoundException {

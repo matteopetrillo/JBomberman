@@ -19,7 +19,7 @@ public class EnemyManager {
         for (Map.Entry<EnemyType, Integer> entry : enemiesToCreate.entrySet()) {
             for (int i = 0; i < entry.getValue(); i++) {
                 Random rd = new Random();
-                enemies.add(GameEntityFactory.createEnemy(rd.nextInt(15*32)+1*32,rd.nextInt(10*32)+1*32,entry.getKey(), GameUtils.ObjectVisibility.VISIBLE));
+                enemies.add(GameEntityFactory.createEnemy(rd.nextInt(15*32)+32,rd.nextInt(10*32)+32,entry.getKey(), true));
             }
         }
     }

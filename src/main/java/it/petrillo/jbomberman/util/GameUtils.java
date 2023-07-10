@@ -14,9 +14,6 @@ public class GameUtils {
         }
     }
 
-    public enum ObjectVisibility {
-        VISIBLE, NOT_VISIBLE
-    }
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE

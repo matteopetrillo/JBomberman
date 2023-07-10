@@ -1,7 +1,6 @@
 package it.petrillo.jbomberman.model;
 
 import it.petrillo.jbomberman.util.CustomObservable;
-import it.petrillo.jbomberman.util.GameUtils.ObjectVisibility;
 import it.petrillo.jbomberman.util.Settings;
 
 import java.awt.*;
@@ -10,15 +9,15 @@ import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public abstract class GameEntity extends CustomObservable implements Collidable{
     protected Rectangle collisionBox;
-    private ObjectVisibility objectVisibility;
+    private boolean visibility;
     protected CollisionListener collisionListener;
     protected int x,y;
     protected Direction movingDirection;
-    public GameEntity(int x, int y, ObjectVisibility objectVisibility ) {
+    public GameEntity(int x, int y, boolean visibility ) {
         this.x = x;
         this.y = y;
         this.collisionBox = new Rectangle(x,y, Settings.TILE_SIZE, Settings.TILE_SIZE);
-        this.objectVisibility = objectVisibility;
+        this.visibility = visibility;
     }
 
     public void setCollisionListener(CollisionListener collisionListener) {
@@ -40,11 +39,12 @@ public abstract class GameEntity extends CustomObservable implements Collidable{
         this.collisionBox = collisionBox;
     }
 
-    public ObjectVisibility getObjectVisibility() {
-        return objectVisibility;
+    public boolean isVisible() {
+        return visibility;
     }
 
-    public void setObjectVisibility(ObjectVisibility objectVisibility) {
-        this.objectVisibility = objectVisibility;
+    public void setVisibility(boolean visibility) {
+        this.visibility = visibility;
     }
+
 }

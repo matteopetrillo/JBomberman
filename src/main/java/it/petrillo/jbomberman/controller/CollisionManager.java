@@ -26,8 +26,8 @@ public class CollisionManager implements CollisionListener {
     }
     private static boolean isWalkable(int x, int y) {
         int tileSize = Settings.TILE_SIZE;
-        int xIndex = (int) (x / tileSize);
-        int yIndex = (int) (y / tileSize);
+        int xIndex = x / tileSize;
+        int yIndex = y / tileSize;
         MapTile tile = mapTiles[yIndex][xIndex];
         return tile.isWalkable();
     }

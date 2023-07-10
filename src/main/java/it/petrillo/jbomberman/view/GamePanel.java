@@ -5,11 +5,12 @@ import it.petrillo.jbomberman.model.Enemy;
 import it.petrillo.jbomberman.model.MapTile;
 import it.petrillo.jbomberman.model.Player;
 import it.petrillo.jbomberman.util.*;
-import it.petrillo.jbomberman.util.GameUtils.ObjectVisibility;
 import it.petrillo.jbomberman.util.Settings;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Map;
 
 public class GamePanel extends JPanel implements CustomObserver {
 
@@ -31,33 +32,48 @@ public class GamePanel extends JPanel implements CustomObserver {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        if (mapTiles != null) {
-            for (int i = 0; i < mapTiles.length; i++) {
-                for (int j = 0; j < mapTiles[i].length; j++) {
-                    MapTile mapTile = mapTiles[i][j];
-                    int x = j * Settings.TILE_SIZE;
-                    int y = i * Settings.TILE_SIZE;
 
-                    if (mapTile.isWalkable()) {
-                        g.setColor(Color.BLACK);
-                    } else {
-                        g.setColor(Color.GRAY);
-                    }
-                    g.fillRect(x, y, Settings.TILE_SIZE, Settings.TILE_SIZE);
-                }
+        drawMap(g2d);
+        /*
+        for (int i = 0; i < mapTiles.length; i++) {
+            for (int j = 0; j < mapTiles[i].length; j++) {
+                MapTile tile = mapTiles[i][j];
+                g2d.setColor(Color.RED);
+                g2d.draw(tile.getCollisionBox());
             }
         }
 
-        enemyManager.getEnemies().stream().filter(e -> e.getObjectVisibility().equals(ObjectVisibility.VISIBLE))
+         */
+
+        enemyManager.getEnemies().stream().filter(e -> e.isVisible())
                 .forEach(e -> spriteRenderer.drawEnemies(g2d,e.getX(),e.getY()));
         
-        if (playerRef.getObjectVisibility() == ObjectVisibility.VISIBLE) {
+        if (playerRef.isVisible()) {
             int playerX = playerRef.getX();
             int playerY = playerRef.getY();
-            spriteRenderer.drawPlayer(g2d, playerX, playerY);
+            spriteRenderer.drawPlayer(g2d, playerX, playerY, playerRef.getCollisionBox());
         }
 
 
+    }
+    
+    private void drawMap(Graphics2D g) {
+        if (mapTiles != null && spriteRenderer.getTilesImg() != null) {
+            Map<Integer, BufferedImage> tileImg = spriteRenderer.getTilesImg();
+            for (int i = 0; i < mapTiles.length; i++) {
+                for (int j = 0; j < mapTiles[i].length; j++) {
+                    MapTile tile = mapTiles[i][j];
+                    BufferedImage img = tileImg.get(tile.getTileID());
+
+                    int x = j*Settings.TILE_SIZE;
+                    int y = i*Settings.TILE_SIZE;
+
+                    g.drawImage(img,x,y,Settings.TILE_SIZE, Settings.TILE_SIZE,null);
+                }
+            }
+            
+            
+        }
     }
 
     @Override

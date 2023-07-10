@@ -4,6 +4,6 @@
     "BASIC": 5,
     "ADVANCED": 0
   },
-  "mapFilePath": "src/main/resources/map_test.txt"
+  "mapFilePath": "src/main/resources/L1_Test.json"
 
 }

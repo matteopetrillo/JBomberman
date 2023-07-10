@@ -30,7 +30,6 @@ public class GameManager implements Runnable {
 
     public void startGame() {
         Settings settings = importSettings(SettingsPath.LEVEL_1.getValue());
-        System.out.println(settings.getMapColumns() + " r:"+settings.getMapRows());
         GameMap gameMap = new GameMap(settings.getMapFilePath());
         collisionManager = new CollisionManager(gameMap);
         collisionManager.addCollidable(playerInstance);

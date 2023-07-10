@@ -24,8 +24,8 @@ public class Settings {
     private String mapFilePath;
     private int screenHeight;
     private int screenWidth;
-    private int mapColumns;
-    private int mapRows;
+    private int mapColumns=17;
+    private int mapRows=13;
     public static final int DEFAULT_TILE_SIZE = 32;
     public static final double SCALE = 2.0d;
     public static final int TILE_SIZE = (int) (DEFAULT_TILE_SIZE * SCALE);
@@ -37,29 +37,13 @@ public class Settings {
     public String getLevelName() {
         return levelName;
     }
-    public int getMapColumns() {
-        try {
-            analyzeMap(mapFilePath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return mapColumns;
-    }
-    public int getMapRows() {
-        try {
-            analyzeMap(mapFilePath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return mapRows;
-    }
 
     public int getScreenHeight() {
-        return getMapRows()* TILE_SIZE;
+        return mapRows * TILE_SIZE;
     }
 
     public int getScreenWidth() {
-        return getMapColumns()* TILE_SIZE;
+        return mapColumns * TILE_SIZE;
     }
 
     public Map<EnemyType, Integer> getEnemies() {

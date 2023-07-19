@@ -37,6 +37,7 @@ public class BombManager {
 
     private void bombExplosion(int y, int x, int bombRadius) {
         int[][] directions = { {1, 0}, {-1, 0}, {0, -1}, {0, 1} };
+        boolean playerHitted = false;
 
         for (int[] direction : directions) {
             int dy = direction[0];
@@ -50,8 +51,10 @@ public class BombManager {
                 int playerY = (int)(player.getCollisionBox().y/Settings.TILE_SIZE);
 
                 MapTile tile = gameMap.getTileFromCoords(newX,newY);
-                if (newX == playerX && newY == playerY)
+                if (newX == playerX && newY == playerY && !playerHitted) {
                     player.hitPlayer();
+                    playerHitted = true;
+                }
 
                 if (tile.isDestroyable()) {
                     tile.setTileID(2);

@@ -1,6 +1,7 @@
 package it.petrillo.jbomberman.view;
 
 
+import it.petrillo.jbomberman.util.GameUtils;
 import it.petrillo.jbomberman.util.Settings;
 
 import javax.imageio.ImageIO;
@@ -10,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class SpriteRenderer {
 
@@ -44,9 +47,16 @@ public class SpriteRenderer {
         return tilesImg;
     }
 
-    public void drawPlayer(Graphics2D g, int x, int y) {
-        BufferedImage subimg = img.getSubimage(0,2*32,32,32);
-        g.drawImage((Image) subimg, x,y, (int) (Settings.TILE_SIZE*1.8d),
+    public void drawPlayer(Graphics2D g, int x, int y, Direction direction) {
+        BufferedImage subImg = null;
+        switch (direction) {
+            case UP -> subImg = img.getSubimage(0,0*32,32,32);
+            case DOWN -> subImg = img.getSubimage(0,2*32,32,32);
+            case RIGHT -> subImg = img.getSubimage(0,1*32,32,32);
+            case LEFT -> subImg = img.getSubimage(0,3*32,32,32);
+        }
+
+        g.drawImage((Image) subImg, x,y, (int) (Settings.TILE_SIZE*1.8d),
                 (int) (Settings.TILE_SIZE*1.8d),null);
         /*
         g.setColor(Color.WHITE);

@@ -17,6 +17,7 @@ public class Player extends GameEntity {
     private final int xOffset = 30;
     private final int yOffset = 50;
     private int health = 5;
+    private Direction actualDirection = Direction.DOWN;
 
     private Player(int x, int y, boolean visibility) {
         super(x, y, visibility);
@@ -32,14 +33,22 @@ public class Player extends GameEntity {
         xSpeed = 0;
         ySpeed = 0;
 
-        if (movingUp)
+        if (movingUp) {
             ySpeed = -playerSpeed;
-        else if (movingDown)
+            actualDirection = Direction.UP;
+        }
+        else if (movingDown) {
             ySpeed = playerSpeed;
-        else if (movingLeft)
+            actualDirection = Direction.DOWN;
+        }
+        else if (movingLeft) {
             xSpeed = -playerSpeed;
-        else if (movingRight)
+            actualDirection = Direction.LEFT;
+        }
+        else if (movingRight) {
             xSpeed = playerSpeed;
+            actualDirection = Direction.RIGHT;
+        }
 
         if(collisionListener != null && collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
             super.x += xSpeed;
@@ -82,4 +91,7 @@ public class Player extends GameEntity {
         this.movingRight = movingRight;
     }
 
+    public Direction getActualDirection() {
+        return actualDirection;
+    }
 }

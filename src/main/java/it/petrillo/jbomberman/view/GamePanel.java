@@ -45,7 +45,13 @@ public class GamePanel extends JPanel implements CustomObserver {
                             spriteRenderer.drawBomb(g2d, bomb.getX(), bomb.getY());
                     });
 
-        drawPlayer(g2d);
+        if (player.isVisible()) {
+            int x = player.getX();
+            int y = player.getY();
+            spriteRenderer.drawPlayer(g2d, x, y, player.getActualDirection());
+            g2d.setColor(Color.RED);
+            g2d.draw(player.getCollisionBox());
+        }
 
     }
     
@@ -67,15 +73,6 @@ public class GamePanel extends JPanel implements CustomObserver {
         }
     }
 
-    private void drawPlayer(Graphics2D g2d) {
-        if (player.isVisible()) {
-            int x = player.getX();
-            int y = player.getY();
-            spriteRenderer.drawPlayer(g2d, x, y);
-            g2d.setColor(Color.RED);
-            g2d.draw(player.getCollisionBox());
-        }
-    }
 
     @Override
     public void update(NotificationType notificationType, Object arg) {

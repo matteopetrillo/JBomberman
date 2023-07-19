@@ -1,7 +1,12 @@
 package it.petrillo.jbomberman.model;
 
+import it.petrillo.jbomberman.util.GameUtils;
 import it.petrillo.jbomberman.util.SenderType;
 import it.petrillo.jbomberman.util.Settings;
+
+import java.util.Set;
+
+import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class Player extends GameEntity {
 
@@ -9,16 +14,19 @@ public class Player extends GameEntity {
     String playerName;
     private int xSpeed, ySpeed, playerSpeed;
     private boolean movingUp, movingDown, movingLeft, movingRight;
+    private final int xOffset = 30;
+    private final int yOffset = 50;
+    private int health = 5;
+
     private Player(int x, int y, boolean visibility) {
         super(x, y, visibility);
-        collisionBox.setLocation(super.x+Settings.TILE_SIZE/2, super.y+18+Settings.TILE_SIZE/2);
+        collisionBox.setLocation(super.x+xOffset, super.y+yOffset);
         collisionBox.setSize((int) (16*Settings.SCALE), (int) (16*Settings.SCALE));
         this.playerSpeed = 4;
     }
 
     public void updateStatus() {
         updatePosition();
-        notifyObservers(SenderType.PLAYER, this);
     }
     public void updatePosition() {
         xSpeed = 0;
@@ -36,8 +44,18 @@ public class Player extends GameEntity {
         if(collisionListener != null && collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
             super.x += xSpeed;
             super.y += ySpeed;
-            collisionBox.setLocation(super.x+Settings.TILE_SIZE/2, super.y+18+Settings.TILE_SIZE/2);
+            collisionBox.setLocation(super.x+xOffset, super.y+yOffset);
         }
+    }
+
+    public void dropBomb() {
+        notifyObservers((NotificationType.DROP_BOMB), this);
+    }
+
+    public void hitPlayer() {
+        System.out.println(health);
+        health--;
+        System.out.println(health);
     }
 
     public void setPlayerName(String playerName) {
@@ -46,13 +64,9 @@ public class Player extends GameEntity {
 
     public static Player getPlayerInstance() {
         if(playerInstance == null) {
-            playerInstance = new Player(2*Settings.TILE_SIZE,Settings.TILE_SIZE, true);
+            playerInstance = new Player((int) (52*Settings.SCALE), (int) (24*Settings.SCALE), true);
         }
         return playerInstance;
-    }
-    @Override
-    public void onCollision(Collidable other) {
-
     }
 
     public void setMovingUp(boolean movingUp) {

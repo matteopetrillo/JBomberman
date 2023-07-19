@@ -1,33 +1,29 @@
 package it.petrillo.jbomberman.model;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import it.petrillo.jbomberman.util.GameUtils;
 import it.petrillo.jbomberman.util.Settings;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Scanner;
-
-import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class GameMap {
 
+    private static GameMap gameMapInstance;
     private MapTile[][] mapTiles;
+    private int bombRadius = 1;
 
-    public GameMap(String filePath) {
+    private GameMap() {}
+
+    public void initMap(String filePath) {
         try {
             loadMapFromJson(filePath);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
-
     private void loadMapFromJson(String filePath) throws FileNotFoundException {
 
         try (FileReader fileReader = new FileReader(filePath)) {
@@ -48,15 +44,20 @@ public class GameMap {
                     // Crea l'array bidimensionale
                     mapTiles = new MapTile[height][width];
                     int index = 0;
-                    for (int row = 0; row < height; row++) {
-                        for (int col = 0; col < width; col++) {
+                    for (int i = 0; i < height; i++) {
+                        for (int j = 0; j < width; j++) {
                             int tileNumber = tileData.get(index).getAsInt();
                             if (tileNumber == 2)
-                                mapTiles[row][col] = new MapTile(true, tileNumber,col* Settings.TILE_SIZE,
-                                        row*Settings.TILE_SIZE);
-                            else
-                                mapTiles[row][col] = new MapTile(false, tileNumber,col* Settings.TILE_SIZE,
-                                        row*Settings.TILE_SIZE);
+                                mapTiles[i][j] = new MapTile(true, false, tileNumber,j* Settings.TILE_SIZE,
+                                        i*Settings.TILE_SIZE);
+                            else if (tileNumber == 9) {
+                                mapTiles[i][j] = new MapTile(false, true, tileNumber,j* Settings.TILE_SIZE,
+                                        i*Settings.TILE_SIZE);
+                            }
+                            else {
+                                mapTiles[i][j] = new MapTile(false, false, tileNumber, j * Settings.TILE_SIZE,
+                                        i * Settings.TILE_SIZE);
+                            }
                             index++;
                         }
                     }
@@ -68,7 +69,30 @@ public class GameMap {
 
     }
 
+    public void editTile(MapTile tile, int x, int y) {
+        mapTiles[y][x] = tile;
+    }
+
     public MapTile[][] getMapTiles() {
         return mapTiles;
     }
+    public MapTile getTileFromCoords(int x, int y) {
+        return mapTiles[y][x];
+    }
+
+    public int getBombRadius() {
+        return bombRadius;
+    }
+
+    public void setBombRadius(int bombRadius) {
+        this.bombRadius = bombRadius;
+    }
+
+    public static GameMap getInstance() {
+        if (gameMapInstance == null)
+            gameMapInstance = new GameMap();
+
+        return gameMapInstance;
+    }
+
 }

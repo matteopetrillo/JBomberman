@@ -1,13 +1,12 @@
 package it.petrillo.jbomberman.model;
 
-import it.petrillo.jbomberman.util.GameUtils;
-
-import static it.petrillo.jbomberman.util.GameUtils.*;
-
 public class GameEntityFactory {
 
-    public static Enemy createEnemy(int x, int y, EnemyType enemyType, boolean visibility) {
-        return new Enemy(x,y,visibility);
+    public static Enemy createEnemy(int x, int y, EnemyType enemyType, boolean visible) {
+        return new Enemy(x,y,visible);
     }
 
+    public static Bomb createBomb(int x, int y, boolean visible) {
+        return new Bomb(x,y,visible);
+    }
 }

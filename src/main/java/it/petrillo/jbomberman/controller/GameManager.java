@@ -6,6 +6,7 @@ import it.petrillo.jbomberman.util.JsonLoader;
 import it.petrillo.jbomberman.util.Settings;
 import it.petrillo.jbomberman.view.GameFrame;
 import it.petrillo.jbomberman.view.GamePanel;
+import it.petrillo.jbomberman.view.SpriteRenderer;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
@@ -13,15 +14,19 @@ public class GameManager implements Runnable {
 
     private static final int FPS = 60;
     private static final long DRAW_INTERVAL = 1000000000 / FPS;
+    private Settings gameSettings;
     private GameFrame gameFrame = new GameFrame();
     private GamePanel gamePanel = new GamePanel();
-    private Player playerInstance;
-    private CollisionManager collisionManager;
+    private Player playerInstance = Player.getPlayerInstance();
+    private CollisionManager collisionManager = CollisionManager.getInstance();
+    private EnemyManager enemyManager = new EnemyManager();
+    private BombManager bombManager = new BombManager();
+    private GameMap gameMap = GameMap.getInstance();
     boolean running;
 
     public GameManager() {
+        gameSettings = importSettings(SettingsPath.LEVEL_1.getValue());
         gamePanel.addKeyListener(new PlayerController());
-        playerInstance = Player.getPlayerInstance();
         playerInstance.addObserver(gamePanel);
         gameFrame.getContentPane().add(gamePanel);
         gamePanel.setDoubleBuffered(true);
@@ -29,15 +34,16 @@ public class GameManager implements Runnable {
     }
 
     public void startGame() {
-        Settings settings = importSettings(SettingsPath.LEVEL_1.getValue());
-        GameMap gameMap = new GameMap(settings.getMapFilePath());
-        collisionManager = new CollisionManager(gameMap);
+        gameMap.initMap(gameSettings.getMapFilePath());
+        collisionManager.setGameMap(gameMap);
         collisionManager.addCollidable(playerInstance);
         playerInstance.setCollisionListener(collisionManager);
-        gamePanel.setMapTiles(gameMap.getMapTiles());
+        gamePanel.setEnemyManager(enemyManager);
+        gamePanel.setBombManager(bombManager);
+        gamePanel.setSpriteRenderer(new SpriteRenderer());
         new Thread(this).start();
         running = true;
-        gamePanel.initialize(settings);
+        gamePanel.initialize(gameSettings);
         gameFrame.pack();
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);
@@ -46,6 +52,7 @@ public class GameManager implements Runnable {
     public void stopGame() {running = false;}
     private void update() {
         playerInstance.updateStatus();
+        bombManager.updateBombs();
     }
 
     private Settings importSettings(String path) {

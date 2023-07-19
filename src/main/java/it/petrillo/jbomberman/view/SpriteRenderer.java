@@ -44,12 +44,10 @@ public class SpriteRenderer {
         return tilesImg;
     }
 
-    public void drawPlayer(Graphics2D g, int x, int y, Shape s) {
+    public void drawPlayer(Graphics2D g, int x, int y) {
         BufferedImage subimg = img.getSubimage(0,2*32,32,32);
-        g.drawImage((Image) subimg, x,y, (int) (Settings.TILE_SIZE*1.5d),
-                (int) (Settings.TILE_SIZE*1.5d),null);
-        g.setColor(Color.RED);
-        g.draw(s);
+        g.drawImage((Image) subimg, x,y, (int) (Settings.TILE_SIZE*1.8d),
+                (int) (Settings.TILE_SIZE*1.8d),null);
         /*
         g.setColor(Color.WHITE);
         g.fillRect(x,y, (int) (16*Settings.SCALE), (int) (24*Settings.SCALE));
@@ -75,5 +73,10 @@ public class SpriteRenderer {
             tilesImg.put(index, subimg);
             index++;
         }
+    }
+
+    public void drawBomb(Graphics2D g2d, int x, int y) {
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(x,y,(int) (16*Settings.SCALE), (int) (16*Settings.SCALE));
     }
 }

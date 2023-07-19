@@ -7,17 +7,17 @@ import java.awt.*;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
-public abstract class GameEntity extends CustomObservable implements Collidable{
+public abstract class GameEntity extends CustomObservable {
     protected Rectangle collisionBox;
-    private boolean visibility;
+    private boolean visible;
     protected CollisionListener collisionListener;
     protected int x,y;
     protected Direction movingDirection;
-    public GameEntity(int x, int y, boolean visibility ) {
+    public GameEntity(int x, int y, boolean visible) {
         this.x = x;
         this.y = y;
         this.collisionBox = new Rectangle(x,y, Settings.TILE_SIZE, Settings.TILE_SIZE);
-        this.visibility = visibility;
+        this.visible = visible;
     }
 
     public void setCollisionListener(CollisionListener collisionListener) {
@@ -40,11 +40,11 @@ public abstract class GameEntity extends CustomObservable implements Collidable{
     }
 
     public boolean isVisible() {
-        return visibility;
+        return visible;
     }
 
-    public void setVisibility(boolean visibility) {
-        this.visibility = visibility;
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
 }

@@ -8,11 +8,13 @@ import java.awt.*;
 
 public class MapTile {
     private boolean isWalkable;
+    private boolean isDestroyable;
     private Rectangle collisionBox;
     private int tileID, x, y;
 
-    public MapTile(boolean isWalkable, int tileID, int x, int y) {
+    public MapTile(boolean isWalkable, boolean isDestroyable, int tileID, int x, int y) {
         this.isWalkable = isWalkable;
+        this.isDestroyable = isDestroyable;
         this.tileID = tileID;
         this.x = x;
         this.y = y;
@@ -24,8 +26,16 @@ public class MapTile {
         return isWalkable;
     }
 
+    public boolean isDestroyable() {
+        return isDestroyable;
+    }
+
     public int getTileID() {
         return tileID;
+    }
+
+    public void setTileID(int tileID) {
+        this.tileID = tileID;
     }
 
     public Rectangle getCollisionBox() {
@@ -36,4 +46,18 @@ public class MapTile {
         isWalkable = walkable;
     }
 
+    public void setDestroyable(boolean destroyable) {
+        isDestroyable = destroyable;
+    }
+
+    @Override
+    public String toString() {
+        return "MapTile{" +
+                "isWalkable=" + isWalkable +
+                ", isDestroyable=" + isDestroyable +
+                ", tileID=" + tileID +
+                ", x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

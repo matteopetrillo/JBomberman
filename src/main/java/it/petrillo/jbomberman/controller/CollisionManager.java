@@ -4,23 +4,21 @@ import it.petrillo.jbomberman.model.CollisionListener;
 import it.petrillo.jbomberman.model.GameEntity;
 import it.petrillo.jbomberman.model.GameMap;
 import it.petrillo.jbomberman.model.MapTile;
-import it.petrillo.jbomberman.util.GameUtils;
 import it.petrillo.jbomberman.util.Settings;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
-
 public class CollisionManager implements CollisionListener {
+
+    private static CollisionManager collisionManagerInstance;
     private List<GameEntity> gameEntities = new ArrayList();
-    private static MapTile[][] mapTiles;
+    private static GameMap gameMap;
 
-    public CollisionManager(GameMap gameMap) {
-        mapTiles = gameMap.getMapTiles();
-    }
-
+    private CollisionManager() {}
+    public void setGameMap(GameMap gameMap) {
+        CollisionManager.gameMap = gameMap;}
     public void addCollidable(GameEntity gameEntity) {
         gameEntities.add(gameEntity);
     }
@@ -28,8 +26,7 @@ public class CollisionManager implements CollisionListener {
         int tileSize = Settings.TILE_SIZE;
         int xIndex = x / tileSize;
         int yIndex = y / tileSize;
-        MapTile tile = mapTiles[yIndex][xIndex];
-        return tile.isWalkable();
+        return gameMap.getTileFromCoords(xIndex,yIndex).isWalkable();
     }
     @Override
     public boolean canMoveThere(int dx, int dy, Rectangle collisionBox) {
@@ -40,5 +37,11 @@ public class CollisionManager implements CollisionListener {
 
         return isWalkable(x, y) && isWalkable(x + width, y + width) &&
                 isWalkable(x + width, y) && isWalkable(x, y + height);
+    }
+
+    public static CollisionManager getInstance() {
+        if (collisionManagerInstance == null)
+            collisionManagerInstance = new CollisionManager();
+        return collisionManagerInstance;
     }
 }

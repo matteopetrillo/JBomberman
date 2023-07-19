@@ -27,7 +27,7 @@ public class Settings {
     private int mapColumns=17;
     private int mapRows=13;
     public static final int DEFAULT_TILE_SIZE = 32;
-    public static final double SCALE = 2.0d;
+    public static final double SCALE = 1.5d;
     public static final int TILE_SIZE = (int) (DEFAULT_TILE_SIZE * SCALE);
 
 

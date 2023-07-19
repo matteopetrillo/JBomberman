@@ -1,9 +1,8 @@
 package it.petrillo.jbomberman.view;
 
+import it.petrillo.jbomberman.controller.BombManager;
 import it.petrillo.jbomberman.controller.EnemyManager;
-import it.petrillo.jbomberman.model.Enemy;
-import it.petrillo.jbomberman.model.MapTile;
-import it.petrillo.jbomberman.model.Player;
+import it.petrillo.jbomberman.model.*;
 import it.petrillo.jbomberman.util.*;
 import it.petrillo.jbomberman.util.Settings;
 
@@ -12,54 +11,48 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
+import static it.petrillo.jbomberman.util.GameUtils.*;
+
 public class GamePanel extends JPanel implements CustomObserver {
 
-    private int screenWidth, screenHeight;
-    private Player playerRef;
-    private EnemyManager enemyManager = new EnemyManager();
-    private MapTile[][] mapTiles;
-    private SpriteRenderer spriteRenderer = new SpriteRenderer();
+    private Player player = Player.getPlayerInstance();
+    private EnemyManager enemyManager;
+    private GameMap gameMap = GameMap.getInstance();
+    private SpriteRenderer spriteRenderer;
+    private BombManager bombManager;
 
     public void initialize(Settings settings) {
-        this.screenHeight = settings.getScreenHeight();
-        this.screenWidth = settings.getScreenWidth();
-        enemyManager.initEnemies(settings);
+        int screenHeight = settings.getScreenHeight();
+        int screenWidth = settings.getScreenWidth();
         setPreferredSize(new Dimension(screenWidth, screenHeight));
-        setBackground(Color.BLACK);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-
         drawMap(g2d);
-        /*
-        for (int i = 0; i < mapTiles.length; i++) {
-            for (int j = 0; j < mapTiles[i].length; j++) {
-                MapTile tile = mapTiles[i][j];
-                g2d.setColor(Color.RED);
-                g2d.draw(tile.getCollisionBox());
-            }
-        }
 
-         */
+        enemyManager.getEnemies()
+                    .stream()
+                    .filter(e -> e.isVisible())
+                    .forEach(e -> spriteRenderer.drawEnemies(g2d,e.getX(),e.getY()));
 
-        enemyManager.getEnemies().stream().filter(e -> e.isVisible())
-                .forEach(e -> spriteRenderer.drawEnemies(g2d,e.getX(),e.getY()));
-        
-        if (playerRef.isVisible()) {
-            int playerX = playerRef.getX();
-            int playerY = playerRef.getY();
-            spriteRenderer.drawPlayer(g2d, playerX, playerY, playerRef.getCollisionBox());
-        }
+        bombManager.getBombs()
+                    .stream()
+                    .forEach(bomb -> {
+                        if (!bomb.isExploded())
+                            spriteRenderer.drawBomb(g2d, bomb.getX(), bomb.getY());
+                    });
 
+        drawPlayer(g2d);
 
     }
     
     private void drawMap(Graphics2D g) {
-        if (mapTiles != null && spriteRenderer.getTilesImg() != null) {
+        if (gameMap != null && spriteRenderer.getTilesImg() != null) {
             Map<Integer, BufferedImage> tileImg = spriteRenderer.getTilesImg();
+            MapTile[][] mapTiles = gameMap.getMapTiles();
             for (int i = 0; i < mapTiles.length; i++) {
                 for (int j = 0; j < mapTiles[i].length; j++) {
                     MapTile tile = mapTiles[i][j];
@@ -71,19 +64,36 @@ public class GamePanel extends JPanel implements CustomObserver {
                     g.drawImage(img,x,y,Settings.TILE_SIZE, Settings.TILE_SIZE,null);
                 }
             }
-            
-            
+        }
+    }
+
+    private void drawPlayer(Graphics2D g2d) {
+        if (player.isVisible()) {
+            int x = player.getX();
+            int y = player.getY();
+            spriteRenderer.drawPlayer(g2d, x, y);
+            g2d.setColor(Color.RED);
+            g2d.draw(player.getCollisionBox());
         }
     }
 
     @Override
-    public void update(SenderType senderType, Object arg) {
-        if (arg instanceof Player) {
-            this.playerRef = (Player) arg;
+    public void update(NotificationType notificationType, Object arg) {
+        if (notificationType == NotificationType.DROP_BOMB) {
+            bombManager.newBomb(player.getCollisionBox().x, player.getCollisionBox().y);
         }
     }
 
-    public void setMapTiles(MapTile[][] mapTiles) {
-        this.mapTiles = mapTiles;
+    public void setBombManager(BombManager bombManager) {
+        this.bombManager = bombManager;
     }
+
+    public void setEnemyManager(EnemyManager enemyManager) {
+        this.enemyManager = enemyManager;
+    }
+
+    public void setSpriteRenderer(SpriteRenderer spriteRenderer) {
+        this.spriteRenderer = spriteRenderer;
+    }
+
 }

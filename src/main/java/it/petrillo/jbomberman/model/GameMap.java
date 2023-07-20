@@ -13,7 +13,6 @@ public class GameMap {
 
     private static GameMap gameMapInstance;
     private MapTile[][] mapTiles;
-    private int bombRadius = 1;
 
     private GameMap() {}
 
@@ -69,7 +68,7 @@ public class GameMap {
 
     }
 
-    public void editTile(MapTile tile, int x, int y) {
+    public void setMapTile(MapTile tile, int x, int y) {
         mapTiles[y][x] = tile;
     }
 
@@ -78,14 +77,6 @@ public class GameMap {
     }
     public MapTile getTileFromCoords(int x, int y) {
         return mapTiles[y][x];
-    }
-
-    public int getBombRadius() {
-        return bombRadius;
-    }
-
-    public void setBombRadius(int bombRadius) {
-        this.bombRadius = bombRadius;
     }
 
     public static GameMap getInstance() {

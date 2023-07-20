@@ -66,11 +66,11 @@ public class SpriteRenderer {
     }
 
     public void drawEnemies(Graphics2D g, int x, int y) {
-        /*
+        
         g.setColor(Color.RED);
         g.fillRect(x,y, Settings.TILE_SIZE, Settings.TILE_SIZE);
 
-         */
+
     }
 
     private void readTileSheet(String path) {

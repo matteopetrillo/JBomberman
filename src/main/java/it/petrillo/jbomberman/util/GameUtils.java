@@ -22,4 +22,8 @@ public class GameUtils {
         DROP_BOMB
     }
 
+    public enum SenderType {
+        PLAYER, ENEMY_1, ENEMY_2, MAP
+    }
+
 }

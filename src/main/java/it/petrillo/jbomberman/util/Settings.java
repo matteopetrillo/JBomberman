@@ -27,7 +27,7 @@ public class Settings {
     private int mapColumns=17;
     private int mapRows=13;
     public static final int DEFAULT_TILE_SIZE = 32;
-    public static final double SCALE = 1.5d;
+    public static final double SCALE = 1.8d;
     public static final int TILE_SIZE = (int) (DEFAULT_TILE_SIZE * SCALE);
 
 
@@ -48,24 +48,6 @@ public class Settings {
 
     public Map<EnemyType, Integer> getEnemies() {
         return enemies;
-    }
-
-    private void analyzeMap(String filename) throws FileNotFoundException {
-        File file = new File(filename);
-        Scanner scanner = new Scanner(file);
-
-        mapRows = 0;
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-
-            if (mapRows == 0) {
-                mapColumns = line.length();
-            }
-
-            mapRows++;
-        }
-
-        scanner.close();
     }
 
     public String getMapFilePath() {

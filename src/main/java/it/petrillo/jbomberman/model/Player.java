@@ -1,10 +1,6 @@
 package it.petrillo.jbomberman.model;
 
-import it.petrillo.jbomberman.util.GameUtils;
-import it.petrillo.jbomberman.util.SenderType;
 import it.petrillo.jbomberman.util.Settings;
-
-import java.util.Set;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 

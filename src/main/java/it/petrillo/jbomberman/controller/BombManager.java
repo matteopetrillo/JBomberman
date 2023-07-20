@@ -60,7 +60,7 @@ public class BombManager {
                     tile.setTileID(2);
                     tile.setDestroyable(false);
                     tile.setWalkable(true);
-                    gameMap.editTile(tile, newX, newY);
+                    gameMap.setMapTile(tile, newX, newY);
 
                 } else if (tile.isWalkable())
                     continue;

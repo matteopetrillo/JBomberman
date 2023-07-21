@@ -4,9 +4,9 @@ import it.petrillo.jbomberman.util.Settings;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
-public class Player extends GameEntity {
+public class Bomberman extends GameEntity {
 
-    private static Player playerInstance;
+    private static Bomberman bombermanInstance;
     String playerName;
     private int xSpeed, ySpeed, playerSpeed;
     private boolean movingUp, movingDown, movingLeft, movingRight;
@@ -15,7 +15,7 @@ public class Player extends GameEntity {
     private int health = 5;
     private Direction actualDirection = Direction.DOWN;
 
-    private Player(int x, int y, boolean visibility) {
+    private Bomberman(int x, int y, boolean visibility) {
         super(x, y, visibility);
         collisionBox.setLocation(super.x+xOffset, super.y+yOffset);
         collisionBox.setSize((int) (16*Settings.SCALE), (int) (16*Settings.SCALE));
@@ -67,11 +67,11 @@ public class Player extends GameEntity {
         this.playerName = playerName;
     }
 
-    public static Player getPlayerInstance() {
-        if(playerInstance == null) {
-            playerInstance = new Player((int) (52*Settings.SCALE), (int) (24*Settings.SCALE), true);
+    public static Bomberman getPlayerInstance() {
+        if(bombermanInstance == null) {
+            bombermanInstance = new Bomberman((int) (52*Settings.SCALE), (int) (24*Settings.SCALE), true);
         }
-        return playerInstance;
+        return bombermanInstance;
     }
 
     public void setMovingUp(boolean movingUp) {

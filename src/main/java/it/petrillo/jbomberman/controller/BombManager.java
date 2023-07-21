@@ -11,7 +11,7 @@ public class BombManager {
     private List<Bomb> bombs = new ArrayList();
     private List<Bomb> bombsExploded = new ArrayList<>();
     private GameMap gameMap = GameMap.getInstance();
-    private Player player = Player.getPlayerInstance();
+    private Bomberman bomberman = Bomberman.getPlayerInstance();
 
     public void newBomb(int x, int y) {
         bombs.add(GameEntityFactory.createBomb(x,y,true));
@@ -35,7 +35,7 @@ public class BombManager {
     }
 
 
-    private void bombExplosion(int y, int x, int bombRadius) {
+    public void bombExplosion(int y, int x, int bombRadius) {
         int[][] directions = { {1, 0}, {-1, 0}, {0, -1}, {0, 1} };
         boolean playerHitted = false;
 
@@ -47,12 +47,12 @@ public class BombManager {
                 int newY = y + i * dy;
                 int newX = x + i * dx;
 
-                int playerX = (int)(player.getCollisionBox().x/Settings.TILE_SIZE);
-                int playerY = (int)(player.getCollisionBox().y/Settings.TILE_SIZE);
+                int playerX = (int)(bomberman.getCollisionBox().x/Settings.TILE_SIZE);
+                int playerY = (int)(bomberman.getCollisionBox().y/Settings.TILE_SIZE);
 
                 MapTile tile = gameMap.getTileFromCoords(newX,newY);
                 if (newX == playerX && newY == playerY && !playerHitted) {
-                    player.hitPlayer();
+                    bomberman.hitPlayer();
                     playerHitted = true;
                 }
 

@@ -1,13 +1,13 @@
 package it.petrillo.jbomberman.controller;
 
 
-import it.petrillo.jbomberman.model.Player;
+import it.petrillo.jbomberman.model.Bomberman;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class PlayerController implements KeyListener {
-    private Player playerInstance = Player.getPlayerInstance();
+public class PlayerKeyHandler implements KeyListener {
+    private Bomberman bombermanInstance = Bomberman.getPlayerInstance();
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -18,15 +18,15 @@ public class PlayerController implements KeyListener {
         int keyCode = e.getKeyCode();
 
         if (keyCode == KeyEvent.VK_W) {
-            playerInstance.setMovingUp(true);
+            bombermanInstance.setMovingUp(true);
         } else if (keyCode == KeyEvent.VK_S) {
-            playerInstance.setMovingDown(true);
+            bombermanInstance.setMovingDown(true);
         } else if (keyCode == KeyEvent.VK_A) {
-            playerInstance.setMovingLeft(true);
+            bombermanInstance.setMovingLeft(true);
         } else if (keyCode == KeyEvent.VK_D) {
-            playerInstance.setMovingRight(true);
+            bombermanInstance.setMovingRight(true);
         } else if (keyCode == KeyEvent.VK_SPACE) {
-            playerInstance.dropBomb();
+            bombermanInstance.dropBomb();
         }
     }
 
@@ -34,13 +34,13 @@ public class PlayerController implements KeyListener {
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_W) {
-            playerInstance.setMovingUp(false);
+            bombermanInstance.setMovingUp(false);
         } else if (keyCode == KeyEvent.VK_S) {
-            playerInstance.setMovingDown(false);
+            bombermanInstance.setMovingDown(false);
         } else if (keyCode == KeyEvent.VK_A) {
-            playerInstance.setMovingLeft(false);
+            bombermanInstance.setMovingLeft(false);
         } else if (keyCode == KeyEvent.VK_D) {
-            playerInstance.setMovingRight(false);
+            bombermanInstance.setMovingRight(false);
         }
     }
 }

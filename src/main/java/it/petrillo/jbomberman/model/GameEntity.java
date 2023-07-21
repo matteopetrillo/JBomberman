@@ -24,6 +24,7 @@ public abstract class GameEntity extends CustomObservable {
         this.collisionListener = collisionListener;
     }
 
+    public abstract void draw(Graphics2D g);
     public int getX() {
         return x;
     }

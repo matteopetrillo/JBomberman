@@ -15,7 +15,7 @@ import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class GamePanel extends JPanel implements CustomObserver {
 
-    private Player player = Player.getPlayerInstance();
+    private Bomberman bomberman = Bomberman.getPlayerInstance();
     private EnemyManager enemyManager;
     private GameMap gameMap = GameMap.getInstance();
     private SpriteRenderer spriteRenderer;
@@ -43,14 +43,18 @@ public class GamePanel extends JPanel implements CustomObserver {
                     .forEach(bomb -> {
                         if (!bomb.isExploded())
                             spriteRenderer.drawBomb(g2d, bomb.getX(), bomb.getY());
+                        else {
+                            spriteRenderer.drawExplosion(g2d, bomb.getX(), bomb.getY());
+                        }
+
                     });
 
-        if (player.isVisible()) {
-            int x = player.getX();
-            int y = player.getY();
-            spriteRenderer.drawPlayer(g2d, x, y, player.getActualDirection());
+        if (bomberman.isVisible()) {
+            int x = bomberman.getX();
+            int y = bomberman.getY();
+            spriteRenderer.drawPlayer(g2d, x, y, bomberman.getActualDirection());
             g2d.setColor(Color.RED);
-            g2d.draw(player.getCollisionBox());
+            g2d.draw(bomberman.getCollisionBox());
         }
 
     }
@@ -77,7 +81,7 @@ public class GamePanel extends JPanel implements CustomObserver {
     @Override
     public void update(NotificationType notificationType, Object arg) {
         if (notificationType == NotificationType.DROP_BOMB) {
-            bombManager.newBomb(player.getCollisionBox().x, player.getCollisionBox().y);
+            bombManager.newBomb(bomberman.getCollisionBox().x, bomberman.getCollisionBox().y);
         }
     }
 

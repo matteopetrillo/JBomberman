@@ -1,7 +1,7 @@
 package it.petrillo.jbomberman.controller;
 
 import it.petrillo.jbomberman.model.GameMap;
-import it.petrillo.jbomberman.model.Player;
+import it.petrillo.jbomberman.model.Bomberman;
 import it.petrillo.jbomberman.util.JsonLoader;
 import it.petrillo.jbomberman.util.Settings;
 import it.petrillo.jbomberman.view.GameFrame;
@@ -17,7 +17,7 @@ public class GameManager implements Runnable {
     private Settings gameSettings;
     private GameFrame gameFrame = new GameFrame();
     private GamePanel gamePanel = new GamePanel();
-    private Player playerInstance = Player.getPlayerInstance();
+    private Bomberman bombermanInstance = Bomberman.getPlayerInstance();
     private CollisionManager collisionManager = CollisionManager.getInstance();
     private EnemyManager enemyManager = new EnemyManager();
     private BombManager bombManager = new BombManager();
@@ -26,8 +26,8 @@ public class GameManager implements Runnable {
 
     public GameManager() {
         gameSettings = importSettings(SettingsPath.LEVEL_1.getValue());
-        gamePanel.addKeyListener(new PlayerController());
-        playerInstance.addObserver(gamePanel);
+        gamePanel.addKeyListener(new PlayerKeyHandler());
+        bombermanInstance.addObserver(gamePanel);
         gameFrame.getContentPane().add(gamePanel);
         gamePanel.setDoubleBuffered(true);
         gamePanel.setFocusable(true);
@@ -36,8 +36,8 @@ public class GameManager implements Runnable {
     public void startGame() {
         gameMap.initMap(gameSettings.getMapFilePath());
         collisionManager.setGameMap(gameMap);
-        collisionManager.addCollidable(playerInstance);
-        playerInstance.setCollisionListener(collisionManager);
+        collisionManager.addCollidable(bombermanInstance);
+        bombermanInstance.setCollisionListener(collisionManager);
         gamePanel.setEnemyManager(enemyManager);
         gamePanel.setBombManager(bombManager);
         gamePanel.setSpriteRenderer(new SpriteRenderer());
@@ -51,7 +51,7 @@ public class GameManager implements Runnable {
 
     public void stopGame() {running = false;}
     private void update() {
-        playerInstance.updateStatus();
+        bombermanInstance.updateStatus();
         bombManager.updateBombs();
     }
 

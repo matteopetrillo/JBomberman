@@ -89,4 +89,7 @@ public class SpriteRenderer {
         g2d.setColor(Color.BLACK);
         g2d.fillRect(x,y,(int) (16*Settings.SCALE), (int) (16*Settings.SCALE));
     }
+
+    public void drawExplosion(Graphics2D g2d, int x, int y) {
+    }
 }

@@ -2,15 +2,9 @@ package it.petrillo.jbomberman.util;
 
 import com.google.gson.annotations.SerializedName;
 import it.petrillo.jbomberman.model.EnemyType;
-import it.petrillo.jbomberman.model.Player;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
-
-import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class Settings {
     /*

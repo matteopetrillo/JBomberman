@@ -23,12 +23,12 @@ public class GameMap {
 
     public void initMap(String jsonPath) {
 
-        List<String> fields = List.of("map_tile_set","mapTileIds");
-        Map<String, JsonElement> mapSetting = parseJsonFields(jsonPath,fields);
+        List<String> fields = List.of("map_tile_set","map_ids");
+        Map<String, JsonElement> mapSetting = getMultipleJsonFields(jsonPath,fields);
         String tileSetPath = mapSetting.get("map_tile_set").getAsString();
         this.tileSet = getImg(tileSetPath);
         initTileSet(tileSet);
-        JsonArray tileIdArray = mapSetting.get("mapTileIds").getAsJsonArray();
+        JsonArray tileIdArray = mapSetting.get("map_ids").getAsJsonArray();
         initTiles(tileIdArray);
 
     }
@@ -63,8 +63,6 @@ public class GameMap {
                 MapTile tile = map[i][j];
                 BufferedImage tileImg = tileImgReference.get(tile.getTileId());
                 g2d.drawImage(tileImg,j*TILE_SIZE,i*TILE_SIZE,TILE_SIZE,TILE_SIZE,null);
-                //g2d.setColor(Color.RED);
-                //g2d.draw(tile.getCollisionBox());
             }
         }
     }

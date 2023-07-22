@@ -1,6 +1,5 @@
 package it.petrillo.jbomberman.util;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -52,7 +51,7 @@ public class GameUtils {
     }
 
 
-    public static Map<String, JsonElement> parseJsonFields(String jsonString, List<String> fields) {
+    public static Map<String, JsonElement> getMultipleJsonFields(String jsonString, List<String> fields) {
         Map<String, JsonElement> selectedFields = new HashMap<>();
         try {
             InputStream inputStream = GameUtils.class.getResourceAsStream(jsonString);
@@ -71,6 +70,25 @@ public class GameUtils {
             }
 
             return selectedFields;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static JsonObject getJsonField(String jsonString, String field) {
+        try {
+            InputStream inputStream = GameUtils.class.getResourceAsStream(jsonString);
+            if (inputStream == null) {
+                throw new IOException("Il file JSON non è stato trovato come risorsa: " + jsonString);
+            }
+
+            JsonParser jsonParser = new JsonParser();
+            JsonObject jsonObject = JsonParser.parseReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).getAsJsonObject();
+
+            return jsonObject.get(field).getAsJsonObject();
 
         } catch (IOException e) {
             e.printStackTrace();

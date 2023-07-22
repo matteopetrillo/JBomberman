@@ -13,6 +13,7 @@ public class Bomberman extends GameCharacter {
     String playerName;
     private int health = 5;
 
+
     private Bomberman(int x, int y, boolean visibility) {
         super(x, y, visibility);
         entityScale = 3.5d;
@@ -30,8 +31,6 @@ public class Bomberman extends GameCharacter {
     public void draw(Graphics2D g) {
         g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
                 x,y, (int) (32*entityScale), (int) (32*entityScale),null);
-        //g.setColor(Color.RED);
-        //g.draw(collisionBox);
     }
 
     @Override
@@ -44,6 +43,16 @@ public class Bomberman extends GameCharacter {
             }
 
         }
+    }
+
+    @Override
+    public void setX(int x) {
+        super.setX((int) (x*TILE_SIZE-6*SCALE));
+    }
+
+    @Override
+    public void setY(int y) {
+        super.setY((int) (y*TILE_SIZE-14*SCALE));
     }
 
     private void updateAnimation() {
@@ -111,7 +120,7 @@ public class Bomberman extends GameCharacter {
 
     public static Bomberman getPlayerInstance() {
         if(bombermanInstance == null) {
-            bombermanInstance = new Bomberman((int) (2*TILE_SIZE-TILE_SIZE/2), (int) (1*TILE_SIZE-TILE_SIZE/2), true);
+            bombermanInstance = new Bomberman(0,0, true);
         }
         return bombermanInstance;
     }

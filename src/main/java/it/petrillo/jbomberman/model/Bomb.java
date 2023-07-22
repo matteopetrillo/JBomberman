@@ -1,11 +1,23 @@
 package it.petrillo.jbomberman.model;
 
-public class Bomb extends GameEntity{
+import java.awt.*;
+
+public class Bomb extends GameObject {
     private int timer = 120;
     private boolean exploded;
     private int radius = 1;
     public Bomb(int x, int y, boolean visibility) {
         super(x, y, true);
+    }
+
+    @Override
+    public void draw(Graphics2D g) {
+
+    }
+
+    @Override
+    protected void loadSprites(String path) {
+
     }
 
     public int getRadius() {

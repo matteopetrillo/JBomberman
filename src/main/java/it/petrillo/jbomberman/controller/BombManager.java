@@ -1,10 +1,12 @@
 package it.petrillo.jbomberman.controller;
 
 import it.petrillo.jbomberman.model.*;
-import it.petrillo.jbomberman.util.Settings;
+import it.petrillo.jbomberman.util.GameUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class BombManager {
 
@@ -16,14 +18,14 @@ public class BombManager {
     public void newBomb(int x, int y) {
         bombs.add(GameEntityFactory.createBomb(x,y,true));
     }
-
+/*
     public void updateBombs() {
         if (!bombs.isEmpty()) {
             for (Bomb bomb : bombs) {
                 if (!bomb.isExploded())
                     bomb.update();
                 else {
-                    bombExplosion((int) (bomb.getY()/Settings.TILE_SIZE),(int) (bomb.getX()/Settings.TILE_SIZE), bomb.getRadius());
+                    bombExplosion((int) (bomb.getY()/ TILE_SIZE),(int) (bomb.getX()/TILE_SIZE), bomb.getRadius());
                     bombsExploded.add(bomb);
                 }
             }
@@ -34,7 +36,9 @@ public class BombManager {
         bombsExploded.clear();
     }
 
+ */
 
+    /*
     public void bombExplosion(int y, int x, int bombRadius) {
         int[][] directions = { {1, 0}, {-1, 0}, {0, -1}, {0, 1} };
         boolean playerHitted = false;
@@ -47,8 +51,8 @@ public class BombManager {
                 int newY = y + i * dy;
                 int newX = x + i * dx;
 
-                int playerX = (int)(bomberman.getCollisionBox().x/Settings.TILE_SIZE);
-                int playerY = (int)(bomberman.getCollisionBox().y/Settings.TILE_SIZE);
+                int playerX = (int)(bomberman.getCollisionBox().x/TILE_SIZE);
+                int playerY = (int)(bomberman.getCollisionBox().y/TILE_SIZE);
 
                 MapTile tile = gameMap.getTileFromCoords(newX,newY);
                 if (newX == playerX && newY == playerY && !playerHitted) {
@@ -57,7 +61,6 @@ public class BombManager {
                 }
 
                 if (tile.isDestroyable()) {
-                    tile.setTileID(2);
                     tile.setDestroyable(false);
                     tile.setWalkable(true);
                     gameMap.setMapTile(tile, newX, newY);
@@ -69,6 +72,8 @@ public class BombManager {
             }
         }
     }
+
+     */
 
     public List<Bomb> getBombs() {
         return bombs;

@@ -1,36 +1,29 @@
 package it.petrillo.jbomberman.model;
 
 
-import it.petrillo.jbomberman.util.GameUtils;
-import it.petrillo.jbomberman.util.Settings;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class MapTile {
     private Rectangle collisionBox;
-    private int x, y;
-    private boolean bombPlaced, enemySpawn, playerSpawn, isWalkable, isDestroyable,softBlockPlaced;
-    private BufferedImage img;
+    private int x, y, tileId;
+    private boolean isWalkable;
 
-    protected MapTile(Builder builder) {
-        this.x = builder.x;
-        this.y = builder.y;
-        this.isWalkable = builder.isWalkable;
-        this.isDestroyable = builder.isDestroyable;
-        this.collisionBox = builder.collisionBox;
+    public MapTile(int x, int y, int tileId, boolean isWalkable) {
+        this.x = x;
+        this.y = y;
+        this.tileId = tileId;
+        this.isWalkable = isWalkable;
+        collisionBox = new Rectangle(x,y, TILE_SIZE, TILE_SIZE);
     }
 
-    public void drawTile(Graphics2D g) {
-        g.drawImage(img,x,y,Settings.TILE_SIZE,Settings.TILE_SIZE,null);
+    public int getTileId() {
+        return tileId;
     }
 
-    public boolean isSoftBlockPlaced() {
-        return softBlockPlaced;
-    }
-
-    public void setSoftBlockPlaced(boolean softBlockPlaced) {
-        this.softBlockPlaced = softBlockPlaced;
+    public void setTileId(int tileId) {
+        this.tileId = tileId;
     }
 
     public Rectangle getCollisionBox() {
@@ -57,96 +50,11 @@ public class MapTile {
         this.y = y;
     }
 
-    public boolean isBombPlaced() {
-        return bombPlaced;
-    }
-
-    public void setBombPlaced(boolean bombPlaced) {
-        this.bombPlaced = bombPlaced;
-    }
-
-    public boolean isEnemySpawn() {
-        return enemySpawn;
-    }
-
-    public void setEnemySpawn(boolean enemySpawn) {
-        this.enemySpawn = enemySpawn;
-    }
-
-    public boolean isPlayerSpawn() {
-        return playerSpawn;
-    }
-
-    public void setPlayerSpawn(boolean playerSpawn) {
-        this.playerSpawn = playerSpawn;
-    }
-
     public boolean isWalkable() {
         return isWalkable;
     }
 
     public void setWalkable(boolean walkable) {
         isWalkable = walkable;
-    }
-
-    public boolean isDestroyable() {
-        return isDestroyable;
-    }
-
-    public void setDestroyable(boolean destroyable) {
-        isDestroyable = destroyable;
-    }
-
-    public BufferedImage getImg() {
-        return img;
-    }
-
-    public void setImg(BufferedImage img) {
-        this.img = img;
-    }
-
-
-    public static class Builder {
-        private Rectangle collisionBox;
-        private int x, y;
-        private boolean bombPlaced, enemySpawn, playerSpawn, isWalkable, isDestroyable,softBlockPlaced;
-        private BufferedImage img;
-        public Builder(int x, int y, boolean isWalkable, boolean isDestroyable) {
-            this.x = x;
-            this.y = y;
-            this.isWalkable = isWalkable;
-            this.isDestroyable = isDestroyable;
-            this.collisionBox = new Rectangle(x, y, Settings.TILE_SIZE, Settings.TILE_SIZE);
-        }
-
-
-        public Builder setBombPlaced(boolean bombPlaced) {
-            this.bombPlaced = bombPlaced;
-            return this;
-        }
-
-        public Builder setEnemySpawn(boolean enemySpawn) {
-            this.enemySpawn = enemySpawn;
-            return this;
-        }
-
-        public Builder setPlayerSpawn(boolean playerSpawn) {
-            this.playerSpawn = playerSpawn;
-            return this;
-        }
-
-        public Builder setSoftBlockPlaced(boolean softBlockPlaced) {
-            this.softBlockPlaced = softBlockPlaced;
-            return this;
-        }
-
-        public Builder setImage(BufferedImage img) {
-            this.img = img;
-            return this;
-        }
-
-        public MapTile build() {
-            return new MapTile(this);
-        }
     }
 }

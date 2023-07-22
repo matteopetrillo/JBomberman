@@ -1,89 +1,83 @@
 package it.petrillo.jbomberman.model;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import it.petrillo.jbomberman.util.Settings;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class GameMap {
 
     private static GameMap gameMapInstance;
-    private MapTile[][] mapTiles;
+    private MapTile[][] map = new MapTile[MAP_ROWS][MAP_COLUMNS];
+    private BufferedImage tileSet;
+    private Map<Integer, BufferedImage> tileImgReference = new HashMap<>();
 
     private GameMap() {}
 
-    public void initMap(String filePath) {
-        try {
-            loadMapFromJson(filePath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public void initMap(String jsonPath) {
+
+        List<String> fields = List.of("map_tile_set","mapTileIds");
+        Map<String, JsonElement> mapSetting = parseJsonFields(jsonPath,fields);
+        String tileSetPath = mapSetting.get("map_tile_set").getAsString();
+        this.tileSet = getImg(tileSetPath);
+        initTileSet(tileSet);
+        JsonArray tileIdArray = mapSetting.get("mapTileIds").getAsJsonArray();
+        initTiles(tileIdArray);
+
     }
-    private void loadMapFromJson(String filePath) throws FileNotFoundException {
 
-        try (FileReader fileReader = new FileReader(filePath)) {
-            // Parsa il JSON utilizzando Gson
-            JsonParser jsonParser = new JsonParser();
-            JsonObject jsonObject = jsonParser.parse(fileReader).getAsJsonObject();
-            JsonArray layersArray = jsonObject.getAsJsonArray("layers");
-
-            // Verifica se l'array "layers" ha elementi
-            if (layersArray.size() > 0) {
-                JsonObject firstLayer = layersArray.get(0).getAsJsonObject();
-                String name = firstLayer.get("name").getAsString();
-                if (name.equals("Ground")) {
-                    JsonArray tileData = firstLayer.getAsJsonArray("data");
-                    int width = firstLayer.get("width").getAsInt();
-                    int height = firstLayer.get("height").getAsInt();
-
-                    // Crea l'array bidimensionale
-                    mapTiles = new MapTile[height][width];
-                    int index = 0;
-                    for (int i = 0; i < height; i++) {
-                        for (int j = 0; j < width; j++) {
-                            int tileNumber = tileData.get(index).getAsInt();
-                            if (tileNumber == 2)
-                                mapTiles[i][j] = new MapTile(true, false, tileNumber,j* Settings.TILE_SIZE,
-                                        i*Settings.TILE_SIZE);
-                            else if (tileNumber == 9) {
-                                mapTiles[i][j] = new MapTile(false, true, tileNumber,j* Settings.TILE_SIZE,
-                                        i*Settings.TILE_SIZE);
-                            }
-                            else {
-                                mapTiles[i][j] = new MapTile(false, false, tileNumber, j * Settings.TILE_SIZE,
-                                        i * Settings.TILE_SIZE);
-                            }
-                            index++;
-                        }
-                    }
-                }
+    private void initTiles(JsonArray jsonArray) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                int tileId = jsonArray.get(i).getAsJsonArray().get(j).getAsInt();
+                if (tileId == 10 || tileId == 16)
+                    map[i][j] = new MapTile(j*TILE_SIZE,i*TILE_SIZE,tileId,true);
+                else
+                    map[i][j] = new MapTile(j*TILE_SIZE,i*TILE_SIZE,tileId,false);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
+    }
+    private void initTileSet(BufferedImage tileSet) {
+        int width = tileSet.getWidth();
+        int height = tileSet.getHeight();
+        int index = 1;
+        for (int j = 0; j < height / DEFAULT_TILE_SIZE; j++) {
+            for (int i = 0; i < width / DEFAULT_TILE_SIZE; i++) {
+                BufferedImage subimg = tileSet.getSubimage(i * DEFAULT_TILE_SIZE, j * DEFAULT_TILE_SIZE, DEFAULT_TILE_SIZE, DEFAULT_TILE_SIZE);
+                tileImgReference.put(index, subimg);
+                index++;
+            }
+        }
     }
 
-    public void setMapTile(MapTile tile, int x, int y) {
-        mapTiles[y][x] = tile;
+    public void drawMap(Graphics2D g2d) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                MapTile tile = map[i][j];
+                BufferedImage tileImg = tileImgReference.get(tile.getTileId());
+                g2d.drawImage(tileImg,j*TILE_SIZE,i*TILE_SIZE,TILE_SIZE,TILE_SIZE,null);
+                //g2d.setColor(Color.RED);
+                //g2d.draw(tile.getCollisionBox());
+            }
+        }
     }
 
-    public MapTile[][] getMapTiles() {
-        return mapTiles;
-    }
     public MapTile getTileFromCoords(int x, int y) {
-        return mapTiles[y][x];
+        return map[y][x];
     }
-
     public static GameMap getInstance() {
         if (gameMapInstance == null)
             gameMapInstance = new GameMap();
 
         return gameMapInstance;
     }
+
 
 }

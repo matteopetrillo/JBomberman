@@ -2,61 +2,43 @@ package it.petrillo.jbomberman.controller;
 
 import it.petrillo.jbomberman.model.GameMap;
 import it.petrillo.jbomberman.model.Bomberman;
-import it.petrillo.jbomberman.util.JsonLoader;
-import it.petrillo.jbomberman.util.Settings;
 import it.petrillo.jbomberman.view.GameFrame;
 import it.petrillo.jbomberman.view.GamePanel;
-import it.petrillo.jbomberman.view.SpriteRenderer;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import java.util.logging.Level;
 
 public class GameManager implements Runnable {
 
     private static final int FPS = 60;
     private static final long DRAW_INTERVAL = 1000000000 / FPS;
-    private Settings gameSettings;
     private GameFrame gameFrame = new GameFrame();
     private GamePanel gamePanel = new GamePanel();
     private Bomberman bombermanInstance = Bomberman.getPlayerInstance();
     private CollisionManager collisionManager = CollisionManager.getInstance();
-    private EnemyManager enemyManager = new EnemyManager();
-    private BombManager bombManager = new BombManager();
     private GameMap gameMap = GameMap.getInstance();
+    private LevelManager levelManager = LevelManager.getInstance();
     boolean running;
 
     public GameManager() {
-        gameSettings = importSettings(SettingsPath.LEVEL_1.getValue());
-        gamePanel.addKeyListener(new PlayerKeyHandler());
         bombermanInstance.addObserver(gamePanel);
         gameFrame.getContentPane().add(gamePanel);
-        gamePanel.setDoubleBuffered(true);
-        gamePanel.setFocusable(true);
+        gameFrame.pack();
+        gameFrame.setLocationRelativeTo(null);
+        collisionManager.setGameMap(gameMap);
+        bombermanInstance.setCollisionListener(collisionManager);
+        levelManager.loadLevel();
     }
 
     public void startGame() {
-        gameMap.initMap(gameSettings.getMapFilePath());
-        collisionManager.setGameMap(gameMap);
-        collisionManager.addCollidable(bombermanInstance);
-        bombermanInstance.setCollisionListener(collisionManager);
-        gamePanel.setEnemyManager(enemyManager);
-        gamePanel.setBombManager(bombManager);
-        gamePanel.setSpriteRenderer(new SpriteRenderer());
         new Thread(this).start();
         running = true;
-        gamePanel.initialize(gameSettings);
-        gameFrame.pack();
-        gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);
+        System.out.println("******** Game Started! ********");
     }
 
     public void stopGame() {running = false;}
     private void update() {
         bombermanInstance.updateStatus();
-        bombManager.updateBombs();
-    }
-
-    private Settings importSettings(String path) {
-        return JsonLoader.loadJson(path, Settings.class);
     }
     @Override
     public void run() {

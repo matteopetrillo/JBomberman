@@ -1,35 +1,42 @@
 package it.petrillo.jbomberman.model;
 
 import it.petrillo.jbomberman.util.CustomObservable;
-import it.petrillo.jbomberman.util.Settings;
+import it.petrillo.jbomberman.util.GameUtils;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public abstract class GameEntity extends CustomObservable {
     protected Rectangle collisionBox;
     private boolean visible;
-    protected CollisionListener collisionListener;
-    protected int x,y;
-    protected Direction movingDirection;
+    protected int x,y,animationTick,animationIndex, animationSpeed, xCollisionOffset, yCollisionOffset, xSpeed, ySpeed, entitySpeed;
+    protected double entityScale = 1.0d;
+    protected BufferedImage spriteSheet;
+    protected BufferedImage[][] spriteAnimation;
     public GameEntity(int x, int y, boolean visible) {
         this.x = x;
         this.y = y;
-        this.collisionBox = new Rectangle(x,y, Settings.TILE_SIZE, Settings.TILE_SIZE);
+        this.collisionBox = new Rectangle(x,y, TILE_SIZE, TILE_SIZE);
         this.visible = visible;
     }
 
-    public void setCollisionListener(CollisionListener collisionListener) {
-        this.collisionListener = collisionListener;
-    }
-
     public abstract void draw(Graphics2D g);
+    protected abstract void loadSprites(String path);
     public int getX() {
         return x;
     }
     public int getY() {
         return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public Rectangle getCollisionBox() {
@@ -47,5 +54,6 @@ public abstract class GameEntity extends CustomObservable {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
+
 
 }

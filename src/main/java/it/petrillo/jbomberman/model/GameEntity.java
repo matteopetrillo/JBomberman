@@ -1,7 +1,6 @@
 package it.petrillo.jbomberman.model;
 
 import it.petrillo.jbomberman.util.CustomObservable;
-import it.petrillo.jbomberman.util.GameUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,6 +23,9 @@ public abstract class GameEntity extends CustomObservable {
 
     public abstract void draw(Graphics2D g);
     protected abstract void loadSprites(String path);
+
+    public abstract void updateStatus();
+
     public int getX() {
         return x;
     }

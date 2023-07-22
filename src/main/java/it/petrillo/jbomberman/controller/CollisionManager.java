@@ -1,14 +1,11 @@
 package it.petrillo.jbomberman.controller;
 
-import it.petrillo.jbomberman.model.Bomberman;
 import it.petrillo.jbomberman.model.CollisionListener;
-import it.petrillo.jbomberman.model.GameEntity;
 import it.petrillo.jbomberman.model.GameMap;
-import it.petrillo.jbomberman.util.GameUtils;
+import it.petrillo.jbomberman.model.GameObject;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
@@ -24,7 +21,13 @@ public class CollisionManager implements CollisionListener {
     private static boolean isWalkable(int x, int y) {
         int xIndex = x / TILE_SIZE;
         int yIndex = y / TILE_SIZE;
-        return gameMap.getTileFromCoords(xIndex,yIndex).isWalkable();
+        boolean tileWalkable = gameMap.getTileFromCoords(xIndex,yIndex).isWalkable();
+        Optional<GameObject> objectOptional = gameMap.getObjectFromCoords(xIndex,yIndex);
+        if (objectOptional.isPresent()) {
+            GameObject object = objectOptional.get();
+            return tileWalkable && !object.isSolid();
+        }
+        return tileWalkable;
     }
 
     @Override

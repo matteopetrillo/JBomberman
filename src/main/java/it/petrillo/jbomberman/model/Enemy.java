@@ -18,5 +18,10 @@ public class Enemy extends GameEntity {
 
     }
 
+    @Override
+    public void updateStatus() {
+
+    }
+
 
 }

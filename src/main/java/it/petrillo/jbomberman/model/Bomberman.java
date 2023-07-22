@@ -35,8 +35,8 @@ public class Bomberman extends GameCharacter {
 
     @Override
     protected void loadSprites(String path) {
-        this.spriteSheet = GameUtils.getImg(path);
-        this.spriteAnimation = new BufferedImage[4][3];
+        spriteSheet = GameUtils.getImg(path);
+        spriteAnimation = new BufferedImage[4][3];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
                 spriteAnimation[i][j] = spriteSheet.getSubimage(32*j,32*i, 32, 32);
@@ -69,6 +69,7 @@ public class Bomberman extends GameCharacter {
         }
     }
 
+    @Override
     public void updateStatus() {
         updatePosition();
         updateAnimation();

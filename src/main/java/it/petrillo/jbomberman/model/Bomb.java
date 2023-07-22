@@ -20,6 +20,18 @@ public class Bomb extends GameObject {
 
     }
 
+    @Override
+    public void updateStatus() {
+        if(!exploded) {
+            if (timer > 0) {
+                timer--;
+            }
+            else {
+                exploded = true;
+            }
+        }
+    }
+
     public int getRadius() {
         return radius;
     }
@@ -30,16 +42,6 @@ public class Bomb extends GameObject {
 
     public boolean isExploded() {
         return exploded;
-    }
-    public void update() {
-        if(!exploded) {
-            if (timer > 0) {
-                timer--;
-            }
-            else {
-                exploded = true;
-            }
-        }
     }
 
 }

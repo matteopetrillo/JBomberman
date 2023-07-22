@@ -16,6 +16,7 @@ public class GameManager implements Runnable {
     private Bomberman bombermanInstance = Bomberman.getPlayerInstance();
     private CollisionManager collisionManager = CollisionManager.getInstance();
     private GameMap gameMap = GameMap.getInstance();
+    private ObjectsManager objectsManager = ObjectsManager.getInstance();
     private LevelManager levelManager = LevelManager.getInstance();
     boolean running;
 
@@ -39,6 +40,7 @@ public class GameManager implements Runnable {
     public void stopGame() {running = false;}
     private void update() {
         bombermanInstance.updateStatus();
+        objectsManager.updateObjects();
     }
     @Override
     public void run() {

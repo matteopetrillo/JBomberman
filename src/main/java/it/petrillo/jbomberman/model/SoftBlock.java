@@ -1,7 +1,5 @@
 package it.petrillo.jbomberman.model;
 
-import it.petrillo.jbomberman.util.GameUtils;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -10,27 +8,40 @@ import static it.petrillo.jbomberman.util.GameUtils.*;
 public class SoftBlock extends GameObject {
 
     private boolean hasShadow;
-    public SoftBlock(int x, int y, boolean visible) {
-        super(x, y, visible);
+    private boolean isExploding;
+    public SoftBlock(int x, int y, String sheetPath) {
+        super(x, y, true);
         isDestroyable = true;
         isSolid = true;
-        animationSpeed = 10;
-        loadSprites("/Sprites_softBlock_16x16.png");
+        animationSpeed = 8;
+        loadSprites(sheetPath);
     }
 
     @Override
     public void draw(Graphics2D g) {
-        int rowIndex = 0;
-        if(hasShadow)
-            rowIndex = 1;
-        g.drawImage(spriteAnimation[rowIndex][animationIndex],x,y, TILE_SIZE, TILE_SIZE, null);
+        if (visible) {
+            int rowIndex = 0;
+            if (!isExploding) {
+                if (hasShadow)
+                    rowIndex = 1;
+                g.drawImage(spriteAnimation[rowIndex][animationIndex], x, y, TILE_SIZE, TILE_SIZE, null);
+            }
+            else {
+                rowIndex = spriteAnimation.length-1;
+                g.drawImage(spriteAnimation[rowIndex][animationIndex], x, y, TILE_SIZE, TILE_SIZE, null);
+            }
+        }
     }
 
     @Override
     protected void loadSprites(String path) {
         spriteSheet = getImg(path);
-        spriteAnimation = new BufferedImage[2][4];
+        int rows = spriteSheet.getHeight()/DEFAULT_TILE_SIZE;
+        spriteAnimation = new BufferedImage[rows][];
         for (int i = 0; i < spriteAnimation.length; i++) {
+            if (i != spriteAnimation.length-1)
+                spriteAnimation[i] = new BufferedImage[4];
+            spriteAnimation[i] = new BufferedImage[6];
             for (int j = 0; j < spriteAnimation[i].length; j++) {
                 spriteAnimation[i][j] = spriteSheet.getSubimage(16*j,16*i, 16, 16);
             }
@@ -39,12 +50,18 @@ public class SoftBlock extends GameObject {
 
     @Override
     public void updateStatus() {
+        int maxIndex = 4;
+        if (isExploding)
+            maxIndex = 6;
         animationTick++;
         if (animationTick >= animationSpeed) {
             animationTick = 0;
             animationIndex++;
-            if (animationIndex >= 4)
-                animationIndex = 0;
+            if (animationIndex >= maxIndex)
+                if (isExploding)
+                    visible = false;
+                else
+                    animationIndex = 0;
         }
     }
 
@@ -52,4 +69,7 @@ public class SoftBlock extends GameObject {
         this.hasShadow = hasShadow;
     }
 
+    public void setExploding(boolean exploding) {
+        isExploding = exploding;
+    }
 }

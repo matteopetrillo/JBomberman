@@ -7,8 +7,8 @@ public abstract class GameCharacter extends GameEntity {
     protected CollisionListener collisionListener;
     protected GameUtils.Direction movingDirection;
     protected boolean movingUp, movingDown, movingLeft, movingRight;
-    public GameCharacter(int x, int y, boolean visible) {
-        super(x, y, visible);
+    public GameCharacter(int x, int y) {
+        super(x, y);
     }
 
     protected int getAniIndexByDirection() {

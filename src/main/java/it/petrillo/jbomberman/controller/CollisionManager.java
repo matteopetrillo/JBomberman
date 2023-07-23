@@ -12,17 +12,18 @@ import static it.petrillo.jbomberman.util.GameUtils.*;
 public class CollisionManager implements CollisionListener {
 
     private static CollisionManager collisionManagerInstance;
-    private static GameMap gameMap;
+    private GameMap gameMap;
+    private ObjectsManager objectsManager = ObjectsManager.getInstance();
 
     private CollisionManager() {}
     public void setGameMap(GameMap gameMap) {
-        CollisionManager.gameMap = gameMap;}
+        this.gameMap = gameMap;}
 
-    private static boolean isWalkable(int x, int y) {
+    private boolean isWalkable(int x, int y) {
         int xIndex = x / TILE_SIZE;
         int yIndex = y / TILE_SIZE;
         boolean tileWalkable = gameMap.getTileFromCoords(xIndex,yIndex).isWalkable();
-        Optional<GameObject> objectOptional = gameMap.getObjectFromCoords(xIndex,yIndex);
+        Optional<GameObject> objectOptional = objectsManager.getObjectFromCoords(xIndex,yIndex);
         if (objectOptional.isPresent()) {
             GameObject object = objectOptional.get();
             return tileWalkable && !object.isSolid();

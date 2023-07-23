@@ -9,16 +9,16 @@ import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public abstract class GameEntity extends CustomObservable {
     protected Rectangle collisionBox;
-    private boolean visible;
+    protected boolean visible;
     protected int x,y,animationTick,animationIndex, animationSpeed, xCollisionOffset, yCollisionOffset, xSpeed, ySpeed, entitySpeed;
     protected double entityScale = 1.0d;
     protected BufferedImage spriteSheet;
     protected BufferedImage[][] spriteAnimation;
-    public GameEntity(int x, int y, boolean visible) {
+    public GameEntity(int x, int y) {
         this.x = x;
         this.y = y;
         this.collisionBox = new Rectangle(x,y, TILE_SIZE, TILE_SIZE);
-        this.visible = visible;
+        this.visible = true;
     }
 
     public abstract void draw(Graphics2D g);

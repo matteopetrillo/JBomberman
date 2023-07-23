@@ -7,6 +7,7 @@ import it.petrillo.jbomberman.view.GamePanel;
 
 import java.util.logging.Level;
 
+// TODO integrare il gameloop nel GamePanel
 public class GameManager implements Runnable {
 
     private static final int FPS = 60;
@@ -18,6 +19,7 @@ public class GameManager implements Runnable {
     private GameMap gameMap = GameMap.getInstance();
     private ObjectsManager objectsManager = ObjectsManager.getInstance();
     private LevelManager levelManager = LevelManager.getInstance();
+    private ExplosionManager explosionManager = ExplosionManager.getInstance();
     boolean running;
 
     public GameManager() {
@@ -41,6 +43,7 @@ public class GameManager implements Runnable {
     private void update() {
         bombermanInstance.updateStatus();
         objectsManager.updateObjects();
+        explosionManager.updateExplosions();
     }
     @Override
     public void run() {

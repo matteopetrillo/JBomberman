@@ -78,7 +78,26 @@ public class GameUtils {
         return null;
     }
 
-    public static JsonObject getJsonField(String jsonString, String field) {
+    public static JsonObject getJsonObject(String jsonString, String field) {
+        try {
+            InputStream inputStream = GameUtils.class.getResourceAsStream(jsonString);
+            if (inputStream == null) {
+                throw new IOException("Il file JSON non è stato trovato come risorsa: " + jsonString);
+            }
+
+            JsonParser jsonParser = new JsonParser();
+            JsonObject jsonObject = JsonParser.parseReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).getAsJsonObject();
+
+            return jsonObject.get(field).getAsJsonObject();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static JsonObject getJsonElement(String jsonString, String field) {
         try {
             InputStream inputStream = GameUtils.class.getResourceAsStream(jsonString);
             if (inputStream == null) {

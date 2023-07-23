@@ -13,9 +13,8 @@ public class Bomberman extends GameCharacter {
     String playerName;
     private int health = 5;
 
-
-    private Bomberman(int x, int y, boolean visibility) {
-        super(x, y, visibility);
+    private Bomberman() {
+        super(0, 0);
         entityScale = 3.5d;
         xCollisionOffset = (int) (11*entityScale);
         yCollisionOffset = (int) (23*entityScale);
@@ -47,13 +46,14 @@ public class Bomberman extends GameCharacter {
 
     @Override
     public void setX(int x) {
-        super.setX((int) (x*TILE_SIZE-6*SCALE));
+        super.setX((int) (x-6*SCALE));
     }
 
     @Override
     public void setY(int y) {
-        super.setY((int) (y*TILE_SIZE-14*SCALE));
+        super.setY((int) (y-14*SCALE));
     }
+
 
     private void updateAnimation() {
         animationTick++;
@@ -121,7 +121,7 @@ public class Bomberman extends GameCharacter {
 
     public static Bomberman getPlayerInstance() {
         if(bombermanInstance == null) {
-            bombermanInstance = new Bomberman(0,0, true);
+            bombermanInstance = new Bomberman();
         }
         return bombermanInstance;
     }

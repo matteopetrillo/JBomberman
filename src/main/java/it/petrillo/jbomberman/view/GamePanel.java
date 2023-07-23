@@ -1,15 +1,14 @@
 package it.petrillo.jbomberman.view;
 
-import it.petrillo.jbomberman.controller.BombManager;
 import it.petrillo.jbomberman.controller.EnemyManager;
+import it.petrillo.jbomberman.controller.ExplosionManager;
+import it.petrillo.jbomberman.controller.ObjectsManager;
 import it.petrillo.jbomberman.controller.PlayerKeyHandler;
 import it.petrillo.jbomberman.model.*;
 import it.petrillo.jbomberman.util.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.Map;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
@@ -17,8 +16,9 @@ public class GamePanel extends JPanel implements CustomObserver {
 
     private Bomberman bomberman = Bomberman.getPlayerInstance();
     private EnemyManager enemyManager;
+    private ObjectsManager objectsManager = ObjectsManager.getInstance();
     private GameMap gameMap = GameMap.getInstance();
-    private BombManager bombManager;
+    private ExplosionManager explosionManager = ExplosionManager.getInstance();
 
     public GamePanel() {
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -32,21 +32,20 @@ public class GamePanel extends JPanel implements CustomObserver {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         gameMap.drawMap(g2d);
+        objectsManager.getObjects().stream().forEach(o -> o.draw(g2d));
+        explosionManager.getExplosionList().stream().forEach(e -> e.draw(g2d));
         bomberman.draw(g2d);
-
     }
 
 
     @Override
     public void update(NotificationType notificationType, Object arg) {
         if (notificationType == NotificationType.DROP_BOMB) {
-            bombManager.newBomb(bomberman.getCollisionBox().x, bomberman.getCollisionBox().y);
+            objectsManager.dropBomb((int) (bomberman.getCollisionBox().getX()/TILE_SIZE),
+                    (int) (bomberman.getCollisionBox().getY()/TILE_SIZE));
         }
     }
 
-    public void setBombManager(BombManager bombManager) {
-        this.bombManager = bombManager;
-    }
 
     public void setEnemyManager(EnemyManager enemyManager) {
         this.enemyManager = enemyManager;

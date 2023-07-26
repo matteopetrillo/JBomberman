@@ -28,19 +28,25 @@ public class Bomberman extends GameCharacter {
 
     @Override
     public void draw(Graphics2D g) {
-        g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
-                x,y, (int) (32*entityScale), (int) (32*entityScale),null);
+        if(visible) {
+            if (health <= 0)
+                g.drawImage(spriteAnimation[4][animationIndex],
+                        x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+            else {
+            g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
+                    x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+            }
+        }
     }
 
     @Override
     protected void loadSprites(String path) {
         spriteSheet = GameUtils.getImg(path);
-        spriteAnimation = new BufferedImage[4][3];
+        spriteAnimation = new BufferedImage[5][3];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
                 spriteAnimation[i][j] = spriteSheet.getSubimage(32*j,32*i, 32, 32);
             }
-
         }
     }
 
@@ -59,7 +65,12 @@ public class Bomberman extends GameCharacter {
         animationTick++;
         if (animationTick >= animationSpeed) {
             animationTick = 0;
-            if (movingDown || movingLeft || movingUp || movingRight) {
+            if (health <= 0) {
+                animationIndex++;
+                if (animationIndex >= 3)
+                    visible = false;
+            }
+            else if (movingDown || movingLeft || movingUp || movingRight) {
                 animationIndex++;
                 if (animationIndex >= 3)
                     animationIndex = 0;
@@ -71,9 +82,9 @@ public class Bomberman extends GameCharacter {
 
     @Override
     public void updateStatus() {
-        updatePosition();
+        if (health > 0)
+            updatePosition();
         updateAnimation();
-
     }
     public void updatePosition() {
         xSpeed = 0;
@@ -96,7 +107,6 @@ public class Bomberman extends GameCharacter {
             movingDirection = Direction.RIGHT;
         }
 
-
         if(collisionListener != null && collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
             super.x += xSpeed;
             super.y += ySpeed;
@@ -112,6 +122,10 @@ public class Bomberman extends GameCharacter {
         System.out.println(health);
         health--;
         System.out.println(health);
+        if (health <= 0) {
+            animationIndex = 0;
+            animationSpeed = 18;
+        }
     }
 
 

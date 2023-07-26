@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class Bomb extends GameObject {
-    private int timer = 120;
+    private int timer = 80;
     private boolean explosionStarted;
 
     public Bomb(int x, int y, String spriteSheetPath) {

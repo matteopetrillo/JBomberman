@@ -1,9 +1,0 @@
-{
-  "levelName": "Livello 2",
-  "enemies": {
-    "BASIC": 3,
-    "ADVANCED": 2
-  },
-  "mapFilePath": "src/main/resources/map_test2.txt"
-
-}

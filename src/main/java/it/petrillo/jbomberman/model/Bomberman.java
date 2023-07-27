@@ -11,7 +11,6 @@ public class Bomberman extends GameCharacter {
 
     private static Bomberman bombermanInstance;
     String playerName;
-    private int health = 5;
 
     private Bomberman() {
         super(0, 0);
@@ -22,6 +21,7 @@ public class Bomberman extends GameCharacter {
         collisionBox.setLocation(super.x+ xCollisionOffset, super.y+ yCollisionOffset);
         collisionBox.setSize((int) (9*entityScale), (int) (5*entityScale));
         animationSpeed = 13;
+        health = 5;
         movingDirection = Direction.DOWN;
         loadSprites("/spritesheeet_bomberman_32x32.png");
     }
@@ -119,7 +119,6 @@ public class Bomberman extends GameCharacter {
     }
 
     public void hitPlayer() {
-        System.out.println(health);
         health--;
         System.out.println(health);
         if (health <= 0) {

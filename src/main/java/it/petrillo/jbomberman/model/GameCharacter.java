@@ -7,6 +7,7 @@ public abstract class GameCharacter extends GameEntity {
     protected CollisionListener collisionListener;
     protected GameUtils.Direction movingDirection;
     protected boolean movingUp, movingDown, movingLeft, movingRight;
+    protected int health, xCollisionOffset, yCollisionOffset;
     public GameCharacter(int x, int y) {
         super(x, y);
     }

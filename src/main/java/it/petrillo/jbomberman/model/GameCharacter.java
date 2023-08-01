@@ -1,13 +1,17 @@
 package it.petrillo.jbomberman.model;
 
-import it.petrillo.jbomberman.util.GameUtils;
+import java.awt.image.BufferedImage;
+
+import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public abstract class GameCharacter extends GameEntity {
 
     protected CollisionListener collisionListener;
-    protected GameUtils.Direction movingDirection;
-    protected boolean movingUp, movingDown, movingLeft, movingRight;
-    protected int health, xCollisionOffset, yCollisionOffset;
+    protected Direction movingDirection;
+    protected boolean movingUp, movingDown, movingLeft, movingRight, hitted;
+    protected int health, xSpeed, ySpeed, characterSpeed, hittedTimer;
+    protected BufferedImage[][] hittedAnimation;
+    protected BufferedImage hittedSpriteSheet;
     public GameCharacter(int x, int y) {
         super(x, y);
     }
@@ -30,6 +34,7 @@ public abstract class GameCharacter extends GameEntity {
         return 2;
     }
 
+
     public CollisionListener getCollisionListener() {
         return collisionListener;
     }
@@ -38,11 +43,11 @@ public abstract class GameCharacter extends GameEntity {
         this.collisionListener = collisionListener;
     }
 
-    public GameUtils.Direction getMovingDirection() {
+    public Direction getMovingDirection() {
         return movingDirection;
     }
 
-    public void setMovingDirection(GameUtils.Direction movingDirection) {
+    public void setMovingDirection(Direction movingDirection) {
         this.movingDirection = movingDirection;
     }
 
@@ -77,4 +82,14 @@ public abstract class GameCharacter extends GameEntity {
     public void setMovingRight(boolean movingRight) {
         this.movingRight = movingRight;
     }
+
+    public abstract void onCollision(GameCharacter other);
+    public void setHitted(boolean hitted) {
+        this.hitted = hitted;
+    }
+    public boolean isHitted() {
+        return hitted;
+    }
+
+    public abstract void hitCharacter();
 }

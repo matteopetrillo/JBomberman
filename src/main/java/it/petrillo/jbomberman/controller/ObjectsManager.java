@@ -3,7 +3,6 @@ package it.petrillo.jbomberman.controller;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import it.petrillo.jbomberman.model.*;
-import it.petrillo.jbomberman.util.GameUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ public class ObjectsManager {
     private static ObjectsManager objectsManagerInstance;
     private GameMap gameMap = GameMap.getInstance();
     private Bomberman bomberman = Bomberman.getPlayerInstance();
+    private CollisionManager collisionManager;
     private List<GameObject> objects = new ArrayList<>();
 
     private ObjectsManager() {}
@@ -35,11 +35,13 @@ public class ObjectsManager {
             }
             objects.add(softBlock);
         }
+
+        collisionManager = CollisionManager.getInstance();
     }
     public void updateObjects() {
         for (GameObject e : objects) {
             if (e.isVisible()) {
-                e.updateStatus();
+                e.update();
                 if (e instanceof Bomb && e.isExploding()) {
                     Bomb bomb = (Bomb) e;
                     if (!bomb.isExplosionStarted()) {
@@ -64,7 +66,14 @@ public class ObjectsManager {
         int xIndex = bomb.getX() / TILE_SIZE;
         int yIndex = bomb.getY() / TILE_SIZE;
         ArrayList<Direction> explosionDirections = new ArrayList<>();
-        boolean playerHitted = bomberman.getCollisionBox().x / TILE_SIZE == xIndex && bomberman.getCollisionBox().y / TILE_SIZE == yIndex;
+        if (bomberman.getCollisionBox().x / TILE_SIZE == xIndex && bomberman.getCollisionBox().y / TILE_SIZE == yIndex)
+            bomberman.setHitted(true);
+
+        for (GameCharacter character : collisionManager.getCharacters()) {
+            Rectangle collisionBox = character.getCollisionBox();
+            if (collisionBox.x / TILE_SIZE == xIndex && collisionBox.y / TILE_SIZE == yIndex)
+                character.setHitted(true);
+        }
 
         for (int i = 0; i < 4; i++) {
             Direction checkingDirection = null;
@@ -86,15 +95,18 @@ public class ObjectsManager {
             }
             else {
                 explosionDirections.add(checkingDirection);
-                if (bomberman.getCollisionBox().x/TILE_SIZE == newX && bomberman.getCollisionBox().y/TILE_SIZE == newY && !playerHitted) {
-                    playerHitted = true;
+                for (GameCharacter character : collisionManager.getCharacters()) {
+                    Rectangle collisionBox = character.getCollisionBox();
+                    if (collisionBox.x / TILE_SIZE == newX && collisionBox.y / TILE_SIZE == newY)
+                        character.setHitted(true);
                 }
             }
             ExplosionManager.addExplosion(GameEntityFactory.createExplosion(xIndex,yIndex,explosionDirections));
         }
 
-        if (playerHitted)
-            bomberman.hitPlayer();
+        collisionManager.getCharacters().stream()
+                .filter(c -> c.isHitted())
+                .forEach(c -> c.hitCharacter());
 
     }
 

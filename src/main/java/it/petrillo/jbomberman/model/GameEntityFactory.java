@@ -21,6 +21,9 @@ public class GameEntityFactory {
     public static Explosion createExplosion(int x, int y, ArrayList<Direction> directions) {
         return new Explosion(x*TILE_SIZE,y*TILE_SIZE,explosionSpriteSheet,directions);
     }
+    public static BasicEnemy createBasicEnemy(int x, int y) {
+        return new BasicEnemy(x*TILE_SIZE,y*TILE_SIZE);
+    }
     public static void setBombSpriteSheet(String bombSpriteSheet) {
         GameEntityFactory.bombSpriteSheet = bombSpriteSheet;
     }

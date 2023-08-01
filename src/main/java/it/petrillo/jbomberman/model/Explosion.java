@@ -15,7 +15,7 @@ public class Explosion extends GameEntity {
         super(x, y);
         this.directions = directions;
         animationSpeed = 7;
-        loadSprites(spritesPath);
+        loadSprites(spritesPath,null);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class Explosion extends GameEntity {
     }
 
     @Override
-    protected void loadSprites(String path) {
-        spriteSheet = getImg(path);
+    public void loadSprites(String normalPath, String hittedPath) {
+        spriteSheet = getImg(normalPath);
         spriteAnimation = new BufferedImage[5][5];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
@@ -45,7 +45,7 @@ public class Explosion extends GameEntity {
     }
 
     @Override
-    public void updateStatus() {
+    public void update() {
         animationTick++;
         if (animationTick >= animationSpeed) {
             animationTick = 0;

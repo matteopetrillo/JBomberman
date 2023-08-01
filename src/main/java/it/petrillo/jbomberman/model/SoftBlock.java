@@ -14,7 +14,7 @@ public class SoftBlock extends GameObject {
         isDestroyable = true;
         isSolid = true;
         animationSpeed = 8;
-        loadSprites(sheetPath);
+        loadSprites(sheetPath,null);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class SoftBlock extends GameObject {
     }
 
     @Override
-    protected void loadSprites(String path) {
-        spriteSheet = getImg(path);
+    public void loadSprites(String normalPath, String hittedPath) {
+        spriteSheet = getImg(normalPath);
         int rows = spriteSheet.getHeight()/DEFAULT_TILE_SIZE;
         spriteAnimation = new BufferedImage[rows][];
         for (int i = 0; i < spriteAnimation.length; i++) {
@@ -49,7 +49,7 @@ public class SoftBlock extends GameObject {
     }
 
     @Override
-    public void updateStatus() {
+    public void update() {
         int maxIndex = 4;
         if (isExploding)
             maxIndex = 6;

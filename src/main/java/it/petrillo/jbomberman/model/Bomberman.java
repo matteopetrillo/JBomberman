@@ -1,13 +1,12 @@
 package it.petrillo.jbomberman.model;
 
-import it.petrillo.jbomberman.util.GameUtils;
-
+import javax.swing.text.html.ImageView;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
-public class Bomberman extends GameCharacter {
+public class Bomberman extends GameCharacter implements Movable,Animatable {
 
     private static Bomberman bombermanInstance;
     String playerName;
@@ -17,13 +16,13 @@ public class Bomberman extends GameCharacter {
         entityScale = 3.5d;
         xCollisionOffset = (int) (11*entityScale);
         yCollisionOffset = (int) (23*entityScale);
-        entitySpeed = 4;
+        characterSpeed = 4;
         collisionBox.setLocation(super.x+ xCollisionOffset, super.y+ yCollisionOffset);
         collisionBox.setSize((int) (9*entityScale), (int) (5*entityScale));
         animationSpeed = 13;
         health = 5;
         movingDirection = Direction.DOWN;
-        loadSprites("/spritesheeet_bomberman_32x32.png");
+        loadSprites("/spritesheeet_bomberman_32x32.png","/Sprite_Bomberman_Hitted_32x32.png");
     }
 
     @Override
@@ -32,20 +31,47 @@ public class Bomberman extends GameCharacter {
             if (health <= 0)
                 g.drawImage(spriteAnimation[4][animationIndex],
                         x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+            else if (hittedTimer > 0){
+                BufferedImage img = spriteAnimation[getAniIndexByDirection()][animationIndex];
+                g.drawImage(img, x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+                if (hittedTimer%3 == 0) {
+                    int width = img.getWidth();
+                    int height = img.getHeight();
+                    BufferedImage filteredImg = new BufferedImage(width,height,img.getType());
+                    Graphics2D g2d = filteredImg.createGraphics();
+                    g2d.drawImage(img,0,0,null);
+                    g2d.dispose();
+                    for (int y = 0; y < height; y++) {
+                        for (int x = 0; x < width; x++) {
+                            int rgb = filteredImg.getRGB(x, y);
+                            int alpha = (rgb >> 24) & 0xFF;
+                            if (alpha > 0) {
+                                Color color = new Color(rgb);
+                                Color white = new Color(255, 255, 255, alpha);
+                                filteredImg.setRGB(x, y, white.getRGB());
+                            }
+                        }
+                    }
+                    g.drawImage(filteredImg, x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+                }
+            }
             else {
-            g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
-                    x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+                g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
+                        x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
             }
         }
     }
 
     @Override
-    protected void loadSprites(String path) {
-        spriteSheet = getImg(path);
+    public void loadSprites(String normalPath, String hittedPath) {
+        spriteSheet = getImg(normalPath);
+        hittedSpriteSheet = getImg(hittedPath);
         spriteAnimation = new BufferedImage[5][3];
+        hittedAnimation = new BufferedImage[5][3];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
                 spriteAnimation[i][j] = spriteSheet.getSubimage(32*j,32*i, 32, 32);
+                hittedAnimation[i][j] = hittedSpriteSheet.getSubimage(32*j,32*i, 32, 32);
             }
         }
     }
@@ -60,8 +86,12 @@ public class Bomberman extends GameCharacter {
         super.setY((int) (y-14*SCALE));
     }
 
-
-    private void updateAnimation() {
+    @Override
+    public void update() {
+        if (hittedTimer > 0)
+            hittedTimer--;
+        if (health > 0)
+            updatePosition();
         animationTick++;
         if (animationTick >= animationSpeed) {
             animationTick = 0;
@@ -79,35 +109,29 @@ public class Bomberman extends GameCharacter {
                 animationIndex = 0;
         }
     }
-
     @Override
-    public void updateStatus() {
-        if (health > 0)
-            updatePosition();
-        updateAnimation();
-    }
     public void updatePosition() {
         xSpeed = 0;
         ySpeed = 0;
 
         if (movingUp) {
-            ySpeed = -entitySpeed;
+            ySpeed = -characterSpeed;
             movingDirection = Direction.UP;
         }
         else if (movingDown) {
-            ySpeed = entitySpeed;
+            ySpeed = characterSpeed;
             movingDirection = Direction.DOWN;
         }
         else if (movingLeft) {
-            xSpeed = -entitySpeed;
+            xSpeed = -characterSpeed;
             movingDirection = Direction.LEFT;
         }
         else if (movingRight) {
-            xSpeed = entitySpeed;
+            xSpeed = characterSpeed;
             movingDirection = Direction.RIGHT;
         }
 
-        if(collisionListener != null && collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
+        if(collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
             super.x += xSpeed;
             super.y += ySpeed;
             collisionBox.setLocation(super.x+xCollisionOffset, super.y+yCollisionOffset);
@@ -118,15 +142,19 @@ public class Bomberman extends GameCharacter {
         notifyObservers((NotificationType.DROP_BOMB), this);
     }
 
-    public void hitPlayer() {
-        health--;
-        System.out.println(health);
+    @Override
+    public void hitCharacter() {
+        if (hittedTimer <= 0) {
+            health--;
+            System.out.println("Health: "+health);
+            hittedTimer = 60;
+            hitted = false;
+        }
         if (health <= 0) {
             animationIndex = 0;
             animationSpeed = 18;
         }
     }
-
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
@@ -139,4 +167,9 @@ public class Bomberman extends GameCharacter {
         return bombermanInstance;
     }
 
+    @Override
+    public void onCollision(GameCharacter other) {
+        if (other instanceof Enemy)
+            hitCharacter();
+    }
 }

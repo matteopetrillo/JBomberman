@@ -13,7 +13,7 @@ public class Bomb extends GameObject {
         super(x, y, true);
         isSolid = false;
         animationSpeed = 15;
-        loadSprites(spriteSheetPath);
+        loadSprites(spriteSheetPath,null);
     }
 
     @Override
@@ -27,8 +27,8 @@ public class Bomb extends GameObject {
     }
 
     @Override
-    protected void loadSprites(String path) {
-        spriteSheet = getImg(path);
+    public void loadSprites(String normalPath, String hittedPath) {
+        spriteSheet = getImg(normalPath);
         int rows = spriteSheet.getHeight()/DEFAULT_TILE_SIZE;
         int height = spriteSheet.getWidth()/DEFAULT_TILE_SIZE;
         spriteAnimation = new BufferedImage[rows][height];
@@ -40,7 +40,7 @@ public class Bomb extends GameObject {
     }
 
     @Override
-    public void updateStatus() {
+    public void update() {
         if(timer > 0) {
             timer--;
             if (timer <= 0) {

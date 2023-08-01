@@ -7,10 +7,10 @@ import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
-public abstract class GameEntity extends CustomObservable {
+public abstract class GameEntity extends CustomObservable implements Animatable {
     protected Rectangle collisionBox;
     protected boolean visible;
-    protected int x,y,animationTick,animationIndex, animationSpeed, xCollisionOffset, yCollisionOffset, xSpeed, ySpeed, entitySpeed;
+    protected int x,y,animationTick,animationIndex, animationSpeed, xCollisionOffset, yCollisionOffset;
     protected double entityScale = 1.0d;
     protected BufferedImage spriteSheet;
     protected BufferedImage[][] spriteAnimation;
@@ -21,10 +21,6 @@ public abstract class GameEntity extends CustomObservable {
         this.visible = true;
     }
 
-    public abstract void draw(Graphics2D g);
-    protected abstract void loadSprites(String path);
-
-    public abstract void updateStatus();
 
     public int getX() {
         return x;

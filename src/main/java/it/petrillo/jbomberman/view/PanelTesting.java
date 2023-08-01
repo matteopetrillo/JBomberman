@@ -3,7 +3,6 @@ package it.petrillo.jbomberman.view;
 import it.petrillo.jbomberman.controller.PlayerKeyHandler;
 import it.petrillo.jbomberman.model.Bomberman;
 import it.petrillo.jbomberman.util.CustomObserver;
-import it.petrillo.jbomberman.util.GameUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,7 +53,7 @@ public class PanelTesting extends JPanel implements Runnable, CustomObserver {
     }
 
     private void update() {
-        bomberman.updateStatus();
+        bomberman.update();
     }
 
     @Override

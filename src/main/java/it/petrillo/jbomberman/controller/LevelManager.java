@@ -27,12 +27,13 @@ public class LevelManager {
     private Bomberman bomberman = Bomberman.getPlayerInstance();
     private GameMap gameMap = GameMap.getInstance();
     private ObjectsManager objectsManager = ObjectsManager.getInstance();
+    private EnemyManager enemyManager = EnemyManager.getInstance();
     private int currentLvl = 1;
 
     private LevelManager() {}
     public void loadLevel() {
         String settingPath = getJsonLvlPath(currentLvl);
-        List<String> fields = List.of("sprite_sheets_path","player_spawn","soft_blocks_spawn","explosion");
+        List<String> fields = List.of("sprite_sheets_path","player_spawn","soft_blocks_spawn","explosion","enemies_spawn");
         Map<String,JsonElement> settings = getMultipleJsonFields(settingPath,fields);
         GameEntityFactory.setBombSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("bomb").getAsString());
         GameEntityFactory.setSoftBlockSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("soft_blocks").getAsString());
@@ -41,6 +42,7 @@ public class LevelManager {
         bomberman.setX(settings.get("player_spawn").getAsJsonObject().get("x").getAsInt()*TILE_SIZE);
         bomberman.setY(settings.get("player_spawn").getAsJsonObject().get("y").getAsInt()*TILE_SIZE);
         objectsManager.initSoftBlocks(settings.get("soft_blocks_spawn").getAsJsonArray());
+        enemyManager.initEnemies(settings.get("enemies_spawn").getAsJsonArray());
 
     }
 

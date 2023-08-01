@@ -1,52 +1,18 @@
 package it.petrillo.jbomberman.model;
 
-import it.petrillo.jbomberman.util.GameUtils;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.util.List;
 import java.util.Random;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
-public class Enemy extends GameCharacter { //TODO implementare diverse classi di nemici o id nemici
+public abstract class Enemy extends GameCharacter implements Movable,Animatable {
     public Enemy(int x, int y) {
         super(x, y);
-        entityScale = 3d;
-        entitySpeed = 3;
-        collisionBox.setLocation(super.x+xCollisionOffset,super.y+yCollisionOffset);
-        collisionBox.setSize((int)(9*entityScale), (int) (5*entityScale));
-        health = 1;
-        animationSpeed = 15;
         movingDirection = pickRandomDirection();
-        //loadSprites();
-
-
-    }
-    @Override
-    public void draw(Graphics2D g) {
-        if (visible) {
-            g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],x,y,
-                    (int) (16*entityScale),(int)(24*entityScale), null);
-        }
     }
 
-    @Override
-    protected void loadSprites(String path) {
-        spriteSheet = getImg(path);
-        spriteAnimation = new BufferedImage[4][4];
-        for (int i = 0; i < spriteAnimation.length; i++) {
-            for (int j = 0; j < spriteAnimation[i].length; j++) {
-                spriteAnimation[i][j] = spriteSheet.getSubimage(16*j,24*i,16,24);
-            }
-        }
-    }
-
-    @Override
-    public void updateStatus() {
-
-    }
-
-    private Direction pickRandomDirection() {
+    protected Direction pickRandomDirection() {
         Random rd = new Random();
         int n = rd.nextInt(1,4);
         switch (n) {
@@ -62,9 +28,99 @@ public class Enemy extends GameCharacter { //TODO implementare diverse classi di
             case 4 -> {
                 return Direction.RIGHT;
             }
-            default -> {
-                return Direction.DOWN;
+        }
+        return null;
+    }
+
+    @Override
+    public void updatePosition() {
+        setFlagFromDirection();
+        int[] deltaSpeed = getDeltaSpeedByDirection();
+        xSpeed = deltaSpeed[0];
+        ySpeed = deltaSpeed[1];
+        if(!collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
+            changeDirection();
+            int[] deltas = getDeltaSpeedByDirection();
+            xSpeed = deltas[0];
+            ySpeed = deltas[1];
+        }
+        super.x += xSpeed;
+        super.y += ySpeed;
+        collisionBox.setLocation(super.x+xCollisionOffset, super.y+yCollisionOffset);
+    }
+
+    private void changeDirection() {
+        List<Direction> availableDirections = collisionListener.getAvailableDirections(characterSpeed,collisionBox);
+        Random rd = new Random();
+        int n = rd.nextInt(0,availableDirections.size());
+        movingDirection = availableDirections.get(n);
+        setFlagFromDirection();
+    }
+    private int[] getDeltaSpeedByDirection() {
+        int[] deltaSpeed = new int[2];
+        xSpeed = 0;
+        ySpeed = 0;
+
+        if (movingUp) {
+            ySpeed = -characterSpeed;
+        }
+        else if (movingDown) {
+            ySpeed = characterSpeed;
+        }
+        else if (movingLeft) {
+            xSpeed = -characterSpeed;
+        }
+        else if (movingRight) {
+            xSpeed = characterSpeed;
+        }
+        deltaSpeed[0] = xSpeed;
+        deltaSpeed[1] = ySpeed;
+
+        return deltaSpeed;
+    }
+
+    private void invertDirection(Direction direction) {
+        switch (direction) {
+            case UP -> {
+                movingDirection = Direction.DOWN;
+            }
+            case DOWN -> {
+                movingDirection = Direction.UP;
+            }
+            case LEFT -> {
+                movingDirection = Direction.RIGHT;
+            }
+            case RIGHT -> {
+                movingDirection = Direction.LEFT;
             }
         }
+        setFlagFromDirection();
+    }
+    private void setFlagFromDirection() {
+        movingLeft = false;
+        movingRight = false;
+        movingDown = false;
+        movingUp = false;
+
+        switch (movingDirection) {
+            case UP -> {
+                movingUp = true;
+            }
+            case DOWN -> {
+                movingDown = true;
+            }
+            case LEFT -> {
+                movingLeft = true;
+            }
+            case RIGHT -> {
+                movingRight = true;
+            }
+        }
+    }
+
+    @Override
+    public void onCollision(GameCharacter other) {
+        if (other instanceof Bomberman)
+            changeDirection();
     }
 }

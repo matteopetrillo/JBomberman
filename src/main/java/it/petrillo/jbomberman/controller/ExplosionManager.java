@@ -1,7 +1,6 @@
 package it.petrillo.jbomberman.controller;
 
 import it.petrillo.jbomberman.model.Explosion;
-import it.petrillo.jbomberman.model.GameObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,7 @@ public class ExplosionManager {
 
     public void updateExplosions() {
         if (!explosionList.isEmpty()) {
-            explosionList.stream().forEach(e -> e.updateStatus());
+            explosionList.stream().forEach(e -> e.update());
             cleanObjects();
         }
     }

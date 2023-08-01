@@ -15,10 +15,10 @@ import static it.petrillo.jbomberman.util.GameUtils.*;
 public class GamePanel extends JPanel implements CustomObserver {
 
     private Bomberman bomberman = Bomberman.getPlayerInstance();
-    private EnemyManager enemyManager;
     private ObjectsManager objectsManager = ObjectsManager.getInstance();
     private GameMap gameMap = GameMap.getInstance();
     private ExplosionManager explosionManager = ExplosionManager.getInstance();
+    private EnemyManager enemyManager = EnemyManager.getInstance();
 
     public GamePanel() {
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements CustomObserver {
         gameMap.drawMap(g2d);
         objectsManager.getObjects().stream().forEach(o -> o.draw(g2d));
         explosionManager.getExplosionList().stream().forEach(e -> e.draw(g2d));
+        enemyManager.getEnemies().stream().forEach(e -> e.draw(g2d));
         bomberman.draw(g2d);
     }
 

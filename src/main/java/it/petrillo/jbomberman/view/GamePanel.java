@@ -32,10 +32,15 @@ public class GamePanel extends JPanel implements CustomObserver {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         gameMap.drawMap(g2d);
-        objectsManager.getObjects().stream().forEach(o -> o.draw(g2d));
-        explosionManager.getExplosionList().stream().forEach(e -> e.draw(g2d));
-        enemyManager.getEnemies().stream().forEach(e -> e.draw(g2d));
-        bomberman.draw(g2d);
+        try {
+            objectsManager.getObjects().stream().forEach(o -> o.draw(g2d));
+            explosionManager.getExplosionList().stream().forEach(e -> e.draw(g2d));
+            enemyManager.getEnemies().stream().forEach(e -> e.draw(g2d));
+            bomberman.draw(g2d);
+        } catch (NullPointerException e)
+        {
+            e.getMessage();
+        }
     }
 
 

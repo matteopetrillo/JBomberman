@@ -39,6 +39,7 @@ public class ObjectsManager {
         collisionManager = CollisionManager.getInstance();
     }
     public void updateObjects() {
+        cleanObjects();
         for (GameObject e : objects) {
             if (e.isVisible()) {
                 e.update();
@@ -51,7 +52,6 @@ public class ObjectsManager {
                 }
             }
         }
-        cleanObjects();
     }
 
     public void dropBomb(int x, int y) {

@@ -41,6 +41,18 @@
       "soft_blocks": "/SoftBlocks_SpriteSheet_Level1.png",
       "explosion": "/Explosion_SpriteSheet_Level1.png"
     },
+  "power_ups_spawn": [
+    {
+      "x": 7,
+      "y": 5,
+      "type": "BOMB"
+    },
+    {
+      "x": 12,
+      "y": 2,
+      "type": "HEART"
+    }
+  ],
   "soft_blocks_spawn": [
     {
       "x": 7,

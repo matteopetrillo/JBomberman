@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 public class EnemyManager {
     private static EnemyManager enemyManagerInstance;
-    private List<Enemy> enemies = new ArrayList<>();
-    private CollisionManager collisionManager = CollisionManager.getInstance();
+    private final List<Enemy> enemies = new ArrayList<>();
+    private final CollisionManager collisionManager = CollisionManager.getInstance();
     public void initEnemies(JsonArray jsonArray) {
         for (JsonElement element : jsonArray) {
             int x = element.getAsJsonObject().get("x").getAsInt();
@@ -25,7 +25,7 @@ public class EnemyManager {
             }
 
         }
-        enemies.stream().forEach(e -> collisionManager.addCharacter(e));
+        enemies.stream().forEach(e -> collisionManager.addCollidable(e));
     }
 
     public void updateEnemies() {

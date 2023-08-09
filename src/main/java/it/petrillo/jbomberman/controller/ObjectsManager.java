@@ -7,7 +7,6 @@ import it.petrillo.jbomberman.model.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
@@ -16,15 +15,23 @@ import static it.petrillo.jbomberman.util.GameUtils.TILE_SIZE;
 public class ObjectsManager {
 
     private static ObjectsManager objectsManagerInstance;
-    private GameMap gameMap = GameMap.getInstance();
-    private Bomberman bomberman = Bomberman.getPlayerInstance();
-    private CollisionManager collisionManager;
-    private List<GameObject> objects = new ArrayList<>();
-
+    private final GameMap gameMap = GameMap.getInstance();
+    private final Bomberman bomberman = Bomberman.getPlayerInstance();
+    private final List<GameObject> objects = new ArrayList<>();
+    private final ExplosionManager explosionManager = ExplosionManager.getInstance();
+    private final CollisionManager collisionManager = CollisionManager.getInstance();
     private ObjectsManager() {}
 
-    public void initSoftBlocks(JsonArray jsonArray) {
-        for (JsonElement element : jsonArray) {
+    public void initObjects(JsonArray softBlocks, JsonArray powerUps) {
+        for (JsonElement element : powerUps) {
+            int x = element.getAsJsonObject().get("x").getAsInt();
+            int y = element.getAsJsonObject().get("y").getAsInt();
+            String type = element.getAsJsonObject().get("type").getAsString();
+            PowerUp powerUp = GameEntityFactory.createPowerUp(x,y,type);
+            objects.add(powerUp);
+            collisionManager.addCollidable(powerUp);
+        }
+        for (JsonElement element : softBlocks) {
             int x = element.getAsJsonObject().get("x").getAsInt();
             int y = element.getAsJsonObject().get("y").getAsInt();
             SoftBlock softBlock = GameEntityFactory.createSoftBlock(x, y);
@@ -35,17 +42,17 @@ public class ObjectsManager {
             }
             objects.add(softBlock);
         }
-
-        collisionManager = CollisionManager.getInstance();
     }
+
     public void updateObjects() {
         cleanObjects();
         for (GameObject e : objects) {
             if (e.isVisible()) {
                 e.update();
-                if (e instanceof Bomb && e.isExploding()) {
-                    Bomb bomb = (Bomb) e;
+                if (e instanceof Bomb bomb && ((Bomb) e).isExploding()) {
                     if (!bomb.isExplosionStarted()) {
+                        bomb.setExplosionStarted(true);
+                        bomberman.alterBombReleased(-1);
                         handleExplosion(bomb);
                         bomb.setExplosionStarted(true);
                     }
@@ -55,9 +62,11 @@ public class ObjectsManager {
     }
 
     public void dropBomb(int x, int y) {
-        Optional<GameObject> o = getObjectFromCoords(x,y);
-        if (o.isEmpty())
-            objects.add((GameEntityFactory.createBomb(x,y)));
+        List<GameObject> o = getObjectsFromCoords(x,y);
+        if (o.isEmpty() && bomberman.canDropBomb()) {
+            objects.add((GameEntityFactory.createBomb(x, y)));
+            bomberman.alterBombReleased(1);
+        }
     }
 
     public void handleExplosion(Bomb bomb) {
@@ -69,10 +78,10 @@ public class ObjectsManager {
         if (bomberman.getCollisionBox().x / TILE_SIZE == xIndex && bomberman.getCollisionBox().y / TILE_SIZE == yIndex)
             bomberman.setHitted(true);
 
-        for (GameCharacter character : collisionManager.getCharacters()) {
-            Rectangle collisionBox = character.getCollisionBox();
-            if (collisionBox.x / TILE_SIZE == xIndex && collisionBox.y / TILE_SIZE == yIndex)
-                character.setHitted(true);
+        for (Collidable c : collisionManager.getCollidables()) {
+            Rectangle collisionBox = ((GameEntity)c).getCollisionBox();
+            if (collisionBox.x / TILE_SIZE == xIndex && collisionBox.y / TILE_SIZE == yIndex && c instanceof GameCharacter)
+                ((GameCharacter)c).setHitted(true);
         }
 
         for (int i = 0; i < 4; i++) {
@@ -85,44 +94,47 @@ public class ObjectsManager {
             }
             int newX = xIndex + dx[i];
             int newY = yIndex + dy[i];
-            Optional<GameObject> ipoteticObject = getObjectFromCoords(newX,newY);
+            List<GameObject> objectList = getObjectsFromCoords(newX,newY);
             if (!gameMap.getTileFromCoords(newX,newY).isWalkable())
                 continue;
-            else if (ipoteticObject.isPresent()) {
-                GameObject gameObject = ipoteticObject.get();
-                if (gameObject instanceof SoftBlock)
-                    ((SoftBlock) gameObject).setExploding(true);
+            else if (!objectList.isEmpty()) {
+                for (GameObject obj : objectList) {
+                    if (obj instanceof SoftBlock)
+                        ((SoftBlock) obj).setExploding(true);
+                    else if (obj instanceof PowerUp) {
+                        obj.setVisible(true);
+                    }
+                }
             }
             else {
                 explosionDirections.add(checkingDirection);
-                for (GameCharacter character : collisionManager.getCharacters()) {
-                    Rectangle collisionBox = character.getCollisionBox();
-                    if (collisionBox.x / TILE_SIZE == newX && collisionBox.y / TILE_SIZE == newY)
-                        character.setHitted(true);
+                for (Collidable c : collisionManager.getCollidables()) {
+                    Rectangle collisionBox = ((GameEntity)c).getCollisionBox();
+                    if (collisionBox.x / TILE_SIZE == newX && collisionBox.y / TILE_SIZE == newY && c instanceof GameCharacter)
+                        ((GameCharacter)c).setHitted(true);
                 }
             }
-            ExplosionManager.addExplosion(GameEntityFactory.createExplosion(xIndex,yIndex,explosionDirections));
+            explosionManager.addExplosion(GameEntityFactory.createExplosion(xIndex,yIndex,explosionDirections));
         }
 
-        collisionManager.getCharacters().stream()
-                .filter(c -> c.isHitted())
-                .forEach(c -> c.hitCharacter());
+        collisionManager.getCollidables().stream()
+                .filter(c -> c instanceof GameCharacter && ((GameCharacter)c).isHitted())
+                .forEach(c -> ((GameCharacter)c).hitCharacter());
 
     }
 
     private void cleanObjects() {
         List<GameObject> destroyedObjects = objects.stream()
-                .filter(e -> !e.isVisible())
+                .filter(GameEntity::isToClean)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        destroyedObjects.stream()
-                .forEach(e -> objects.remove(e));
+        destroyedObjects.forEach(objects::remove);
     }
 
-    public Optional<GameObject> getObjectFromCoords(int x, int y) {
+    public List<GameObject> getObjectsFromCoords(int x, int y) {
         return objects.stream()
-                .filter(obj -> obj.getX()/TILE_SIZE == x && obj.getY()/TILE_SIZE == y)
-                .findAny();
+                        .filter(obj -> obj.getX()/TILE_SIZE == x && obj.getY()/TILE_SIZE == y)
+                        .collect(Collectors.toList());
     }
     public List<GameObject> getObjects() {
         return objects;

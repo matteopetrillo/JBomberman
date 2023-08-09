@@ -10,6 +10,7 @@ public abstract class Enemy extends GameCharacter implements Movable,Animatable 
     public Enemy(int x, int y) {
         super(x, y);
         movingDirection = pickRandomDirection();
+        visible = true;
     }
 
     protected Direction pickRandomDirection() {
@@ -119,8 +120,19 @@ public abstract class Enemy extends GameCharacter implements Movable,Animatable 
     }
 
     @Override
-    public void onCollision(GameCharacter other) {
+    public void hitCharacter() {
+        if (hittedTimer <= 0) {
+            health--;
+            hittedTimer = 60;
+            hitted = false;
+        }
+    }
+
+    @Override
+    public void onCollision(Collidable other) {
         if (other instanceof Bomberman)
             changeDirection();
+        if (other instanceof Enemy)
+            invertDirection(movingDirection);
     }
 }

@@ -24,6 +24,14 @@ public class GameEntityFactory {
     public static BasicEnemy createBasicEnemy(int x, int y) {
         return new BasicEnemy(x*TILE_SIZE,y*TILE_SIZE);
     }
+
+    public static PowerUp createPowerUp(int x, int y, String type) {
+        if (type.equals("HEART"))
+            return new LifeAdder(x*TILE_SIZE, y*TILE_SIZE);
+        else if (type.equals("BOMB"))
+            return new BombAdder(x*TILE_SIZE, y*TILE_SIZE);
+        return null;
+    }
     public static void setBombSpriteSheet(String bombSpriteSheet) {
         GameEntityFactory.bombSpriteSheet = bombSpriteSheet;
     }

@@ -4,7 +4,7 @@ import java.awt.*;
 
 public interface Animatable {
     void draw(Graphics2D g);
-    void loadSprites(String normalPath, String hittedPath);
+    void loadSprites(String path);
     void update();
 
 

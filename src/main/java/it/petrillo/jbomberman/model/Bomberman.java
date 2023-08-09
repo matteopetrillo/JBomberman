@@ -1,6 +1,5 @@
 package it.petrillo.jbomberman.model;
 
-import javax.swing.text.html.ImageView;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -9,6 +8,8 @@ import static it.petrillo.jbomberman.util.GameUtils.*;
 public class Bomberman extends GameCharacter implements Movable,Animatable {
 
     private static Bomberman bombermanInstance;
+    private int bombBackpack = 1;
+    private int bombReleased, score;
     String playerName;
 
     private Bomberman() {
@@ -21,8 +22,9 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
         collisionBox.setSize((int) (9*entityScale), (int) (5*entityScale));
         animationSpeed = 13;
         health = 5;
+        visible = true;
         movingDirection = Direction.DOWN;
-        loadSprites("/spritesheeet_bomberman_32x32.png","/Sprite_Bomberman_Hitted_32x32.png");
+        loadSprites("/spritesheeet_bomberman_32x32.png");
     }
 
     @Override
@@ -63,15 +65,12 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
     }
 
     @Override
-    public void loadSprites(String normalPath, String hittedPath) {
-        spriteSheet = getImg(normalPath);
-        hittedSpriteSheet = getImg(hittedPath);
+    public void loadSprites(String path) {
+        spriteSheet = getImg(path);
         spriteAnimation = new BufferedImage[5][3];
-        hittedAnimation = new BufferedImage[5][3];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
                 spriteAnimation[i][j] = spriteSheet.getSubimage(32*j,32*i, 32, 32);
-                hittedAnimation[i][j] = hittedSpriteSheet.getSubimage(32*j,32*i, 32, 32);
             }
         }
     }
@@ -84,6 +83,16 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
     @Override
     public void setY(int y) {
         super.setY((int) (y-14*SCALE));
+    }
+
+    @Override
+    public int getX() {
+        return collisionBox.x;
+    }
+
+    @Override
+    public int getY() {
+        return collisionBox.y;
     }
 
     @Override
@@ -138,8 +147,21 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
         }
     }
 
-    public void dropBomb() {
-        notifyObservers((NotificationType.DROP_BOMB), this);
+    @Override
+    public void onCollision(Collidable other) {
+        if (other instanceof Enemy)
+            hitCharacter();
+    }
+
+    public void healCharacter() {
+        if (health < 5) {
+            health++;
+            System.out.println("Health: "+health);
+        }
+    }
+
+    public void increaseBombBackpack() {
+        bombBackpack++;
     }
 
     @Override
@@ -160,6 +182,21 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
         this.playerName = playerName;
     }
 
+    public int getBombBackpack() {
+        return bombBackpack;
+    }
+    public boolean canDropBomb() {
+        return bombBackpack-bombReleased>0;
+    }
+
+    public void alterBombReleased(int k) {
+        bombReleased += k;
+    }
+
+    public void alterScore(int k) {
+        score += k;
+    }
+
     public static Bomberman getPlayerInstance() {
         if(bombermanInstance == null) {
             bombermanInstance = new Bomberman();
@@ -167,9 +204,5 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
         return bombermanInstance;
     }
 
-    @Override
-    public void onCollision(GameCharacter other) {
-        if (other instanceof Enemy)
-            hitCharacter();
-    }
+
 }

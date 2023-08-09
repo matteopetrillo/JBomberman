@@ -18,7 +18,7 @@ public class BasicEnemy extends Enemy {
         health = 1;
         animationSpeed = 5;
         movingDirection = pickRandomDirection();
-        loadSprites( "/Sprites_Enemy1_16x24.png",null);
+        loadSprites( "/Sprites_Enemy1_16x24.png");
     }
 
 
@@ -56,8 +56,8 @@ public class BasicEnemy extends Enemy {
     }
 
     @Override
-    public void loadSprites(String normalPath, String hittedPath) {
-        spriteSheet = getImg(normalPath);
+    public void loadSprites(String path) {
+        spriteSheet = getImg(path);
         spriteAnimation = new BufferedImage[4][4];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
@@ -81,22 +81,9 @@ public class BasicEnemy extends Enemy {
         else {
             hittedTimer--;
             if (hittedTimer <= 0) {
+                setToClean(true);
                 visible = false;
             }
-        }
-    }
-
-    @Override
-    protected int getAniIndexByDirection() {
-        return super.getAniIndexByDirection();
-    }
-
-    @Override
-    public void hitCharacter() {
-        if (hittedTimer <= 0) {
-            health--;
-            hittedTimer = 60;
-            hitted = false;
         }
     }
 

@@ -5,7 +5,6 @@ import it.petrillo.jbomberman.model.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
@@ -14,21 +13,29 @@ public class CollisionManager implements CollisionListener {
 
     private static CollisionManager collisionManagerInstance;
     private GameMap gameMap;
-    private ObjectsManager objectsManager = ObjectsManager.getInstance();
-    private List<GameCharacter> characters = new ArrayList<>();
+    private ObjectsManager objectsManager;
+    private final List<Collidable> collidables = new ArrayList<>();
 
     private CollisionManager() {}
     public void setGameMap(GameMap gameMap) {
-        this.gameMap = gameMap;}
+        this.gameMap = gameMap;
+    }
+
+    public void setObjectsManager(ObjectsManager objectsManager) {
+        this.objectsManager = objectsManager;
+    }
 
     private boolean isWalkable(int x, int y) {
         int xIndex = x / TILE_SIZE;
         int yIndex = y / TILE_SIZE;
         boolean tileWalkable = gameMap.getTileFromCoords(xIndex,yIndex).isWalkable();
-        Optional<GameObject> objectOptional = objectsManager.getObjectFromCoords(xIndex,yIndex);
-        if (objectOptional.isPresent()) {
-            GameObject object = objectOptional.get();
-            return tileWalkable && !object.isSolid();
+        List<GameObject> objects = objectsManager.getObjectsFromCoords(xIndex,yIndex);
+        if (!objects.isEmpty()) {
+            boolean solid = true;
+            for (GameObject obj : objects) {
+                solid = obj.isSolid();
+            }
+            return tileWalkable && !solid;
         }
         return tileWalkable;
     }
@@ -45,12 +52,12 @@ public class CollisionManager implements CollisionListener {
             int width = (int) collisionBox.getWidth();
             int height = (int) collisionBox.getHeight();
 
-            if (!isWalkable(x, y) || !isWalkable(x + width, y) || !isWalkable(x + width, y + height) || !isWalkable(x, y + height)) {
-                return false;
+            if (isWalkable(x, y) || isWalkable(x + width, y) || isWalkable(x + width, y + height) || isWalkable(x, y + height)) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     @Override
@@ -80,11 +87,13 @@ public class CollisionManager implements CollisionListener {
 
     public void checkCollisions() {
         cleanObjects();
-        for (int i = 0; i < characters.size()-1; i++) {
-            for (int j = i+1; j < characters.size(); j++) {
-                GameCharacter g1 = characters.get(i);
-                GameCharacter g2 = characters.get(j);
-                if (g1.getCollisionBox().intersects(g2.getCollisionBox())) {
+        for (int i = 0; i < collidables.size()-1; i++) {
+            for (int j = i+1; j < collidables.size(); j++) {
+                Collidable g1 = collidables.get(i);
+                Collidable g2 = collidables.get(j);
+                Rectangle g1CollisionBox = ((GameEntity)g1).getCollisionBox();
+                Rectangle g2CollisionBox = ((GameEntity)g2).getCollisionBox();
+                if (g1CollisionBox.intersects(g2CollisionBox)) {
                     g1.onCollision(g2);
                     g2.onCollision(g1);
                 }
@@ -92,25 +101,20 @@ public class CollisionManager implements CollisionListener {
         }
     }
 
-    public List<GameCharacter> getCharacters() {
-        return characters;
+    public List<Collidable> getCollidables() {
+        return collidables;
     }
 
-    public void addCharacter(GameCharacter c) {
-        characters.add(c);
-    }
-
-    public void removeCharacter(GameCharacter c) {
-        characters.remove(c);
+    public void addCollidable(Collidable c) {
+        collidables.add(c);
     }
 
     private void cleanObjects() {
-        List<GameCharacter> destroyedObjects = characters.stream()
-                .filter(e -> !e.isVisible())
+        List<Collidable> toClean = collidables.stream()
+                .filter(e -> ((GameEntity)e).isToClean())
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        destroyedObjects.stream()
-                .forEach(e -> characters.remove(e));
+        toClean.forEach(collidables::remove);
     }
     public static CollisionManager getInstance() {
         if (collisionManagerInstance == null)

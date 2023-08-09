@@ -1,6 +1,6 @@
 package it.petrillo.jbomberman.view;
 
-import it.petrillo.jbomberman.controller.PlayerKeyHandler;
+import it.petrillo.jbomberman.controller.PlayerController;
 import it.petrillo.jbomberman.model.Bomberman;
 import it.petrillo.jbomberman.util.CustomObserver;
 
@@ -17,7 +17,7 @@ public class PanelTesting extends JPanel implements Runnable, CustomObserver {
     private boolean running;
     public PanelTesting() {
         setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
-        addKeyListener(new PlayerKeyHandler());
+        addKeyListener(new PlayerController());
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
         setFocusable(true);

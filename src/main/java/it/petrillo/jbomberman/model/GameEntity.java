@@ -9,7 +9,7 @@ import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public abstract class GameEntity extends CustomObservable implements Animatable {
     protected Rectangle collisionBox;
-    protected boolean visible;
+    protected boolean visible, toClean;
     protected int x,y,animationTick,animationIndex, animationSpeed, xCollisionOffset, yCollisionOffset;
     protected double entityScale = 1.0d;
     protected BufferedImage spriteSheet;
@@ -18,7 +18,6 @@ public abstract class GameEntity extends CustomObservable implements Animatable 
         this.x = x;
         this.y = y;
         this.collisionBox = new Rectangle(x,y, TILE_SIZE, TILE_SIZE);
-        this.visible = true;
     }
 
 
@@ -53,5 +52,11 @@ public abstract class GameEntity extends CustomObservable implements Animatable 
         this.visible = visible;
     }
 
+    public boolean isToClean() {
+        return toClean;
+    }
 
+    public void setToClean(boolean toClean) {
+        this.toClean = toClean;
+    }
 }

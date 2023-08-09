@@ -10,12 +10,13 @@ import static it.petrillo.jbomberman.util.GameUtils.*;
 
 public class Explosion extends GameEntity {
 
-    private ArrayList<Direction> directions = new ArrayList<>();
+    private ArrayList<Direction> directions;
     public Explosion(int x, int y, String spritesPath, ArrayList<Direction> directions) {
         super(x, y);
         this.directions = directions;
         animationSpeed = 7;
-        loadSprites(spritesPath,null);
+        visible = true;
+        loadSprites(spritesPath);
     }
 
     @Override
@@ -34,8 +35,8 @@ public class Explosion extends GameEntity {
     }
 
     @Override
-    public void loadSprites(String normalPath, String hittedPath) {
-        spriteSheet = getImg(normalPath);
+    public void loadSprites(String path) {
+        spriteSheet = getImg(path);
         spriteAnimation = new BufferedImage[5][5];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
@@ -54,4 +55,5 @@ public class Explosion extends GameEntity {
                 visible = false;
         }
     }
+
 }

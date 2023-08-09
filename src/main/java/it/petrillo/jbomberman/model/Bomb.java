@@ -5,15 +5,17 @@ import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
-public class Bomb extends GameObject {
+public class Bomb extends GameObject implements Explodable {
     private int timer = 80;
     private boolean explosionStarted;
+    private boolean isExploding;
 
     public Bomb(int x, int y, String spriteSheetPath) {
-        super(x, y, true);
+        super(x, y);
         isSolid = false;
         animationSpeed = 15;
-        loadSprites(spriteSheetPath,null);
+        visible = true;
+        loadSprites(spriteSheetPath);
     }
 
     @Override
@@ -27,8 +29,8 @@ public class Bomb extends GameObject {
     }
 
     @Override
-    public void loadSprites(String normalPath, String hittedPath) {
-        spriteSheet = getImg(normalPath);
+    public void loadSprites(String path) {
+        spriteSheet = getImg(path);
         int rows = spriteSheet.getHeight()/DEFAULT_TILE_SIZE;
         int height = spriteSheet.getWidth()/DEFAULT_TILE_SIZE;
         spriteAnimation = new BufferedImage[rows][height];
@@ -59,8 +61,10 @@ public class Bomb extends GameObject {
             if (animationIndex >= 5)
                 if (!isExploding)
                     animationIndex = 0;
-                else
+                else {
+                    setToClean(true);
                     visible = false;
+                }
         }
     }
 
@@ -72,8 +76,14 @@ public class Bomb extends GameObject {
         this.explosionStarted = explosionStarted;
     }
 
+    @Override
+    public void setExploding(boolean exploding) {
+        this.isExploding = exploding;
+    }
+
+    @Override
     public boolean isExploding() {
-        return isExploding;
+        return this.isExploding;
     }
 
 }

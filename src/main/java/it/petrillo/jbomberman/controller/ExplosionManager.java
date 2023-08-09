@@ -9,16 +9,16 @@ import java.util.stream.Collectors;
 public class ExplosionManager {
 
     private static ExplosionManager explosionManagerInstance;
-    private static List<Explosion> explosionList = new ArrayList<>();
+    private final List<Explosion> explosionList = new ArrayList<>();
 
     public void updateExplosions() {
+        clean();
         if (!explosionList.isEmpty()) {
-            explosionList.stream().forEach(e -> e.update());
-            cleanObjects();
+            explosionList.forEach(Explosion::update);
         }
     }
 
-    public static void addExplosion(Explosion e) {
+    public void addExplosion(Explosion e) {
         explosionList.add(e);
     }
 
@@ -26,12 +26,12 @@ public class ExplosionManager {
         return explosionList;
     }
 
-    private void cleanObjects() {
-        List<Explosion> destroyedObjects = explosionList.stream()
+    private void clean() {
+        List<Explosion> toClean = explosionList.stream()
                 .filter(e -> !e.isVisible())
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        destroyedObjects.stream()
+        toClean.stream()
                 .forEach(e -> explosionList.remove(e));
     }
 

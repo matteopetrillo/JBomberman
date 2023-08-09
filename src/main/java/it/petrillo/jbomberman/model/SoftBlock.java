@@ -5,16 +5,17 @@ import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
-public class SoftBlock extends GameObject {
+public class SoftBlock extends GameObject implements Explodable {
 
     private boolean hasShadow;
     private boolean isExploding;
     public SoftBlock(int x, int y, String sheetPath) {
-        super(x, y, true);
+        super(x, y);
         isDestroyable = true;
         isSolid = true;
         animationSpeed = 8;
-        loadSprites(sheetPath,null);
+        visible = true;
+        loadSprites(sheetPath);
     }
 
     @Override
@@ -34,8 +35,8 @@ public class SoftBlock extends GameObject {
     }
 
     @Override
-    public void loadSprites(String normalPath, String hittedPath) {
-        spriteSheet = getImg(normalPath);
+    public void loadSprites(String path) {
+        spriteSheet = getImg(path);
         int rows = spriteSheet.getHeight()/DEFAULT_TILE_SIZE;
         spriteAnimation = new BufferedImage[rows][];
         for (int i = 0; i < spriteAnimation.length; i++) {
@@ -58,8 +59,10 @@ public class SoftBlock extends GameObject {
             animationTick = 0;
             animationIndex++;
             if (animationIndex >= maxIndex)
-                if (isExploding)
+                if (isExploding) {
                     visible = false;
+                    this.setToClean(true);
+                }
                 else
                     animationIndex = 0;
         }
@@ -69,7 +72,14 @@ public class SoftBlock extends GameObject {
         this.hasShadow = hasShadow;
     }
 
+    @Override
     public void setExploding(boolean exploding) {
         isExploding = exploding;
     }
+
+    @Override
+    public boolean isExploding() {
+        return isExploding;
+    }
+
 }

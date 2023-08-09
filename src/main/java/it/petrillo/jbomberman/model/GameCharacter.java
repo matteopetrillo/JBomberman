@@ -1,17 +1,13 @@
 package it.petrillo.jbomberman.model;
 
-import java.awt.image.BufferedImage;
-
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
-public abstract class GameCharacter extends GameEntity {
+public abstract class GameCharacter extends GameEntity implements Collidable {
 
     protected CollisionListener collisionListener;
     protected Direction movingDirection;
     protected boolean movingUp, movingDown, movingLeft, movingRight, hitted;
     protected int health, xSpeed, ySpeed, characterSpeed, hittedTimer;
-    protected BufferedImage[][] hittedAnimation;
-    protected BufferedImage hittedSpriteSheet;
     public GameCharacter(int x, int y) {
         super(x, y);
     }
@@ -83,7 +79,6 @@ public abstract class GameCharacter extends GameEntity {
         this.movingRight = movingRight;
     }
 
-    public abstract void onCollision(GameCharacter other);
     public void setHitted(boolean hitted) {
         this.hitted = hitted;
     }

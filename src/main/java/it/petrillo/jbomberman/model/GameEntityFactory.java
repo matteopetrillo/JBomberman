@@ -26,11 +26,12 @@ public class GameEntityFactory {
     }
 
     public static PowerUp createPowerUp(int x, int y, String type) {
-        if (type.equals("HEART"))
-            return new LifeAdder(x*TILE_SIZE, y*TILE_SIZE);
-        else if (type.equals("BOMB"))
-            return new BombAdder(x*TILE_SIZE, y*TILE_SIZE);
-        return null;
+        return switch (type) {
+            case "HEART" -> new LifeAdder(x * TILE_SIZE, y * TILE_SIZE);
+            case "BOMB" -> new BombAdder(x * TILE_SIZE, y * TILE_SIZE);
+            case "PORTAL" -> new LevelAdvancer(x * TILE_SIZE, y * TILE_SIZE);
+            default -> null;
+        };
     }
     public static void setBombSpriteSheet(String bombSpriteSheet) {
         GameEntityFactory.bombSpriteSheet = bombSpriteSheet;

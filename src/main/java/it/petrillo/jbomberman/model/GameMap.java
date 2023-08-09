@@ -18,7 +18,6 @@ public class GameMap {
     private static GameMap gameMapInstance;
     private MapTile[][] map = new MapTile[MAP_ROWS][MAP_COLUMNS];
     private Map<Integer, BufferedImage> tileImgReference = new HashMap<>();
-    private List<GameObject> objects = new ArrayList<>();
 
     private GameMap() {}
 
@@ -79,5 +78,10 @@ public class GameMap {
         return gameMapInstance;
     }
 
+    public void clear() {
+        for (int i = 0; i < map.length; i++) {
+            Arrays.fill(map[i], null);
+        }
+    }
 
 }

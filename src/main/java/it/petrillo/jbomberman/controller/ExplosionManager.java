@@ -31,8 +31,7 @@ public class ExplosionManager {
                 .filter(e -> !e.isVisible())
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        toClean.stream()
-                .forEach(e -> explosionList.remove(e));
+        toClean.forEach(explosionList::remove);
     }
 
     public static ExplosionManager getInstance() {

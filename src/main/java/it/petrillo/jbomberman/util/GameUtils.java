@@ -23,20 +23,19 @@ public class GameUtils {
     public static final int TILE_SIZE = (int) (DEFAULT_TILE_SIZE * SCALE);
     public static final int SCREEN_WIDTH = MAP_COLUMNS * TILE_SIZE;
     public static final int SCREEN_HEIGHT = MAP_ROWS * TILE_SIZE;
-
+    public static GameState GAME_STATE = GameState.LOADING;
 
     public enum Direction {
-        UP, DOWN, LEFT, RIGHT, IDLE
+        UP, DOWN, LEFT, RIGHT
     }
 
     public enum NotificationType {
-        DROP_BOMB
+        SCORE_UPDATE,HEALTH_UPDATE,BOMB_UPDATE,FINISH_LEVEL,GAME_OVER
     }
 
-    public enum SenderType {
-        PLAYER, ENEMY_1, ENEMY_2, MAP
+    public enum GameState {
+        MENU,PLAYING,VICTORY,GAME_OVER,PAUSE,LOADING
     }
-
     public static BufferedImage getImg(String path) {
         try (InputStream is = GameUtils.class.getResourceAsStream(path)) {
             if (is != null) {

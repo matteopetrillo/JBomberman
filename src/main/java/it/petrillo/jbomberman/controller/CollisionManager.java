@@ -52,12 +52,11 @@ public class CollisionManager implements CollisionListener {
             int width = (int) collisionBox.getWidth();
             int height = (int) collisionBox.getHeight();
 
-            if (isWalkable(x, y) || isWalkable(x + width, y) || isWalkable(x + width, y + height) || isWalkable(x, y + height)) {
-                return true;
-            }
+            if (!isWalkable(x, y) || !isWalkable(x + width, y) || !isWalkable(x + width, y + height) || !isWalkable(x, y + height))
+                return false;
         }
 
-        return false;
+        return true;
     }
 
     @Override

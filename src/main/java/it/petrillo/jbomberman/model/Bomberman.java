@@ -156,23 +156,26 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
     public void healCharacter() {
         if (health < 5) {
             health++;
-            System.out.println("Health: "+health);
+            notifyObservers(NotificationType.HEALTH_UPDATE,health);
         }
     }
 
     public void increaseBombBackpack() {
         bombBackpack++;
+        notifyObservers(NotificationType.BOMB_UPDATE,getBombAvailable());
     }
-
+    public int getBombAvailable() {
+        return bombBackpack-bombReleased;
+    }
     @Override
     public void hitCharacter() {
-        if (hittedTimer <= 0) {
+        if (hittedTimer <= 0 && health > 0) {
             health--;
-            System.out.println("Health: "+health);
+            notifyObservers(NotificationType.HEALTH_UPDATE,health);
             hittedTimer = 60;
             hitted = false;
         }
-        if (health <= 0) {
+        else if (health <= 0) {
             animationIndex = 0;
             animationSpeed = 18;
         }
@@ -182,19 +185,25 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
         this.playerName = playerName;
     }
 
+    public void advanceLevel() {
+        notifyObservers(NotificationType.FINISH_LEVEL,null);
+    }
+
     public int getBombBackpack() {
         return bombBackpack;
     }
     public boolean canDropBomb() {
-        return bombBackpack-bombReleased>0;
+        return getBombAvailable()>0;
     }
 
     public void alterBombReleased(int k) {
         bombReleased += k;
+        notifyObservers(NotificationType.BOMB_UPDATE,getBombAvailable());
     }
 
     public void alterScore(int k) {
         score += k;
+        notifyObservers(NotificationType.SCORE_UPDATE,score);
     }
 
     public static Bomberman getPlayerInstance() {
@@ -203,6 +212,5 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
         }
         return bombermanInstance;
     }
-
 
 }

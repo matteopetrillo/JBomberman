@@ -145,4 +145,8 @@ public class ObjectsManager {
             objectsManagerInstance = new ObjectsManager();
         return objectsManagerInstance;
     }
+
+    public void clear() {
+        objects.clear();
+    }
 }

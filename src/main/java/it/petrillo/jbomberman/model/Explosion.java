@@ -51,8 +51,11 @@ public class Explosion extends GameEntity {
         if (animationTick >= animationSpeed) {
             animationTick = 0;
             animationIndex++;
-            if (animationIndex >= 5)
+            if (animationIndex >= 5) {
                 visible = false;
+                animationIndex = 0;
+            }
+
         }
     }
 

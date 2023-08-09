@@ -2,13 +2,14 @@ package it.petrillo.jbomberman.view;
 
 import it.petrillo.jbomberman.controller.*;
 import it.petrillo.jbomberman.model.*;
+import it.petrillo.jbomberman.util.CustomObserver;
 
 import javax.swing.*;
 import java.awt.*;
 
 import static it.petrillo.jbomberman.util.GameUtils.*;
 
-public class GamePanel extends JPanel implements Runnable {
+public class GamePanel extends JPanel implements CustomObserver,Runnable {
 
     private static final int FPS = 60;
     private static final long DRAW_INTERVAL = 1000000000 / FPS;
@@ -20,7 +21,6 @@ public class GamePanel extends JPanel implements Runnable {
     private final CollisionManager collisionManager = CollisionManager.getInstance();
     private final ExplosionManager explosionManager = ExplosionManager.getInstance();
     private final LevelManager levelManager = LevelManager.getInstance();
-
     public GamePanel() {
         init();
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -47,15 +47,22 @@ public class GamePanel extends JPanel implements Runnable {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        gameMap.drawMap(g2d);
-        try {
-            objectsManager.getObjects().forEach(o -> o.draw(g2d));
-            explosionManager.getExplosionList().forEach(e -> e.draw(g2d));
-            enemyManager.getEnemies().forEach(e -> e.draw(g2d));
-            bombermanInstance.draw(g2d);
-        } catch (NullPointerException e)
-        {
-            e.getMessage();
+        if (GAME_STATE == GameState.PLAYING) {
+            gameMap.drawMap(g2d);
+            try {
+                objectsManager.getObjects().forEach(o -> o.draw(g2d));
+                explosionManager.getExplosionList().forEach(e -> e.draw(g2d));
+                enemyManager.getEnemies().forEach(e -> e.draw(g2d));
+                bombermanInstance.draw(g2d);
+            } catch (Exception e) {
+                e.getMessage();
+            }
+        } else if (GAME_STATE == GameState.LOADING) {
+            g2d.setColor(Color.BLACK);
+            g2d.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial",Font.PLAIN,60));
+            g2d.drawString("LOADING",400,400);
         }
     }
 
@@ -80,6 +87,25 @@ public class GamePanel extends JPanel implements Runnable {
                 updateComponents();
                 repaint();
                 deltaTime--;
+            }
+        }
+    }
+
+    @Override
+    public void update(NotificationType notificationType, Object arg) {
+        switch (notificationType) {
+            case FINISH_LEVEL -> {
+                if (enemyManager.getEnemies().isEmpty()) {
+                    GAME_STATE = GameState.LOADING;
+                    Timer timer = new Timer(2000, e -> {
+                        levelManager.loadNextLevel();
+                        GAME_STATE = GameState.PLAYING;
+                    });
+                    timer.setRepeats(false);
+                    timer.start();
+                }
+            }
+            case GAME_OVER -> {
             }
         }
     }

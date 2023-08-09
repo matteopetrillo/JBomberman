@@ -1,15 +1,16 @@
 package it.petrillo.jbomberman.model;
 
-import java.awt.*;
+import it.petrillo.jbomberman.util.GameUtils;
+
 import java.awt.image.BufferedImage;
 
-import static it.petrillo.jbomberman.util.GameUtils.TILE_SIZE;
 import static it.petrillo.jbomberman.util.GameUtils.getImg;
 
-public class Portal extends PowerUp {
+public class LevelAdvancer extends PowerUp {
 
-    public Portal(int x, int y) {
+    public LevelAdvancer(int x, int y) {
         super(x, y);
+        loadSprites("/Sprite_Items_16x16.png");
     }
 
     @Override
@@ -25,6 +26,8 @@ public class Portal extends PowerUp {
 
     @Override
     public void applyEffect(Bomberman player) {
-
+        player.advanceLevel();
+        visible = false;
+        setToClean(true);
     }
 }

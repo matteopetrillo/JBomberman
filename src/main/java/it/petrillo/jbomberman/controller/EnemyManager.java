@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 public class EnemyManager {
     private static EnemyManager enemyManagerInstance;
+    private final Bomberman bomberman = Bomberman.getPlayerInstance();
     private final List<Enemy> enemies = new ArrayList<>();
     private final CollisionManager collisionManager = CollisionManager.getInstance();
     public void initEnemies(JsonArray jsonArray) {
@@ -21,11 +22,11 @@ public class EnemyManager {
                 basicEnemy.setCollisionListener(collisionManager);
                 enemies.add(basicEnemy);
             } else if (enemyType.equals("ADVANCED")) {
-
+                // TODO IMPLEMENTARE NEMICI AVANZATI
             }
 
         }
-        enemies.stream().forEach(e -> collisionManager.addCollidable(e));
+        enemies.forEach(collisionManager::addCollidable);
     }
 
     public void updateEnemies() {
@@ -37,12 +38,16 @@ public class EnemyManager {
     }
 
     private void cleanEnemies() {
-        List<Enemy> destroyedObjects = enemies.stream()
-                .filter(e -> !e.isVisible())
+        List<Enemy> killedEnemy = enemies.stream()
+                .filter(GameEntity::isToClean)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        destroyedObjects.stream()
-                .forEach(e -> enemies.remove(e));
+        for (Enemy e : killedEnemy) {
+            if (e instanceof BasicEnemy)
+                bomberman.alterScore(100);
+            // TODO IMPLEMENTARE ANCHE PER AVANZATO
+            enemies.remove(e);
+        };
     }
 
     public List<Enemy> getEnemies() {
@@ -54,4 +59,9 @@ public class EnemyManager {
             enemyManagerInstance = new EnemyManager();
         return enemyManagerInstance;
     }
+
+    public void clear() {
+        enemies.clear();
+    }
+
 }

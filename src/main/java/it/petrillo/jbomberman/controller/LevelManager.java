@@ -35,8 +35,12 @@ public class LevelManager {
         enemyManager.initEnemies(settings.get("enemies_spawn").getAsJsonArray());
     }
 
+
     public void loadNextLevel() {
         currentLvl++;
+        gameMap.clear();
+        objectsManager.clear();
+        enemyManager.clear();
         loadLevel();
     }
 

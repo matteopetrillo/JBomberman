@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 import static it.petrillo.jbomberman.util.GameSettings.*;
 import static it.petrillo.jbomberman.util.GameSettings.TILE_SIZE;
 
+/**
+ * The ObjectsManager class is responsible for managing and updating various game objects
+ * and their interactions, such as bombs, power-ups, and explosions.
+ */
 public class ObjectsManager {
 
     private static ObjectsManager objectsManagerInstance;
@@ -22,6 +26,12 @@ public class ObjectsManager {
     private final CollisionManager collisionManager = CollisionManager.getInstance();
     private ObjectsManager() {}
 
+    /**
+     * Initializes game objects based on provided JSON data for soft blocks and power-ups.
+     *
+     * @param softBlocks The JSON array containing soft block data.
+     * @param powerUps The JSON array containing power-up data.
+     */
     public void initObjects(JsonArray softBlocks, JsonArray powerUps) {
         for (JsonElement element : powerUps) {
             int x = element.getAsJsonObject().get("x").getAsInt();
@@ -44,6 +54,9 @@ public class ObjectsManager {
         }
     }
 
+    /**
+     * Updates the state of game objects, handles explosions, and cleans up destroyed objects.
+     */
     public void updateObjects() {
         cleanObjects();
         for (GameObject e : objects) {
@@ -61,6 +74,12 @@ public class ObjectsManager {
         }
     }
 
+    /**
+     * Drops a bomb at the specified grid cell if allowed by Bomberman.
+     *
+     * @param x The x-coordinate of the grid cell.
+     * @param y The y-coordinate of the grid cell.
+     */
     public void dropBomb(int x, int y) {
         List<GameObject> o = getObjectsFromCoords(x,y);
         if (o.isEmpty() && bomberman.canDropBomb()) {
@@ -69,6 +88,11 @@ public class ObjectsManager {
         }
     }
 
+    /**
+     * Handles the explosion caused by a bomb, affecting nearby objects and characters.
+     *
+     * @param bomb The Bomb instance triggering the explosion.
+     */
     public void handleExplosion(Bomb bomb) {
         int[] dx = {-1, 1, 0, 0};
         int[] dy = {0, 0, -1, 1};
@@ -123,6 +147,9 @@ public class ObjectsManager {
 
     }
 
+    /**
+     * Cleans up destroyed objects from the list of game objects.
+     */
     private void cleanObjects() {
         List<GameObject> destroyedObjects = objects.stream()
                 .filter(GameEntity::isToClean)
@@ -131,21 +158,42 @@ public class ObjectsManager {
         destroyedObjects.forEach(objects::remove);
     }
 
+    /**
+     * Retrieves a list of game objects located at a specific grid cell.
+     *
+     * @param x The x-coordinate of the grid cell.
+     * @param y The y-coordinate of the grid cell.
+     * @return A list of game objects at the specified grid cell.
+     */
     public List<GameObject> getObjectsFromCoords(int x, int y) {
         return objects.stream()
                         .filter(obj -> obj.getX()/TILE_SIZE == x && obj.getY()/TILE_SIZE == y)
                         .collect(Collectors.toList());
     }
+
+    /**
+     * Retrieves a list of all game objects.
+     *
+     * @return A list of all game objects.
+     */
     public List<GameObject> getObjects() {
         return objects;
     }
 
+    /**
+     * Retrieves the singleton instance of the ObjectsManager class.
+     *
+     * @return The singleton instance of ObjectsManager.
+     */
     public static ObjectsManager getInstance() {
         if (objectsManagerInstance == null)
             objectsManagerInstance = new ObjectsManager();
         return objectsManagerInstance;
     }
 
+    /**
+     * Clears the list of game objects.
+     */
     public void clear() {
         objects.clear();
     }

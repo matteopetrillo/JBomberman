@@ -1,17 +1,29 @@
 package it.petrillo.jbomberman.model;
 
-
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
+/**
+ * The Explosion class represents an explosion entity in the game.
+ * It extends the GameEntity class and is responsible for rendering and animating explosion graphics.
+ */
 public class Explosion extends GameEntity {
 
-    private ArrayList<Direction> directions;
-    public Explosion(int x, int y, String spritesPath, ArrayList<Direction> directions) {
+    private List<Direction> directions;
+
+    /**
+     * Constructs an Explosion instance with the specified initial position and explosion directions.
+     *
+     * @param x            The X-coordinate of the explosion's initial position.
+     * @param y            The Y-coordinate of the explosion's initial position.
+     * @param spritesPath  The path to the sprite sheet for the explosion animation.
+     * @param directions   The list of directions in which the explosion expands.
+     */
+    public Explosion(int x, int y, String spritesPath, List<Direction> directions) {
         super(x, y);
         this.directions = directions;
         animationSpeed = 7;
@@ -19,6 +31,12 @@ public class Explosion extends GameEntity {
         loadSprites(spritesPath);
     }
 
+    /**
+     * Draws the explosion graphics onto the provided Graphics2D object.
+     * Handles rendering explosion animation frames based on the specified directions.
+     *
+     * @param g The Graphics2D object to draw on.
+     */
     @Override
     public void draw(Graphics2D g) {
         if (visible) {
@@ -34,6 +52,11 @@ public class Explosion extends GameEntity {
         }
     }
 
+    /**
+     * Loads the explosion sprite images from the specified sprite sheet path.
+     *
+     * @param path The path to the sprite sheet for the explosion animation.
+     */
     @Override
     public void loadSprites(String path) {
         spriteSheet = getImg(path);
@@ -45,6 +68,11 @@ public class Explosion extends GameEntity {
         }
     }
 
+    /**
+     * Updates the explosion animation state.
+     * Advances the animation index and manages the visibility of the explosion.
+     * If the animation is complete, sets the explosion entity to be cleaned.
+     */
     @Override
     public void update() {
         animationTick++;
@@ -54,8 +82,8 @@ public class Explosion extends GameEntity {
             if (animationIndex >= 5) {
                 visible = false;
                 animationIndex = 0;
+                setToClean(true);
             }
-
         }
     }
 

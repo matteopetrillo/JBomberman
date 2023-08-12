@@ -5,10 +5,22 @@ import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
+/**
+ * The SoftBlock class represents a destructible block that can be destroyed by explosions.
+ * They are rendered as sprite images on the game canvas.
+ */
 public class SoftBlock extends GameObject implements Explodable {
 
     private boolean hasShadow;
     private boolean isExploding;
+
+    /**
+     * Creates a new SoftBlock object at the specified coordinates using the provided sprite sheet.
+     *
+     * @param x         The x-coordinate of the SoftBlock's position.
+     * @param y         The y-coordinate of the SoftBlock's position.
+     * @param sheetPath The path to the sprite sheet resource for rendering.
+     */
     public SoftBlock(int x, int y, String sheetPath) {
         super(x, y);
         isDestroyable = true;
@@ -18,6 +30,11 @@ public class SoftBlock extends GameObject implements Explodable {
         loadSprites(sheetPath);
     }
 
+    /**
+     * Draws the SoftBlock on the game canvas using the Graphics2D context.
+     *
+     * @param g The Graphics2D context used for rendering.
+     */
     @Override
     public void draw(Graphics2D g) {
         if (visible) {
@@ -34,6 +51,11 @@ public class SoftBlock extends GameObject implements Explodable {
         }
     }
 
+    /**
+     * Loads the sprite images for the SoftBlock from the specified path.
+     *
+     * @param path The path to the sprite image resource.
+     */
     @Override
     public void loadSprites(String path) {
         spriteSheet = getImg(path);
@@ -49,6 +71,9 @@ public class SoftBlock extends GameObject implements Explodable {
         }
     }
 
+    /**
+     * Updates the animation state of the SoftBlock.
+     */
     @Override
     public void update() {
         int maxIndex = 4;
@@ -68,15 +93,30 @@ public class SoftBlock extends GameObject implements Explodable {
         }
     }
 
+    /**
+     * Sets whether the SoftBlock is under a wall shadow.
+     *
+     * @param hasShadow True if the SoftBlock should have a wall shadow, false otherwise.
+     */
     public void setHasShadow(boolean hasShadow) {
         this.hasShadow = hasShadow;
     }
 
+    /**
+     * Sets the explosion state of the SoftBlock.
+     *
+     * @param exploding True if the SoftBlock is currently exploding, false otherwise.
+     */
     @Override
     public void setExploding(boolean exploding) {
         isExploding = exploding;
     }
 
+    /**
+     * Checks if the SoftBlock is currently exploding.
+     *
+     * @return True if the SoftBlock is exploding, false otherwise.
+     */
     @Override
     public boolean isExploding() {
         return isExploding;

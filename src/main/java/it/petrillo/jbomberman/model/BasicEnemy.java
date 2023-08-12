@@ -5,8 +5,18 @@ import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
+/**
+ * The BasicEnemy class represents a basic enemy character in the game.
+ * It extends the Enemy class and encapsulates the behavior of a simple enemy.
+ */
 public class BasicEnemy extends Enemy {
 
+    /**
+     * Constructs a BasicEnemy instance with the specified initial position.
+     *
+     * @param x The X-coordinate of the enemy's initial position.
+     * @param y The Y-coordinate of the enemy's initial position.
+     */
     public BasicEnemy(int x, int y) {
         super(x, (int) (y-8*SCALE));
         entityScale = 3.5d;
@@ -22,6 +32,12 @@ public class BasicEnemy extends Enemy {
     }
 
 
+    /**
+     * Draws the BasicEnemy character on the provided graphics.
+     * Handles animation and the hit effect.
+     *
+     * @param g The Graphics2D object to draw on.
+     */
     @Override
     public void draw(Graphics2D g) {
         if (visible) {
@@ -55,6 +71,11 @@ public class BasicEnemy extends Enemy {
         }
     }
 
+    /**
+     * Loads the sprite animation of the BasicEnemy from the specified path.
+     *
+     * @param path The path to the sprite file.
+     */
     @Override
     public void loadSprites(String path) {
         spriteSheet = getImg(path);
@@ -66,6 +87,10 @@ public class BasicEnemy extends Enemy {
         }
     }
 
+    /**
+     * Updates the state of the BasicEnemy character.
+     * Handles movement, animation, and visibility.
+     */
     @Override
     public void update() {
         if (health > 0) {

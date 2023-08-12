@@ -7,11 +7,21 @@ import it.petrillo.jbomberman.model.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Manages the creation, updating, and removal of enemy entities in the game.
+ * It handles different types of enemies and their interactions with the game.
+ */
 public class EnemyManager {
     private static EnemyManager enemyManagerInstance;
     private final Bomberman bomberman = Bomberman.getPlayerInstance();
     private final List<Enemy> enemies = new ArrayList<>();
     private final CollisionManager collisionManager = CollisionManager.getInstance();
+
+    /**
+     * Initializes the enemy entities based on the provided JSON data.
+     *
+     * @param jsonArray A JSON array containing enemy data with coordinates and types.
+     */
     public void initEnemies(JsonArray jsonArray) {
         for (JsonElement element : jsonArray) {
             int x = element.getAsJsonObject().get("x").getAsInt();
@@ -29,6 +39,9 @@ public class EnemyManager {
         enemies.forEach(collisionManager::addCollidable);
     }
 
+    /**
+     * Updates the state of enemy entities and removes defeated enemies.
+     */
     public void updateEnemies() {
         for (Enemy enemy : enemies) {
             if (enemy.isVisible())
@@ -37,6 +50,9 @@ public class EnemyManager {
         cleanEnemies();
     }
 
+    /**
+     * Cleans up defeated enemy entities from the list.
+     */
     private void cleanEnemies() {
         List<Enemy> killedEnemy = enemies.stream()
                 .filter(GameEntity::isToClean)
@@ -50,16 +66,29 @@ public class EnemyManager {
         };
     }
 
+    /**
+     * Returns the list of active enemy entities.
+     *
+     * @return The list of active enemy entities.
+     */
     public List<Enemy> getEnemies() {
         return enemies;
     }
 
+    /**
+     * Returns the singleton instance of the EnemyManager.
+     *
+     * @return The singleton instance of EnemyManager.
+     */
     public static EnemyManager getInstance() {
         if (enemyManagerInstance == null)
             enemyManagerInstance = new EnemyManager();
         return enemyManagerInstance;
     }
 
+    /**
+     * Clears the list of enemy entities.
+     */
     public void clear() {
         enemies.clear();
     }

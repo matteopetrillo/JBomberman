@@ -5,12 +5,17 @@ import it.petrillo.jbomberman.model.Bomberman;
 import it.petrillo.jbomberman.model.GameEntityFactory;
 import it.petrillo.jbomberman.model.GameMap;
 
+import javax.swing.*;
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
-
+/**
+ * The LevelManager class handles loading and transitioning between game levels.
+ */
 public class LevelManager {
 
     private static LevelManager levelManagerInstance;
@@ -21,34 +26,76 @@ public class LevelManager {
     private int currentLvl = 1;
 
     private LevelManager() {}
+
+    /**
+     * Loads the current level by reading level configuration from JSON files and initializing game objects.
+     */
     public void loadLevel() {
-        String settingPath = getJsonLvlPath(currentLvl);
-        List<String> fields = List.of("sprite_sheets_path","player_spawn","soft_blocks_spawn","explosion","enemies_spawn","power_ups_spawn");
-        Map<String,JsonElement> settings = getMultipleJsonFields(settingPath,fields);
+        String settingPath = getJsonLvlPath();
+        List<String> fields = List.of("sprite_sheets_path", "player_spawn", "soft_blocks_spawn", "explosion", "enemies_spawn", "power_ups_spawn");
+        Map<String, JsonElement> settings = getMultipleJsonFields(settingPath, fields);
         GameEntityFactory.setBombSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("bomb").getAsString());
         GameEntityFactory.setSoftBlockSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("soft_blocks").getAsString());
         GameEntityFactory.setExplosionSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("explosion").getAsString());
         gameMap.initMap(settingPath);
-        bomberman.setX(settings.get("player_spawn").getAsJsonObject().get("x").getAsInt()*TILE_SIZE);
-        bomberman.setY(settings.get("player_spawn").getAsJsonObject().get("y").getAsInt()*TILE_SIZE);
-        objectsManager.initObjects(settings.get("soft_blocks_spawn").getAsJsonArray(),settings.get("power_ups_spawn").getAsJsonArray());
+        bomberman.setX(settings.get("player_spawn").getAsJsonObject().get("x").getAsInt() * TILE_SIZE);
+        bomberman.setY(settings.get("player_spawn").getAsJsonObject().get("y").getAsInt() * TILE_SIZE);
+        objectsManager.initObjects(settings.get("soft_blocks_spawn").getAsJsonArray(), settings.get("power_ups_spawn").getAsJsonArray());
         enemyManager.initEnemies(settings.get("enemies_spawn").getAsJsonArray());
     }
 
-
+    /**
+     * Loads the next level, clearing and resetting game elements.
+     */
     public void loadNextLevel() {
         currentLvl++;
         gameMap.clear();
         objectsManager.clear();
         enemyManager.clear();
-        loadLevel();
+        GameManager.GAME_STATE = GameState.LOADING;
+        Timer loadingTimer = new Timer(1500, e -> {
+           loadLevel();
+           GameManager.GAME_STATE = GameState.PLAYING;
+        });
     }
 
-
-    private String getJsonLvlPath(int level) {
+    /**
+     * Retrieves the JSON file path for the current level configuration.
+     *
+     * @return The JSON file path for the current level.
+     */
+    private String getJsonLvlPath() {
         return "/Level"+currentLvl+".json";
     }
 
+    /**
+     * Checks if the game is finished, i.e., there are no more levels to load.
+     *
+     * @return True if the game is finished, false otherwise.
+     */
+    public boolean isGameFinished() {
+        String fileName = "Level"+(currentLvl+1)+".json";
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (inputStream != null)
+            return false;
+        else
+            return true;
+    }
+
+    /**
+     * Checks if the current level is finished, i.e., all enemies are defeated.
+     *
+     * @return True if the level is finished, false otherwise.
+     */
+    public boolean isLevelFinished() {
+        return enemyManager.getEnemies().isEmpty();
+    }
+
+    /**
+     * Retrieves the singleton instance of the LevelManager class.
+     *
+     * @return The singleton instance of LevelManager.
+     */
     public static LevelManager getInstance() {
         if (levelManagerInstance == null)
             levelManagerInstance = new LevelManager();

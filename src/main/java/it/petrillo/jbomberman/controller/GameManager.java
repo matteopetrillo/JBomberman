@@ -2,6 +2,7 @@ package it.petrillo.jbomberman.controller;
 
 import com.google.gson.*;
 import it.petrillo.jbomberman.model.Bomberman;
+import it.petrillo.jbomberman.util.CustomObserver;
 import it.petrillo.jbomberman.util.UserData;
 import it.petrillo.jbomberman.view.*;
 
@@ -14,16 +15,25 @@ import java.io.*;
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
 
-public class GameManager {
+/**
+ * The GameManager class manages the overall game flow, including level loading, player interactions, and game state transitions.
+ */
+public class GameManager implements CustomObserver {
 
+    public static GameState GAME_STATE = GameState.MENU;
     private final GameFrame gameFrame = new GameFrame();
     private final GamePanel gamePanel = new GamePanel();
     private final GameMenu gameMenu = new GameMenu();
     private final GameMenuPanel gameMenuPanel = new GameMenuPanel();
     private final PlayerPanel playerPanel = new PlayerPanel();
+    private final Bomberman bomberman = Bomberman.getPlayerInstance();
+    private final LevelManager levelManager = LevelManager.getInstance();
     private UserData currentPlayerData;
     private JsonObject database;
 
+    /**
+     * Initializes the GameManager by setting up UI components and registering observers.
+     */
     public GameManager() {
         gameFrame.setLayout(new BorderLayout());
         gameFrame.add(gamePanel,BorderLayout.CENTER);
@@ -32,12 +42,14 @@ public class GameManager {
         gameFrame.setLocationRelativeTo(null);
         gameMenu.add(gameMenuPanel);
         gameMenu.pack();
-        Bomberman bomberman = Bomberman.getPlayerInstance();
         bomberman.addObserver(playerPanel);
-        bomberman.addObserver(gamePanel);
+        bomberman.addObserver(this);
         uploadDatabase();
     }
 
+    /**
+     * Opens the game menu, allowing players to choose their nickname and avatar before starting the game.
+     */
     public void openGame() {
         gameMenuPanel.getPlayButton().addActionListener(e -> {
             String nick = gameMenuPanel.getNickname();
@@ -47,7 +59,6 @@ public class GameManager {
                 currentPlayerData.setAvatarPath(chosenAvatar);
                 playerPanel.uploadPlayerData(currentPlayerData);
                 SwingUtilities.invokeLater(this::startGame);
-                updateDatabase();
                 gameMenu.setVisible(false);
             }
             else
@@ -56,6 +67,10 @@ public class GameManager {
         gameMenu.setLocationRelativeTo(null);
         gameMenu.setVisible(true);
     }
+
+    /**
+     * Starts the game by transitioning from the menu to the actual gameplay.
+     */
     public void startGame() {
         GAME_STATE = GameState.LOADING;
         gamePanel.startThread();
@@ -70,6 +85,11 @@ public class GameManager {
         startingTimer.start();
     }
 
+    /**
+     * Sets the current player's data based on the provided nickname.
+     *
+     * @param nickname The nickname of the current player.
+     */
     private void setCurrentPlayerData (String nickname) {
         JsonObject playerRecord = getPlayerRecordIfExist(nickname);
         if (playerRecord != null)
@@ -78,6 +98,11 @@ public class GameManager {
             currentPlayerData = new UserData(nickname);
     }
 
+    /**
+     * Sets the current player's data based on the provided nickname.
+     *
+     * @param nickname The nickname of the current player.
+     */
     private JsonObject getPlayerRecordIfExist(String nickname) {
         JsonArray players = database.getAsJsonArray("players");
         for (JsonElement record : players) {
@@ -87,6 +112,13 @@ public class GameManager {
         }
         return null;
     }
+
+    /**
+     * Parses a player record JsonObject into a UserData object.
+     *
+     * @param playerRecord The JsonObject containing player record data.
+     * @return The parsed UserData object.
+     */
     private UserData parsePlayerRecord(JsonObject playerRecord) {
         String nick = playerRecord.get("nickname").getAsString();
         int win = playerRecord.get("win").getAsInt();
@@ -94,6 +126,9 @@ public class GameManager {
         return new UserData(nick,win,lose);
     }
 
+    /**
+     * Uploads the game database from a JSON file.
+     */
     private void uploadDatabase() {
         String projectDir = System.getProperty("user.dir");
         String filePath = Paths.get(projectDir, DB_PATH).toString();
@@ -111,6 +146,9 @@ public class GameManager {
         }
     }
 
+    /**
+     * Updates the game database with the current player's data.
+     */
     private void updateDatabase() {
         JsonArray playersArray = database.getAsJsonArray("players");
         boolean found = false;
@@ -134,6 +172,9 @@ public class GameManager {
         saveDatabase();
     }
 
+    /**
+     * Saves the updated game database to a JSON file.
+     */
     private void saveDatabase() {
         String projectDir = System.getProperty("user.dir");
         String filePath = Paths.get(projectDir, DB_PATH).toString();
@@ -146,4 +187,41 @@ public class GameManager {
         }
     }
 
+    @Override
+    public void update(NotificationType notificationType, Object arg) {
+        switch (notificationType) {
+            case FINISH_LEVEL -> {
+                if (levelManager.isLevelFinished() && !levelManager.isGameFinished()) {
+                    levelManager.loadNextLevel();
+                }
+                else
+                    onWinning();
+            }
+            case GAME_OVER -> onLosing();
+        }
+    }
+
+    private void onLosing() {
+        System.out.println("Hai Perso!");
+        currentPlayerData.lose();
+        GAME_STATE = GameState.GAME_OVER;
+        Timer exitTimer = new Timer(1500, e -> {
+            updateDatabase();
+            System.exit(0);
+        });
+        exitTimer.setRepeats(false);
+        exitTimer.start();
+    }
+
+    private void onWinning() {
+        System.out.println("Hai Vinto!");
+        currentPlayerData.win();
+        GAME_STATE = GameState.GAME_OVER;
+        Timer exitTimer = new Timer(1500, e -> {
+            updateDatabase();
+            System.exit(0);
+        });
+        exitTimer.setRepeats(false);
+        exitTimer.start();
+    }
 }

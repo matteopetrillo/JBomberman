@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class holds various game settings and utility methods for managing resources and JSON data.
+ */
 public class GameSettings {
 
     public static final int MAP_COLUMNS = 17;
@@ -23,7 +26,6 @@ public class GameSettings {
     public static final int TILE_SIZE = (int) (DEFAULT_TILE_SIZE * SCALE);
     public static final int SCREEN_WIDTH = MAP_COLUMNS * TILE_SIZE;
     public static final int SCREEN_HEIGHT = MAP_ROWS * TILE_SIZE;
-    public static GameState GAME_STATE = GameState.MENU;
     public static final String DB_PATH = "JBomberman/src/main/Database/PlayersDB.json";
 
     public enum Direction {
@@ -37,6 +39,13 @@ public class GameSettings {
     public enum GameState {
         MENU,PLAYING,VICTORY,GAME_OVER,PAUSE,LOADING
     }
+
+    /**
+     * Retrieves an image resource from the provided path.
+     *
+     * @param path The path to the image resource.
+     * @return The BufferedImage object representing the loaded image.
+     */
     public static BufferedImage getImg(String path) {
         try (InputStream is = GameSettings.class.getResourceAsStream(path)) {
             if (is != null) {
@@ -50,7 +59,13 @@ public class GameSettings {
         return null;
     }
 
-
+    /**
+     * Retrieves selected JSON fields from a JSON file as a map.
+     *
+     * @param jsonString The path to the JSON file.
+     * @param fields     A list of JSON field names to retrieve.
+     * @return A map containing selected JSON fields.
+     */
     public static Map<String, JsonElement> getMultipleJsonFields(String jsonString, List<String> fields) {
         Map<String, JsonElement> selectedFields = new HashMap<>();
         try {

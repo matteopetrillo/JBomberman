@@ -6,13 +6,30 @@ import java.util.Random;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
-public abstract class Enemy extends GameCharacter implements Movable,Animatable {
+/**
+ * The Enemy abstract class serves as a base for enemy characters in the game.
+ * It extends the GameCharacter class and implements the Movable and Renderable interfaces.
+ * This class encapsulates common behavior and attributes for enemy characters.
+ */
+public abstract class Enemy extends GameCharacter implements Movable, Renderable {
+
+    /**
+     * Constructs an Enemy instance with the specified initial position.
+     *
+     * @param x The X-coordinate of the enemy's initial position.
+     * @param y The Y-coordinate of the enemy's initial position.
+     */
     public Enemy(int x, int y) {
         super(x, y);
         movingDirection = pickRandomDirection();
         visible = true;
     }
 
+    /**
+     * Picks a random movement direction for the enemy.
+     *
+     * @return A randomly chosen Direction for movement.
+     */
     protected Direction pickRandomDirection() {
         Random rd = new Random();
         int n = rd.nextInt(1,4);
@@ -33,6 +50,9 @@ public abstract class Enemy extends GameCharacter implements Movable,Animatable 
         return null;
     }
 
+    /**
+     * Updates the position of the enemy based on its current direction and collision conditions.
+     */
     @Override
     public void updatePosition() {
         setFlagFromDirection();
@@ -50,6 +70,9 @@ public abstract class Enemy extends GameCharacter implements Movable,Animatable 
         collisionBox.setLocation(super.x+xCollisionOffset, super.y+yCollisionOffset);
     }
 
+    /**
+     * Changes the enemy's direction to an available direction other than the current one.
+     */
     private void changeDirection() {
         List<Direction> availableDirections = collisionListener.getAvailableDirections(characterSpeed,collisionBox);
         Random rd = new Random();
@@ -57,6 +80,12 @@ public abstract class Enemy extends GameCharacter implements Movable,Animatable 
         movingDirection = availableDirections.get(n);
         setFlagFromDirection();
     }
+
+    /**
+     * Calculates the change in speed based on the current movement direction.
+     *
+     * @return An array containing the change in X-speed and Y-speed.
+     */
     private int[] getDeltaSpeedByDirection() {
         int[] deltaSpeed = new int[2];
         xSpeed = 0;
@@ -80,6 +109,11 @@ public abstract class Enemy extends GameCharacter implements Movable,Animatable 
         return deltaSpeed;
     }
 
+    /**
+     * Inverts the enemy's direction, used for collision handling.
+     *
+     * @param direction The current direction to be inverted.
+     */
     private void invertDirection(Direction direction) {
         switch (direction) {
             case UP -> {
@@ -97,6 +131,10 @@ public abstract class Enemy extends GameCharacter implements Movable,Animatable 
         }
         setFlagFromDirection();
     }
+
+    /**
+     * Sets the movement flags based on the current movement direction.
+     */
     private void setFlagFromDirection() {
         movingLeft = false;
         movingRight = false;
@@ -119,6 +157,10 @@ public abstract class Enemy extends GameCharacter implements Movable,Animatable 
         }
     }
 
+    /**
+     * Handles the effect of being hit by a collision or a bomb.
+     * Decreases the enemy's health and manages the hit effect timer.
+     */
     @Override
     public void hitCharacter() {
         if (hittedTimer <= 0) {
@@ -128,6 +170,10 @@ public abstract class Enemy extends GameCharacter implements Movable,Animatable 
         }
     }
 
+    /**
+     * Handles collision events with other Collidable objects.
+     * Changes direction when colliding with the player and inverts direction when colliding with another enemy.
+     */
     @Override
     public void onCollision(Collidable other) {
         if (other instanceof Bomberman)

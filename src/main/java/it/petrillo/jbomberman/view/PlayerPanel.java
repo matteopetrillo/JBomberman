@@ -1,5 +1,6 @@
 package it.petrillo.jbomberman.view;
 
+import it.petrillo.jbomberman.controller.GameManager;
 import it.petrillo.jbomberman.util.CustomObserver;
 import it.petrillo.jbomberman.util.UserData;
 
@@ -44,7 +45,7 @@ public class PlayerPanel extends JPanel implements CustomObserver {
             if (countdownDuration < 0) {
                 countdownDuration = 0;
                 timer.stop();
-                GAME_STATE = GameState.GAME_OVER;
+                GameManager.GAME_STATE = GameState.GAME_OVER;
             }
             updateTimer();
             repaint();

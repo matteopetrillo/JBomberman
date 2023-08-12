@@ -9,7 +9,10 @@ import java.awt.*;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
-public class GamePanel extends JPanel implements CustomObserver,Runnable {
+/**
+ * This class represents the game panel where the gameplay is displayed.
+ */
+public class GamePanel extends JPanel implements Runnable {
 
     private static final int FPS = 60;
     private static final long DRAW_INTERVAL = 1000000000 / FPS;
@@ -21,6 +24,11 @@ public class GamePanel extends JPanel implements CustomObserver,Runnable {
     private final CollisionManager collisionManager = CollisionManager.getInstance();
     private final ExplosionManager explosionManager = ExplosionManager.getInstance();
     private final LevelManager levelManager = LevelManager.getInstance();
+
+    /**
+     * Constructs a new GamePanel instance.
+     * Initializes the panel's dimensions, adds a key listener for player controls, and sets up double buffering.
+     */
     public GamePanel() {
         init();
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -29,6 +37,10 @@ public class GamePanel extends JPanel implements CustomObserver,Runnable {
         setFocusable(true);
     }
 
+    /**
+     * Initializes the game components and their interactions.
+     * Connects collision manager, sets up collision listener for the player, and loads the initial game level.
+     */
     private void init() {
         collisionManager.setGameMap(gameMap);
         collisionManager.setObjectsManager(objectsManager);
@@ -37,17 +49,32 @@ public class GamePanel extends JPanel implements CustomObserver,Runnable {
         levelManager.loadLevel();
     }
 
+    /**
+     * Starts the game thread, allowing the game loop to run.
+     */
     public void startThread() {
         running = true;
         Thread gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /**
+     * Paints the game components on the panel.
+     *
+     * @param g The Graphics object to render on.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        if (GAME_STATE == GameState.PLAYING) {
+        if (GameManager.GAME_STATE == GameState.LOADING) {
+            g2d.setColor(Color.BLACK);
+            g2d.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial",Font.PLAIN,60));
+            g2d.drawString("LOADING",400,400);
+        }
+        else {
             gameMap.drawMap(g2d);
             try {
                 objectsManager.getObjects().forEach(o -> o.draw(g2d));
@@ -57,15 +84,12 @@ public class GamePanel extends JPanel implements CustomObserver,Runnable {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-        } else if (GAME_STATE == GameState.LOADING) {
-            g2d.setColor(Color.BLACK);
-            g2d.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-            g2d.setColor(Color.WHITE);
-            g2d.setFont(new Font("Arial",Font.PLAIN,60));
-            g2d.drawString("LOADING",400,400);
         }
     }
 
+    /**
+     * Updates game components, including the player, enemies, collisions, objects, and explosions.
+     */
     private void updateComponents() {
         bombermanInstance.update();
         enemyManager.updateEnemies();
@@ -73,6 +97,10 @@ public class GamePanel extends JPanel implements CustomObserver,Runnable {
         objectsManager.updateObjects();
         explosionManager.updateExplosions();
     }
+
+    /**
+     * The game loop responsible for updating the game state and rendering it.
+     */
     @Override
     public void run() {
         long lastTime = System.nanoTime();
@@ -84,29 +112,13 @@ public class GamePanel extends JPanel implements CustomObserver,Runnable {
             deltaTime += (double) (currentTime - lastTime) / DRAW_INTERVAL;
             lastTime = currentTime;
             if (deltaTime >= 1) {
-                updateComponents();
-                repaint();
+                if (GameManager.GAME_STATE == GameState.PLAYING) {
+                    updateComponents();
+                    repaint();
+                }
                 deltaTime--;
             }
         }
     }
 
-    @Override
-    public void update(NotificationType notificationType, Object arg) {
-        switch (notificationType) {
-            case FINISH_LEVEL -> {
-                if (enemyManager.getEnemies().isEmpty()) {
-                    GAME_STATE = GameState.LOADING;
-                    Timer timer = new Timer(2000, e -> {
-                        levelManager.loadNextLevel();
-                        GAME_STATE = GameState.PLAYING;
-                    });
-                    timer.setRepeats(false);
-                    timer.start();
-                }
-            }
-            case GAME_OVER -> {
-            }
-        }
-    }
 }

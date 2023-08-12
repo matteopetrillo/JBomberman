@@ -18,7 +18,7 @@ public class CustomObservable {
         observers.remove(observer);
     }
 
-    public void notifyObservers(GameUtils.NotificationType notificationType, Object arg) {
+    public void notifyObservers(GameSettings.NotificationType notificationType, Object arg) {
         for (CustomObserver observer : observers) {
             observer.update(notificationType, arg);
         }

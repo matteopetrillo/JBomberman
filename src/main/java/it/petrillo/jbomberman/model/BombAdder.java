@@ -1,10 +1,8 @@
 package it.petrillo.jbomberman.model;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import static it.petrillo.jbomberman.util.GameUtils.*;
 
-import static it.petrillo.jbomberman.util.GameUtils.getImg;
+import static it.petrillo.jbomberman.util.GameSettings.getImg;
 
 public class BombAdder extends PowerUp {
     public BombAdder(int x, int y) {

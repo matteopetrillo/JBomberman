@@ -4,7 +4,7 @@ package it.petrillo.jbomberman.model;
 import java.util.List;
 import java.util.Random;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public abstract class Enemy extends GameCharacter implements Movable,Animatable {
     public Enemy(int x, int y) {

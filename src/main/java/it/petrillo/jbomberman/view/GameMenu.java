@@ -2,14 +2,15 @@ package it.petrillo.jbomberman.view;
 
 import javax.swing.*;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameSettings.getImg;
 
-public class GameFrame extends JFrame {
-    public GameFrame() {
+
+public class GameMenu extends JFrame {
+    public GameMenu() {
         setTitle("JBomberman");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setIconImage(getImg("/GameIcon.png"));
         setResizable(false);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
 }

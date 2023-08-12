@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GameUtils {
+public class GameSettings {
 
     public static final int MAP_COLUMNS = 17;
     public static final int MAP_ROWS = 13;
@@ -23,7 +23,8 @@ public class GameUtils {
     public static final int TILE_SIZE = (int) (DEFAULT_TILE_SIZE * SCALE);
     public static final int SCREEN_WIDTH = MAP_COLUMNS * TILE_SIZE;
     public static final int SCREEN_HEIGHT = MAP_ROWS * TILE_SIZE;
-    public static GameState GAME_STATE = GameState.LOADING;
+    public static GameState GAME_STATE = GameState.MENU;
+    public static final String DB_PATH = "JBomberman/src/main/Database/PlayersDB.json";
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
@@ -37,15 +38,15 @@ public class GameUtils {
         MENU,PLAYING,VICTORY,GAME_OVER,PAUSE,LOADING
     }
     public static BufferedImage getImg(String path) {
-        try (InputStream is = GameUtils.class.getResourceAsStream(path)) {
+        try (InputStream is = GameSettings.class.getResourceAsStream(path)) {
             if (is != null) {
                 return ImageIO.read(is);
             }
         } catch (IOException e) {
-            System.out.println("image not loaded");
+            System.out.println("La risorsa al path: "+path+" non è stata caricata correttamente.");
             e.printStackTrace();
         }
-        System.out.println("non ho trovato la risorsa");
+        System.out.println("La risorsa al path: "+path+" non è stata trovata.");
         return null;
     }
 
@@ -53,7 +54,7 @@ public class GameUtils {
     public static Map<String, JsonElement> getMultipleJsonFields(String jsonString, List<String> fields) {
         Map<String, JsonElement> selectedFields = new HashMap<>();
         try {
-            InputStream inputStream = GameUtils.class.getResourceAsStream(jsonString);
+            InputStream inputStream = GameSettings.class.getResourceAsStream(jsonString);
             if (inputStream == null) {
                 throw new IOException("Il file JSON non è stato trovato come risorsa: " + jsonString);
             }
@@ -77,17 +78,13 @@ public class GameUtils {
         return null;
     }
 
-    public static JsonObject getJsonObject(String jsonString, String field) {
+    public static JsonObject getJsonObject(String jsonString) {
         try {
-            InputStream inputStream = GameUtils.class.getResourceAsStream(jsonString);
+            InputStream inputStream = GameSettings.class.getResourceAsStream(jsonString);
             if (inputStream == null) {
                 throw new IOException("Il file JSON non è stato trovato come risorsa: " + jsonString);
             }
-
-            JsonParser jsonParser = new JsonParser();
-            JsonObject jsonObject = JsonParser.parseReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).getAsJsonObject();
-
-            return jsonObject.get(field).getAsJsonObject();
+            return JsonParser.parseReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).getAsJsonObject();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,7 +95,7 @@ public class GameUtils {
 
     public static JsonObject getJsonElement(String jsonString, String field) {
         try {
-            InputStream inputStream = GameUtils.class.getResourceAsStream(jsonString);
+            InputStream inputStream = GameSettings.class.getResourceAsStream(jsonString);
             if (inputStream == null) {
                 throw new IOException("Il file JSON non è stato trovato come risorsa: " + jsonString);
             }

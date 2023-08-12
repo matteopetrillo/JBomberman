@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class CollisionManager implements CollisionListener {
 

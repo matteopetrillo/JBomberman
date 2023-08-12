@@ -1,6 +1,6 @@
 package it.petrillo.jbomberman.model;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public abstract class GameCharacter extends GameEntity implements Collidable {
 

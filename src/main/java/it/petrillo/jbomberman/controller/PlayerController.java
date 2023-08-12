@@ -2,12 +2,11 @@ package it.petrillo.jbomberman.controller;
 
 
 import it.petrillo.jbomberman.model.Bomberman;
-import it.petrillo.jbomberman.util.GameUtils;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class PlayerController implements KeyListener {
     private final Bomberman bombermanInstance = Bomberman.getPlayerInstance();

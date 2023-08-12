@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
-import static it.petrillo.jbomberman.util.GameUtils.TILE_SIZE;
+import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameSettings.TILE_SIZE;
 
 public class ObjectsManager {
 

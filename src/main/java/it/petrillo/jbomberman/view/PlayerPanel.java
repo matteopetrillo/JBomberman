@@ -1,6 +1,7 @@
 package it.petrillo.jbomberman.view;
 
 import it.petrillo.jbomberman.util.CustomObserver;
+import it.petrillo.jbomberman.util.UserData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,18 +11,19 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class PlayerPanel extends JPanel implements CustomObserver {
 
     private Font retroFont;
     private String timerText = "01:30";
-    private int score;
+    private int score, win, lose;
     private int playerHealth = 5;
     private int bombs = 1;
     private Timer timer;
     private long countdownDuration = 90 * 1000;
-    private BufferedImage playerUI;
+    private BufferedImage playerUI, avatarImg;
+    private String nickname;
     public PlayerPanel() {
         setDoubleBuffered(true);
         setPreferredSize(new Dimension(SCREEN_WIDTH,150));
@@ -65,6 +67,14 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         g2d.setFont(retroFont.deriveFont(Font.PLAIN,70f));
         g2d.drawString(String.valueOf(playerHealth),120,53);
         g2d.drawString(String.valueOf(bombs),120,133);
+        g2d.setFont(retroFont.deriveFont(Font.PLAIN,50));
+        g2d.drawString(String.valueOf(nickname),300,133);
+        g2d.drawImage(avatarImg,400,20,100,100,null);
+        String winRecord = "Win: "+win;
+        String loseRecord = "Lose: "+lose;
+        g2d.setFont(retroFont.deriveFont(Font.PLAIN,35));
+        g2d.drawString(winRecord,600,110);
+        g2d.drawString(loseRecord,600,140);
     }
 
     private void updateTimer() {
@@ -102,5 +112,15 @@ public class PlayerPanel extends JPanel implements CustomObserver {
                 repaint();
             }
         }
+    }
+    public void uploadPlayerData(UserData playerData) {
+        this.nickname = playerData.getNickname();
+        this.avatarImg = getImg(playerData.getAvatarPath());
+        this.win = playerData.getWin();
+        this.lose = playerData.getLose();
+        System.out.println("Player Loaded:" +
+                "\n  Nick: "+nickname+
+                "\n  Win: "+win+
+                "\n  Lose: "+lose);
     }
 }

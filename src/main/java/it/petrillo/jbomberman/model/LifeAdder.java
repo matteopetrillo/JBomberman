@@ -1,8 +1,7 @@
 package it.petrillo.jbomberman.model;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class LifeAdder extends PowerUp {
     public LifeAdder(int x, int y) {

@@ -2,7 +2,7 @@ package it.petrillo.jbomberman.model;
 
 import java.awt.*;
 
-import static it.petrillo.jbomberman.util.GameUtils.TILE_SIZE;
+import static it.petrillo.jbomberman.util.GameSettings.TILE_SIZE;
 
 public abstract class PowerUp extends GameObject implements Collidable {
 

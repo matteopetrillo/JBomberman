@@ -3,14 +3,13 @@ package it.petrillo.jbomberman.model;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class Bomberman extends GameCharacter implements Movable,Animatable {
 
     private static Bomberman bombermanInstance;
     private int bombBackpack = 1;
     private int bombReleased, score;
-    String playerName;
 
     private Bomberman() {
         super(0, 0);
@@ -179,10 +178,6 @@ public class Bomberman extends GameCharacter implements Movable,Animatable {
             animationIndex = 0;
             animationSpeed = 18;
         }
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
     }
 
     public void advanceLevel() {

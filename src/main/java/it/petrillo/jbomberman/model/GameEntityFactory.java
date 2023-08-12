@@ -3,7 +3,7 @@ package it.petrillo.jbomberman.model;
 
 import java.util.ArrayList;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class GameEntityFactory {
 

@@ -1,10 +1,8 @@
 package it.petrillo.jbomberman.model;
 
-import it.petrillo.jbomberman.util.GameUtils;
-
 import java.awt.image.BufferedImage;
 
-import static it.petrillo.jbomberman.util.GameUtils.getImg;
+import static it.petrillo.jbomberman.util.GameSettings.getImg;
 
 public class LevelAdvancer extends PowerUp {
 

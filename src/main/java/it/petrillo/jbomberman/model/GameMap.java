@@ -8,9 +8,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 // TODO Immettere nel JSON l'id del tipo di tile così da rendere modulare l'assegnazione delle specifiche
 public class GameMap {

@@ -2,7 +2,7 @@ package it.petrillo.jbomberman.model;
 
 import java.awt.image.BufferedImage;
 
-import static it.petrillo.jbomberman.util.GameUtils.getImg;
+import static it.petrillo.jbomberman.util.GameSettings.getImg;
 
 public class ScoreAdder extends PowerUp {
     public ScoreAdder(int x, int y) {

@@ -5,7 +5,7 @@ import it.petrillo.jbomberman.util.CustomObservable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public abstract class GameEntity extends CustomObservable implements Animatable {
     protected Rectangle collisionBox;

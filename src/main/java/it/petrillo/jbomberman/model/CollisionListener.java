@@ -1,11 +1,9 @@
 package it.petrillo.jbomberman.model;
 
-import it.petrillo.jbomberman.util.GameUtils;
-
 import java.awt.*;
 import java.util.List;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public interface CollisionListener {
     boolean canMoveThere(int dx, int dy, Rectangle collisionBox);

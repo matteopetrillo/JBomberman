@@ -7,7 +7,7 @@ import it.petrillo.jbomberman.util.CustomObserver;
 import javax.swing.*;
 import java.awt.*;
 
-import static it.petrillo.jbomberman.util.GameUtils.*;
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class GamePanel extends JPanel implements CustomObserver,Runnable {
 
@@ -55,7 +55,7 @@ public class GamePanel extends JPanel implements CustomObserver,Runnable {
                 enemyManager.getEnemies().forEach(e -> e.draw(g2d));
                 bombermanInstance.draw(g2d);
             } catch (Exception e) {
-                e.getMessage();
+                System.out.println(e.getMessage());
             }
         } else if (GAME_STATE == GameState.LOADING) {
             g2d.setColor(Color.BLACK);

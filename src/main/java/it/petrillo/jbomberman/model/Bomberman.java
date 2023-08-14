@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
+import static java.awt.Color.white;
 
 /**
  * The Bomberman class represents the player character in the game.
@@ -29,6 +30,8 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         collisionBox.setLocation(super.x+ xCollisionOffset, super.y+ yCollisionOffset);
         collisionBox.setSize((int) (9*entityScale), (int) (5*entityScale));
         animationSpeed = 13;
+        defaultSpriteHeight = 32;
+        defaultSpriteWidth = 32;
         health = 5;
         visible = true;
         movingDirection = Direction.DOWN;
@@ -47,33 +50,26 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         if(visible) {
             if (health <= 0)
                 g.drawImage(spriteAnimation[4][animationIndex],
-                        x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+                        x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
             else if (hittedTimer > 0){
                 BufferedImage img = spriteAnimation[getAniIndexByDirection()][animationIndex];
-                g.drawImage(img, x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+                g.drawImage(img, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
                 if (hittedTimer%3 == 0) {
-                    int width = img.getWidth();
-                    int height = img.getHeight();
-                    BufferedImage filteredImg = new BufferedImage(width,height,img.getType());
-                    Graphics2D g2d = filteredImg.createGraphics();
-                    g2d.drawImage(img,0,0,null);
-                    g2d.dispose();
-                    for (int y = 0; y < height; y++) {
-                        for (int x = 0; x < width; x++) {
-                            int rgb = filteredImg.getRGB(x, y);
-                            int alpha = (rgb >> 24) & 0xFF;
-                            if (alpha > 0) {
-                                Color white = new Color(255, 255, 255, alpha);
-                                filteredImg.setRGB(x, y, white.getRGB());
-                            }
+                    BufferedImage flashImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    for (int row = 0; row < img.getHeight(); row++) {
+                        for (int col = 0; col < img.getWidth(); col++) {
+                            int originalPixel = img.getRGB(col, row);
+                            int alpha = (originalPixel >> 24) & 0xFF;
+                            int newPixel = (alpha == 255) ? Color.WHITE.getRGB() : originalPixel;
+                            flashImage.setRGB(col, row, newPixel);
                         }
                     }
-                    g.drawImage(filteredImg, x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+                    g.drawImage(flashImage, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
                 }
             }
             else {
                 g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
-                        x, y, (int) (32 * entityScale), (int) (32 * entityScale), null);
+                        x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
             }
         }
     }
@@ -90,7 +86,8 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         if (spriteSheet != null) {
             for (int i = 0; i < spriteAnimation.length; i++) {
                 for (int j = 0; j < spriteAnimation[i].length; j++) {
-                    spriteAnimation[i][j] = spriteSheet.getSubimage(32 * j, 32 * i, 32, 32);
+                    spriteAnimation[i][j] = spriteSheet.getSubimage(defaultSpriteWidth * j, defaultSpriteHeight * i,
+                            defaultSpriteWidth, defaultSpriteHeight);
                 }
             }
         }
@@ -150,14 +147,14 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
             animationTick = 0;
             if (health <= 0) {
                 animationIndex++;
-                if (animationIndex >= 3) {
+                if (animationIndex >= (spriteAnimation[getAniIndexByDirection()].length-1)) {
                     visible = false;
                     notifyObservers(NotificationType.GAME_OVER,null);
                 }
             }
             else if (movingDown || movingLeft || movingUp || movingRight) {
                 animationIndex++;
-                if (animationIndex >= 3)
+                if (animationIndex >= (spriteAnimation[getAniIndexByDirection()].length-1))
                     animationIndex = 0;
             }
             else
@@ -204,7 +201,7 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
      */
     @Override
     public void onCollision(Collidable other) {
-        if (other instanceof Enemy)
+        if (other instanceof Enemy && ((Enemy)other).isVisible())
             hitCharacter();
     }
 

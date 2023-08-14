@@ -46,7 +46,5 @@ public class LevelAdvancer extends PowerUp {
     @Override
     public void applyEffect(Bomberman player) {
         player.advanceLevel();
-        visible = false;
-        setToClean(true);
     }
 }

@@ -15,7 +15,7 @@ public abstract class GameCharacter extends GameEntity implements Collidable {
     protected CollisionListener collisionListener;
     protected Direction movingDirection;
     protected boolean movingUp, movingDown, movingLeft, movingRight, hitted;
-    protected int health, xSpeed, ySpeed, characterSpeed, hittedTimer;
+    protected int health, xSpeed, ySpeed, characterSpeed, hittedTimer, defaultSpriteWidth,defaultSpriteHeight;
 
     /**
      * Constructs a GameCharacter with the specified initial position.
@@ -33,6 +33,8 @@ public abstract class GameCharacter extends GameEntity implements Collidable {
      * @return The animation index corresponding to the character's moving direction.
      */
     protected int getAniIndexByDirection() {
+        if (spriteAnimation.length <= 1)
+            return 0;
         switch (movingDirection) {
             case UP -> {
                 return 0;

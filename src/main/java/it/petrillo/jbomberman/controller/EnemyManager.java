@@ -26,13 +26,15 @@ public class EnemyManager {
         for (JsonElement element : jsonArray) {
             int x = element.getAsJsonObject().get("x").getAsInt();
             int y = element.getAsJsonObject().get("y").getAsInt();
-            String enemyType = element.getAsJsonObject().get("type").getAsString();
-            if (enemyType.equals("BASIC")) {
+            int enemyType = element.getAsJsonObject().get("typeID").getAsInt();
+            if (enemyType == 1) {
                 BasicEnemy basicEnemy = GameEntityFactory.createBasicEnemy(x, y);
                 basicEnemy.setCollisionListener(collisionManager);
                 enemies.add(basicEnemy);
-            } else if (enemyType.equals("ADVANCED")) {
-                // TODO IMPLEMENTARE NEMICI AVANZATI
+            } else if (enemyType == 2) {
+                AdvancedEnemy advancedEnemy = GameEntityFactory.createAdvancedEnemy(x, y);
+                advancedEnemy.setCollisionListener(collisionManager);
+                enemies.add(advancedEnemy);
             }
 
         }
@@ -43,15 +45,14 @@ public class EnemyManager {
      * Updates the state of enemy entities and removes defeated enemies.
      */
     public void updateEnemies() {
-        for (Enemy enemy : enemies) {
-            if (enemy.isVisible())
-                enemy.update();
-        }
         cleanEnemies();
+        for (Enemy enemy : enemies) {
+            enemy.update();
+        }
     }
 
     /**
-     * Cleans up defeated enemy entities from the list.
+     * Cleans up defeated enemy entities from the list adding their score value to player's score.
      */
     private void cleanEnemies() {
         List<Enemy> killedEnemy = enemies.stream()
@@ -59,9 +60,7 @@ public class EnemyManager {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         for (Enemy e : killedEnemy) {
-            if (e instanceof BasicEnemy)
-                bomberman.alterScore(100);
-            // TODO IMPLEMENTARE ANCHE PER AVANZATO
+            bomberman.alterScore(e.getScoreValue());
             enemies.remove(e);
         };
     }

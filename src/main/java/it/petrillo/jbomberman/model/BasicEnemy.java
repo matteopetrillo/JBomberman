@@ -1,5 +1,6 @@
 package it.petrillo.jbomberman.model;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -25,50 +26,13 @@ public class BasicEnemy extends Enemy {
         xCollisionOffset = (int)(4*entityScale);
         collisionBox.setLocation(super.x+xCollisionOffset,super.y+yCollisionOffset);
         collisionBox.setSize((int)(10*entityScale), (int) (9*entityScale));
+        defaultSpriteWidth = 16;
+        defaultSpriteHeight = 24;
         health = 1;
         animationSpeed = 5;
+        scoreValue = 100;
         movingDirection = pickRandomDirection();
-        loadSprites( "/Sprites_Enemy1_16x24.png");
-    }
-
-
-    /**
-     * Draws the BasicEnemy character on the provided graphics.
-     * Handles animation and the hit effect.
-     *
-     * @param g The Graphics2D object to draw on.
-     */
-    @Override
-    public void draw(Graphics2D g) {
-        if (visible) {
-            if (hittedTimer > 0){
-                BufferedImage img = spriteAnimation[getAniIndexByDirection()][animationIndex];
-                g.drawImage(img, x, y, (int) (16*entityScale),(int)(24*entityScale), null);
-                if (hittedTimer%3 == 0) {
-                    int width = img.getWidth();
-                    int height = img.getHeight();
-                    BufferedImage filteredImg = new BufferedImage(width,height,img.getType());
-                    Graphics2D g2d = filteredImg.createGraphics();
-                    g2d.drawImage(img,0,0,null);
-                    g2d.dispose();
-                    for (int y = 0; y < height; y++) {
-                        for (int x = 0; x < width; x++) {
-                            int rgb = filteredImg.getRGB(x, y);
-                            int alpha = (rgb >> 24) & 0xFF;
-                            if (alpha > 0) {
-                                Color color = new Color(rgb);
-                                Color white = new Color(255, 255, 255, alpha);
-                                filteredImg.setRGB(x, y, white.getRGB());
-                            }
-                        }
-                    }
-                    g.drawImage(filteredImg, x, y, (int) (16*entityScale),(int)(24*entityScale), null);
-                }
-            }
-            else
-                g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],x,y,
-                    (int) (16*entityScale),(int)(24*entityScale), null);
-        }
+        loadSprites("/Sprites_Enemy1.png");
     }
 
     /**
@@ -82,7 +46,8 @@ public class BasicEnemy extends Enemy {
         spriteAnimation = new BufferedImage[4][4];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
-                spriteAnimation[i][j] = spriteSheet.getSubimage(16*j,24*i,16,24);
+                spriteAnimation[i][j] = spriteSheet.getSubimage(defaultSpriteWidth*j,defaultSpriteHeight*i,
+                        defaultSpriteWidth,defaultSpriteHeight);
             }
         }
     }
@@ -94,20 +59,28 @@ public class BasicEnemy extends Enemy {
     @Override
     public void update() {
         if (health > 0) {
+            if (hittedTimer > 0)
+                hittedTimer--;
             updatePosition();
             animationTick++;
+            scoreTextY = y;
             if (animationTick >= animationSpeed) {
                 animationTick = 0;
                 animationIndex++;
-                if (animationIndex >= 4)
+                if (animationIndex >= (spriteAnimation[getAniIndexByDirection()].length-1))
                     animationIndex = 0;
             }
         }
         else {
             hittedTimer--;
             if (hittedTimer <= 0) {
-                setToClean(true);
                 visible = false;
+                scoreTextY--;
+                Timer cleanTimer = new Timer(1500, e -> {
+                    setToClean(true);
+                });
+                cleanTimer.setRepeats(false);
+                cleanTimer.start();
             }
         }
     }

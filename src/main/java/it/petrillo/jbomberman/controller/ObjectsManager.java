@@ -41,16 +41,14 @@ public class ObjectsManager {
             objects.add(powerUp);
             collisionManager.addCollidable(powerUp);
         }
-        for (JsonElement element : softBlocks) {
-            int x = element.getAsJsonObject().get("x").getAsInt();
-            int y = element.getAsJsonObject().get("y").getAsInt();
-            SoftBlock softBlock = GameEntityFactory.createSoftBlock(x, y);
-            if (y-1 >=0) {
-                MapTile upperTile = gameMap.getTileFromCoords(x,y-1);
-                if (upperTile.getTileId() == 9)
-                    softBlock.setHasShadow(true);
+        for (int i = 0; i < softBlocks.size(); i++) {
+            for (int j = 0; j < softBlocks.get(i).getAsJsonArray().size(); j++) {
+                int data = softBlocks.get(i).getAsJsonArray().get(j).getAsInt();
+                if (data == 2)
+                    objects.add(GameEntityFactory.createSoftBlock(j,i,true));
+                else if (data == 3)
+                    objects.add(GameEntityFactory.createSoftBlock(j,i,false));
             }
-            objects.add(softBlock);
         }
     }
 
@@ -119,7 +117,7 @@ public class ObjectsManager {
             int newX = xIndex + dx[i];
             int newY = yIndex + dy[i];
             List<GameObject> objectList = getObjectsFromCoords(newX,newY);
-            if (!gameMap.getTileFromCoords(newX,newY).isWalkable())
+            if (gameMap.getTileFromCoords(newX,newY).getTileType() == TileType.WALL)
                 continue;
             else if (!objectList.isEmpty()) {
                 for (GameObject obj : objectList) {

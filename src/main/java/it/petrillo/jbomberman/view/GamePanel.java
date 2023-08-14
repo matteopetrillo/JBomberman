@@ -24,6 +24,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final CollisionManager collisionManager = CollisionManager.getInstance();
     private final ExplosionManager explosionManager = ExplosionManager.getInstance();
     private final LevelManager levelManager = LevelManager.getInstance();
+    private LoadingPanel loadingPanel;
 
     /**
      * Constructs a new GamePanel instance.
@@ -67,17 +68,17 @@ public class GamePanel extends JPanel implements Runnable {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        gameMap.drawMap(g2d);
+        objectsManager.getObjects().forEach(o -> o.draw(g2d));
         if (GameManager.GAME_STATE == GameState.LOADING) {
-            g2d.setColor(Color.BLACK);
-            g2d.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-            g2d.setColor(Color.WHITE);
-            g2d.setFont(new Font("Arial",Font.PLAIN,60));
-            g2d.drawString("LOADING",400,400);
+            if (loadingPanel == null) {
+                loadingPanel = new LoadingPanel(levelManager.getCurrentLvl());
+                loadingPanel.startAnimation();
+            }
+            loadingPanel.draw(g2d);
         }
         else {
-            gameMap.drawMap(g2d);
             try {
-                objectsManager.getObjects().forEach(o -> o.draw(g2d));
                 explosionManager.getExplosionList().forEach(e -> e.draw(g2d));
                 enemyManager.getEnemies().forEach(e -> e.draw(g2d));
                 bombermanInstance.draw(g2d);
@@ -112,13 +113,15 @@ public class GamePanel extends JPanel implements Runnable {
             deltaTime += (double) (currentTime - lastTime) / DRAW_INTERVAL;
             lastTime = currentTime;
             if (deltaTime >= 1) {
-                if (GameManager.GAME_STATE == GameState.PLAYING) {
+                if (GameManager.GAME_STATE == GameState.PLAYING)
                     updateComponents();
-                    repaint();
-                }
+                repaint();
                 deltaTime--;
             }
         }
     }
 
+    public void setLoadingPanel(LoadingPanel loadingPanel) {
+        this.loadingPanel = loadingPanel;
+    }
 }

@@ -150,6 +150,9 @@ public class CollisionManager implements CollisionListener {
         collidables.add(c);
     }
 
+
+
+
     /**
      * Removes collidable entities that are flagged for cleaning from the list of registered collidables.
      */

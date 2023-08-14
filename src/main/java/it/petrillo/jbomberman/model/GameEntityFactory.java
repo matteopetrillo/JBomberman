@@ -22,8 +22,8 @@ public class GameEntityFactory {
      * @param y The y-coordinate of the SoftBlock.
      * @return The newly created SoftBlock entity.
      */
-    public static SoftBlock createSoftBlock(int x, int y) {
-        return new SoftBlock(x*TILE_SIZE,y*TILE_SIZE,softBlockSpriteSheet);
+    public static SoftBlock createSoftBlock(int x, int y, boolean hasShadow) {
+        return new SoftBlock(x*TILE_SIZE,y*TILE_SIZE,softBlockSpriteSheet, hasShadow);
     }
 
     /**
@@ -60,6 +60,8 @@ public class GameEntityFactory {
         return new BasicEnemy(x*TILE_SIZE,y*TILE_SIZE);
     }
 
+    public static AdvancedEnemy createAdvancedEnemy(int x, int y) {return new AdvancedEnemy(x*TILE_SIZE,y*TILE_SIZE);}
+
     /**
      * Creates and returns a new PowerUp entity based on the specified type.
      *
@@ -73,6 +75,7 @@ public class GameEntityFactory {
             case "HEART" -> new LifeAdder(x * TILE_SIZE, y * TILE_SIZE);
             case "BOMB" -> new BombAdder(x * TILE_SIZE, y * TILE_SIZE);
             case "PORTAL" -> new LevelAdvancer(x * TILE_SIZE, y * TILE_SIZE);
+            case "CAKE" -> new ScoreAdder(x * TILE_SIZE, y * TILE_SIZE);
             default -> null;
         };
     }

@@ -1,6 +1,8 @@
 package it.petrillo.jbomberman.model;
 
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Random;
 
@@ -12,6 +14,8 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
  * This class encapsulates common behavior and attributes for enemy characters.
  */
 public abstract class Enemy extends GameCharacter implements Movable, Renderable {
+
+    int scoreTextY, scoreValue;
 
     /**
      * Constructs an Enemy instance with the specified initial position.
@@ -71,13 +75,62 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
     }
 
     /**
+     * Draws the enemy character on the provided graphics.
+     * Handles animation and the hit effect.
+     *
+     * @param g The Graphics2D object to draw on.
+     */
+    @Override
+    public void draw(Graphics2D g) {
+        if (visible) {
+            BufferedImage img = spriteAnimation[getAniIndexByDirection()][animationIndex];
+            if (hittedTimer > 0) {
+                g.drawImage(img, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
+                if (hittedTimer % 3 == 0) {
+                    BufferedImage flashImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    for (int row = 0; row < img.getHeight(); row++) {
+                        for (int col = 0; col < img.getWidth(); col++) {
+                            int originalPixel = img.getRGB(col, row);
+                            int alpha = (originalPixel >> 24) & 0xFF;
+                            int newPixel = (alpha == 255) ? Color.WHITE.getRGB() : originalPixel;
+                            flashImage.setRGB(col, row, newPixel);
+                        }
+                    }
+                    g.drawImage(flashImage, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
+                }
+            }
+
+            else {
+                g.drawImage(img, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
+            }
+        }
+
+        else {
+            g.setFont(retroFont.deriveFont(Font.PLAIN,50f));
+            g.setColor(Color.WHITE);
+            g.setColor(Color.BLACK);
+            g.drawString(String.valueOf(scoreValue), x - 4, scoreTextY - 4);
+            g.drawString(String.valueOf(scoreValue), x + 4, scoreTextY - 4);
+            g.drawString(String.valueOf(scoreValue), x - 4, scoreTextY + 4);
+            g.drawString(String.valueOf(scoreValue), x + 4, scoreTextY + 4);
+            g.setColor(Color.ORANGE);
+            g.drawString(String.valueOf(scoreValue), x, scoreTextY);
+        }
+    }
+
+
+    /**
      * Changes the enemy's direction to an available direction other than the current one.
      */
     private void changeDirection() {
         List<Direction> availableDirections = collisionListener.getAvailableDirections(characterSpeed,collisionBox);
         Random rd = new Random();
-        int n = rd.nextInt(0,availableDirections.size());
-        movingDirection = availableDirections.get(n);
+        try {
+            int n = rd.nextInt(0, availableDirections.size());
+            movingDirection = availableDirections.get(n);
+        } catch (IllegalArgumentException e) {
+            invertDirection(movingDirection);
+        }
         setFlagFromDirection();
     }
 
@@ -168,6 +221,10 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
             hittedTimer = 60;
             hitted = false;
         }
+    }
+
+    public int getScoreValue() {
+        return scoreValue;
     }
 
     /**

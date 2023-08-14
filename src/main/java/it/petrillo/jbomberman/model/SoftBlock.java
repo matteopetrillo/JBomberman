@@ -21,12 +21,13 @@ public class SoftBlock extends GameObject implements Explodable {
      * @param y         The y-coordinate of the SoftBlock's position.
      * @param sheetPath The path to the sprite sheet resource for rendering.
      */
-    public SoftBlock(int x, int y, String sheetPath) {
+    public SoftBlock(int x, int y, String sheetPath, boolean hasShadow) {
         super(x, y);
         isDestroyable = true;
         isSolid = true;
         animationSpeed = 8;
         visible = true;
+        this.hasShadow = hasShadow;
         loadSprites(sheetPath);
     }
 

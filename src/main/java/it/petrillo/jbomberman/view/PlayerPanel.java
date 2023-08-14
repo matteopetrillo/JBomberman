@@ -1,6 +1,6 @@
 package it.petrillo.jbomberman.view;
 
-import it.petrillo.jbomberman.controller.GameManager;
+import it.petrillo.jbomberman.model.GameStateListener;
 import it.petrillo.jbomberman.util.CustomObserver;
 import it.petrillo.jbomberman.util.UserData;
 
@@ -16,7 +16,6 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class PlayerPanel extends JPanel implements CustomObserver {
 
-    private Font retroFont;
     private String timerText = "01:30";
     private int score, win, lose;
     private int playerHealth = 5;
@@ -25,35 +24,32 @@ public class PlayerPanel extends JPanel implements CustomObserver {
     private long countdownDuration = 90 * 1000;
     private BufferedImage playerUI, avatarImg;
     private String nickname;
+    private GameStateListener gameStateListener;
     public PlayerPanel() {
         setDoubleBuffered(true);
         setPreferredSize(new Dimension(SCREEN_WIDTH,150));
         setBackground(new Color(252, 189, 13));
-        init();
+        playerUI = getImg("/PlayerUI.jpg");
     }
 
-    private void init() {
-        playerUI = getImg("/PlayerUI.jpg");
-        try {
-            InputStream is = getClass().getResourceAsStream("/RetroFont.ttf");
-            retroFont = Font.createFont(Font.TRUETYPE_FONT, is);
-        } catch (IOException | FontFormatException e) {
-            throw new RuntimeException(e);
-        }
-        timer = new Timer(1000, e -> {
+    public void startTimer() {
+        this.timer = new Timer(1000, e -> {
             countdownDuration -= 1000;
             if (countdownDuration < 0) {
                 countdownDuration = 0;
-                timer.stop();
-                GameManager.GAME_STATE = GameState.GAME_OVER;
+                this.timer.stop();
+                gameStateListener.onLosing();
             }
             updateTimer();
             repaint();
         });
+        this.timer.start();
     }
 
-    public void startTimer() {
-        timer.start();
+    public void resetTimer() {
+        timer.stop();
+        timerText = "01:30";
+        repaint();
     }
 
     @Override
@@ -123,5 +119,9 @@ public class PlayerPanel extends JPanel implements CustomObserver {
                 "\n  Nick: "+nickname+
                 "\n  Win: "+win+
                 "\n  Lose: "+lose);
+    }
+
+    public void setGameStateListener(GameStateListener gameStateListener) {
+        this.gameStateListener = gameStateListener;
     }
 }

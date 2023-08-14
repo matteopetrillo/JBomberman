@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import it.petrillo.jbomberman.model.Bomberman;
 import it.petrillo.jbomberman.model.GameEntityFactory;
 import it.petrillo.jbomberman.model.GameMap;
+import it.petrillo.jbomberman.model.GameStateListener;
 
 import javax.swing.*;
 import java.io.File;
@@ -23,6 +24,7 @@ public class LevelManager {
     private final GameMap gameMap = GameMap.getInstance();
     private final ObjectsManager objectsManager = ObjectsManager.getInstance();
     private final EnemyManager enemyManager = EnemyManager.getInstance();
+    private GameStateListener gameStateListener;
     private int currentLvl = 1;
 
     private LevelManager() {}
@@ -32,15 +34,15 @@ public class LevelManager {
      */
     public void loadLevel() {
         String settingPath = getJsonLvlPath();
-        List<String> fields = List.of("sprite_sheets_path", "player_spawn", "soft_blocks_spawn", "explosion", "enemies_spawn", "power_ups_spawn");
+        List<String> fields = List.of("mapImg","map_data","sprite_sheets_path", "player_spawn", "explosion", "enemies_spawn", "power_ups_spawn");
         Map<String, JsonElement> settings = getMultipleJsonFields(settingPath, fields);
         GameEntityFactory.setBombSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("bomb").getAsString());
         GameEntityFactory.setSoftBlockSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("soft_blocks").getAsString());
         GameEntityFactory.setExplosionSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("explosion").getAsString());
-        gameMap.initMap(settingPath);
+        gameMap.initMap(settings.get("mapImg").getAsString(),settings.get("map_data").getAsJsonArray());
         bomberman.setX(settings.get("player_spawn").getAsJsonObject().get("x").getAsInt() * TILE_SIZE);
         bomberman.setY(settings.get("player_spawn").getAsJsonObject().get("y").getAsInt() * TILE_SIZE);
-        objectsManager.initObjects(settings.get("soft_blocks_spawn").getAsJsonArray(), settings.get("power_ups_spawn").getAsJsonArray());
+        objectsManager.initObjects(settings.get("map_data").getAsJsonArray(), settings.get("power_ups_spawn").getAsJsonArray());
         enemyManager.initEnemies(settings.get("enemies_spawn").getAsJsonArray());
     }
 
@@ -48,19 +50,25 @@ public class LevelManager {
      * Loads the next level, clearing and resetting game elements.
      */
     public void loadNextLevel() {
-        currentLvl++;
-        gameMap.clear();
-        objectsManager.clear();
-        enemyManager.clear();
-        GameManager.GAME_STATE = GameState.LOADING;
-        Timer loadingTimer = new Timer(1500, e -> {
-           loadLevel();
-           GameManager.GAME_STATE = GameState.PLAYING;
-        });
+        if (isLevelFinished() && !isGameFinished()) {
+            gameStateListener.onLoading();
+            currentLvl++;
+            gameMap.clear();
+            objectsManager.clear();
+            enemyManager.clear();
+            loadLevel();
+            Timer loadingTimer = new Timer(4000, e -> {
+                gameStateListener.onPlaying();
+            });
+            loadingTimer.setRepeats(false);
+            loadingTimer.start();
+        }
+        else if (isGameFinished())
+            gameStateListener.onWinning();
     }
 
     /**
-     * Retrieves the JSON file path for the current level configuration.
+     * Returns the JSON file path for the current level configuration.
      *
      * @return The JSON file path for the current level.
      */
@@ -91,8 +99,16 @@ public class LevelManager {
         return enemyManager.getEnemies().isEmpty();
     }
 
+    public void setGameStateListener(GameStateListener gameStateListener) {
+        this.gameStateListener = gameStateListener;
+    }
+
+    public int getCurrentLvl() {
+        return currentLvl;
+    }
+
     /**
-     * Retrieves the singleton instance of the LevelManager class.
+     * Returns the singleton instance of the LevelManager class.
      *
      * @return The singleton instance of LevelManager.
      */

@@ -2,6 +2,8 @@ package it.petrillo.jbomberman.controller;
 
 import com.google.gson.*;
 import it.petrillo.jbomberman.model.Bomberman;
+import it.petrillo.jbomberman.model.CollisionListener;
+import it.petrillo.jbomberman.model.GameStateListener;
 import it.petrillo.jbomberman.util.CustomObserver;
 import it.petrillo.jbomberman.util.UserData;
 import it.petrillo.jbomberman.view.*;
@@ -18,7 +20,7 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
 /**
  * The GameManager class manages the overall game flow, including level loading, player interactions, and game state transitions.
  */
-public class GameManager implements CustomObserver {
+public class GameManager implements CustomObserver, GameStateListener {
 
     public static GameState GAME_STATE = GameState.MENU;
     private final GameFrame gameFrame = new GameFrame();
@@ -38,12 +40,14 @@ public class GameManager implements CustomObserver {
         gameFrame.setLayout(new BorderLayout());
         gameFrame.add(gamePanel,BorderLayout.CENTER);
         gameFrame.add(playerPanel,BorderLayout.NORTH);
-        gameFrame.setSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT+188));
+        gameFrame.pack();
         gameFrame.setLocationRelativeTo(null);
         gameMenu.add(gameMenuPanel);
         gameMenu.pack();
         bomberman.addObserver(playerPanel);
         bomberman.addObserver(this);
+        levelManager.setGameStateListener(this);
+        playerPanel.setGameStateListener(this);
         uploadDatabase();
     }
 
@@ -76,10 +80,9 @@ public class GameManager implements CustomObserver {
         gamePanel.startThread();
         gameFrame.setVisible(true);
         System.out.println("******** Game Started! ********");
-        Timer startingTimer = new Timer(1500,
+        Timer startingTimer = new Timer(4000,
                 e -> {
-                    GAME_STATE = GameState.PLAYING;
-                    playerPanel.startTimer();
+                    onPlaying();
                     });
         startingTimer.setRepeats(false);
         startingTimer.start();
@@ -190,18 +193,13 @@ public class GameManager implements CustomObserver {
     @Override
     public void update(NotificationType notificationType, Object arg) {
         switch (notificationType) {
-            case FINISH_LEVEL -> {
-                if (levelManager.isLevelFinished() && !levelManager.isGameFinished()) {
-                    levelManager.loadNextLevel();
-                }
-                else
-                    onWinning();
-            }
+            case FINISH_LEVEL -> levelManager.loadNextLevel();
             case GAME_OVER -> onLosing();
         }
     }
 
-    private void onLosing() {
+    @Override
+    public void onLosing() {
         System.out.println("Hai Perso!");
         currentPlayerData.lose();
         GAME_STATE = GameState.GAME_OVER;
@@ -213,7 +211,8 @@ public class GameManager implements CustomObserver {
         exitTimer.start();
     }
 
-    private void onWinning() {
+    @Override
+    public void onWinning() {
         System.out.println("Hai Vinto!");
         currentPlayerData.win();
         GAME_STATE = GameState.GAME_OVER;
@@ -224,4 +223,18 @@ public class GameManager implements CustomObserver {
         exitTimer.setRepeats(false);
         exitTimer.start();
     }
+
+    @Override
+    public void onLoading() {
+        GAME_STATE = GameState.LOADING;
+        playerPanel.resetTimer();
+    }
+
+    @Override
+    public void onPlaying() {
+        GAME_STATE = GameState.PLAYING;
+        gamePanel.setLoadingPanel(null);
+        playerPanel.startTimer();
+    }
+
 }

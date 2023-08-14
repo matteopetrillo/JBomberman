@@ -1,6 +1,7 @@
 package it.petrillo.jbomberman.model;
 
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
  */
 public class Explosion extends GameEntity {
 
-    private List<Direction> directions;
+    private final List<Direction> directions;
 
     /**
      * Constructs an Explosion instance with the specified initial position and explosion directions.
@@ -30,6 +31,7 @@ public class Explosion extends GameEntity {
         visible = true;
         loadSprites(spritesPath);
     }
+
 
     /**
      * Draws the explosion graphics onto the provided Graphics2D object.
@@ -49,6 +51,7 @@ public class Explosion extends GameEntity {
             if (directions.contains(Direction.LEFT))
                 g.drawImage(spriteAnimation[4][animationIndex],x-TILE_SIZE,y,TILE_SIZE,TILE_SIZE,null);
             g.drawImage(spriteAnimation[0][animationIndex],x,y,TILE_SIZE,TILE_SIZE,null);
+            g.draw(collisionBox);
         }
     }
 

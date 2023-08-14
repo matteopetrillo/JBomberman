@@ -9,41 +9,23 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
  */
 public class MapTile {
     private Rectangle collisionBox;
-    private int x, y, tileId;
+    private int x, y;
     private boolean isWalkable;
+    private TileType tileType;
 
     /**
      * Creates a new MapTile instance with the specified position, tile ID, and walkability status.
      *
-     * @param x         The x-coordinate of the tile.
-     * @param y         The y-coordinate of the tile.
-     * @param tileId    The ID of the tile.
+     * @param x          The x-coordinate of the tile.
+     * @param y          The y-coordinate of the tile.
      * @param isWalkable Determines whether the tile is walkable or not.
      */
-    public MapTile(int x, int y, int tileId, boolean isWalkable) {
+    public MapTile(int x, int y, TileType tileType, boolean isWalkable) {
         this.x = x;
         this.y = y;
-        this.tileId = tileId;
+        this.tileType = tileType;
         this.isWalkable = isWalkable;
         collisionBox = new Rectangle(x,y, TILE_SIZE, TILE_SIZE);
-    }
-
-    /**
-     * Returns the ID of the tile.
-            *
-            * @return The ID of the tile.
-     */
-    public int getTileId() {
-        return tileId;
-    }
-
-    /**
-     * Sets the ID of the tile.
-     *
-     * @param tileId The new ID to set for the tile.
-     */
-    public void setTileId(int tileId) {
-        this.tileId = tileId;
     }
 
     /**
@@ -116,5 +98,9 @@ public class MapTile {
      */
     public void setWalkable(boolean walkable) {
         isWalkable = walkable;
+    }
+
+    public TileType getTileType() {
+        return tileType;
     }
 }

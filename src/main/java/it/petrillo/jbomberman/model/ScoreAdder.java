@@ -18,6 +18,7 @@ public class ScoreAdder extends PowerUp {
      */
     public ScoreAdder(int x, int y) {
         super(x, y);
+        loadSprites("/Sprite_Items_16x16.png");
     }
 
     /**
@@ -45,5 +46,7 @@ public class ScoreAdder extends PowerUp {
     @Override
     public void applyEffect(Bomberman player) {
         player.alterScore(100);
+        visible = false;
+        setToClean(true);
     }
 }

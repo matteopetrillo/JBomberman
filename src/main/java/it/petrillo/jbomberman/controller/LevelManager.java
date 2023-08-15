@@ -7,7 +7,6 @@ import it.petrillo.jbomberman.model.GameMap;
 import it.petrillo.jbomberman.model.GameStateListener;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +52,7 @@ public class LevelManager {
         if (isLevelFinished() && !isGameFinished()) {
             gameStateListener.onLoading();
             currentLvl++;
-            gameMap.clear();
-            objectsManager.clear();
-            enemyManager.clear();
+            clearGame();
             loadLevel();
             Timer loadingTimer = new Timer(4000, e -> {
                 gameStateListener.onPlaying();
@@ -65,6 +62,18 @@ public class LevelManager {
         }
         else if (isGameFinished())
             gameStateListener.onWinning();
+    }
+
+    public void restartGame() {
+        currentLvl = 1;
+        clearGame();
+        loadLevel();
+    }
+
+    private void clearGame() {
+        gameMap.clearMap();
+        objectsManager.getObjects().clear();
+        enemyManager.getEnemies().clear();
     }
 
     /**

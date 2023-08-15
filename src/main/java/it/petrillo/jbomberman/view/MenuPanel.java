@@ -9,13 +9,13 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class GameMenuPanel extends JPanel {
+public class MenuPanel extends JPanel {
     private final BufferedImage backgroundImage = GameSettings.getImg("/GameMenuBg.png");
     private final JTextField nickField = new JTextField();
     private String chosenAvatarPath;
     private JButton playButton, quitButton;
     private ArrayList<AvatarButton> avatarsButtonList = new ArrayList<>();
-    public GameMenuPanel() {
+    public MenuPanel() {
         setPreferredSize(new Dimension(backgroundImage.getWidth(),backgroundImage.getHeight()));
         setLayout(null);
 
@@ -53,7 +53,7 @@ public class GameMenuPanel extends JPanel {
             add(buttons);
         }
 
-        this.playButton = new JButton();
+        playButton = new JButton();
         playButton.setBounds(130,630,210,95);
         playButton.setContentAreaFilled(false);
         playButton.setBorderPainted(false);
@@ -68,7 +68,7 @@ public class GameMenuPanel extends JPanel {
             }
         });
 
-        this.quitButton = new JButton();
+        quitButton = new JButton();
         quitButton.setBounds(465,630,210,95);
         quitButton.setContentAreaFilled(false);
         quitButton.setBorderPainted(false);

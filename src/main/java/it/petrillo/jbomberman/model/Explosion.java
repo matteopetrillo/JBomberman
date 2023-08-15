@@ -1,10 +1,10 @@
 package it.petrillo.jbomberman.model;
 
 import java.awt.*;
-import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
@@ -15,6 +15,7 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
 public class Explosion extends GameEntity {
 
     private final List<Direction> directions;
+    private List<ExplosionCollisions> explosionCollisionsList = new ArrayList<>();
 
     /**
      * Constructs an Explosion instance with the specified initial position and explosion directions.
@@ -29,6 +30,7 @@ public class Explosion extends GameEntity {
         this.directions = directions;
         animationSpeed = 7;
         visible = true;
+        initExplosionCollisions();
         loadSprites(spritesPath);
     }
 
@@ -85,8 +87,51 @@ public class Explosion extends GameEntity {
             if (animationIndex >= 5) {
                 visible = false;
                 animationIndex = 0;
+                explosionCollisionsList.forEach(e -> e.setExpired(true));
                 setToClean(true);
             }
+        }
+    }
+
+    public void initExplosionCollisions() {
+        explosionCollisionsList.add(new ExplosionCollisions(x, y));
+        for (Direction d : directions) {
+            switch (d) {
+                case UP -> explosionCollisionsList.add(new ExplosionCollisions(x, y - TILE_SIZE));
+                case DOWN -> explosionCollisionsList.add(new ExplosionCollisions(x, y + TILE_SIZE));
+                case LEFT -> explosionCollisionsList.add(new ExplosionCollisions(x - TILE_SIZE, y));
+                case RIGHT -> explosionCollisionsList.add(new ExplosionCollisions(x + TILE_SIZE, y));
+            }
+        }
+    }
+
+    public List<ExplosionCollisions> getExplosionCollisionsList() {
+        return explosionCollisionsList;
+    }
+
+    public static class ExplosionCollisions extends Rectangle implements Collidable {
+
+        boolean expired;
+        private ExplosionCollisions(int x, int y) {
+            super.x = x;
+            super.y = y;
+            super.width = TILE_SIZE;
+            super.height = TILE_SIZE;
+
+        }
+
+        public void setExpired(boolean expired) {
+            this.expired = expired;
+        }
+
+        public boolean isExpired() {
+            return expired;
+        }
+
+        @Override
+        public void onCollision(Collidable other) {
+            if (other instanceof GameCharacter)
+                ((GameCharacter) other).hitCharacter();
         }
     }
 

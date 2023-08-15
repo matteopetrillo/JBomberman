@@ -2,7 +2,6 @@ package it.petrillo.jbomberman.model;
 
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -86,7 +85,7 @@ public class GameMap {
     /**
      * Clears the mapImg by setting all mapImg tiles to null.
      */
-    public void clear() {
+    public void clearMap() {
         for (MapTile[] mapTiles : tiles) {
             Arrays.fill(mapTiles, null);
         }

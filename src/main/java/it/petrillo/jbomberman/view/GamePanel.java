@@ -17,6 +17,7 @@ public class GamePanel extends JPanel implements Runnable {
     private static final int FPS = 60;
     private static final long DRAW_INTERVAL = 1000000000 / FPS;
     boolean running;
+    private Thread gameThread = new Thread(this);
     private final Bomberman bombermanInstance = Bomberman.getPlayerInstance();
     private final ObjectsManager objectsManager = ObjectsManager.getInstance();
     private final GameMap gameMap = GameMap.getInstance();
@@ -55,8 +56,12 @@ public class GamePanel extends JPanel implements Runnable {
      */
     public void startThread() {
         running = true;
-        Thread gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    public void stopThread() {
+        running = false;
+        gameThread = new Thread(this);
     }
 
     /**

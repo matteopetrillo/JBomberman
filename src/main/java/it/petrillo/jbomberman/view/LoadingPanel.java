@@ -33,16 +33,15 @@ public class LoadingPanel {
 
                     if (state == 0) {
                         alpha -= 2;
-                        if (alpha <= 150 && alpha >= 71) {
+                        if (alpha <= 200 && alpha >= 61) {
                             alpha -=2;
                             message = "Level " + currentLvl;
                         }
-                        else if (alpha <= 70) {
-                            alpha = 65;
+                        else if (alpha <= 60) {
+                            alpha = 60;
                             state = 1;
-                            elapsedTime = System.currentTimeMillis();
                         }
-                    } else if (state == 1 && elapsedTime >= 2000) {
+                    } else if (state == 1 && elapsedTime >= 2500) {
                         message = "Start!";
                         state = 2;
                     } else if (state == 2) {

@@ -122,9 +122,18 @@ public class CollisionManager implements CollisionListener {
             for (int j = i+1; j < collidables.size(); j++) {
                 Collidable g1 = collidables.get(i);
                 Collidable g2 = collidables.get(j);
-                Rectangle g1CollisionBox = ((GameEntity)g1).getCollisionBox();
-                Rectangle g2CollisionBox = ((GameEntity)g2).getCollisionBox();
-                if (g1CollisionBox.intersects(g2CollisionBox)) {
+                Rectangle g1CollisionBox = null;
+                Rectangle g2CollisionBox = null;
+                if (g1 instanceof GameEntity && ((GameEntity)g1).isVisible())
+                    g1CollisionBox = ((GameEntity)g1).getCollisionBox();
+                else if (g1 instanceof Explosion.ExplosionCollisions)
+                    g1CollisionBox = (Rectangle) g1;
+                if (g2 instanceof GameEntity && ((GameEntity)g2).isVisible())
+                    g2CollisionBox = ((GameEntity)g2).getCollisionBox();
+                else if (g2 instanceof Explosion.ExplosionCollisions)
+                    g2CollisionBox = (Rectangle) g2;
+
+                if (g1CollisionBox != null && g2CollisionBox != null && g1CollisionBox.intersects(g2CollisionBox)) {
                     g1.onCollision(g2);
                     g2.onCollision(g1);
                 }
@@ -151,15 +160,25 @@ public class CollisionManager implements CollisionListener {
     }
 
 
-
+    public void addExplosionCollisions(Explosion explosion) {
+        collidables.addAll(explosion.getExplosionCollisionsList());
+    }
 
     /**
      * Removes collidable entities that are flagged for cleaning from the list of registered collidables.
      */
     private void cleanCollidables() {
-        List<Collidable> toClean = collidables.stream()
-                .filter(e -> ((GameEntity)e).isToClean())
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<Collidable> toClean = new ArrayList<>();
+        for (Collidable c : collidables) {
+            if (c instanceof GameEntity) {
+                if (((GameEntity) c).isToClean())
+                    toClean.add(c);
+            }
+            else if (c instanceof Explosion.ExplosionCollisions) {
+                if (((Explosion.ExplosionCollisions)c).isExpired())
+                    toClean.add(c);
+                }
+            }
 
         toClean.forEach(collidables::remove);
     }

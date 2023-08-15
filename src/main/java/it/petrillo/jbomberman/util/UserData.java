@@ -43,6 +43,7 @@ public class UserData {
         return lose;
     }
 
+
     public void lose() {
         this.lose++;
     }

@@ -131,12 +131,16 @@ public class ObjectsManager {
             else {
                 explosionDirections.add(checkingDirection);
                 for (Collidable c : collisionManager.getCollidables()) {
-                    Rectangle collisionBox = ((GameEntity)c).getCollisionBox();
-                    if (collisionBox.x / TILE_SIZE == newX && collisionBox.y / TILE_SIZE == newY && c instanceof GameCharacter)
-                        ((GameCharacter)c).setHitted(true);
+                    if (c instanceof GameEntity) {
+                        Rectangle collisionBox = ((GameEntity) c).getCollisionBox();
+                        if (collisionBox.x / TILE_SIZE == newX && collisionBox.y / TILE_SIZE == newY && c instanceof GameCharacter)
+                            ((GameCharacter) c).setHitted(true);
+                    }
                 }
             }
-            explosionManager.addExplosion(GameEntityFactory.createExplosion(xIndex,yIndex,explosionDirections));
+            Explosion explosion = GameEntityFactory.createExplosion(xIndex,yIndex,explosionDirections);
+            explosionManager.addExplosion(explosion);
+            collisionManager.addExplosionCollisions(explosion);
         }
 
         collisionManager.getCollidables().stream()

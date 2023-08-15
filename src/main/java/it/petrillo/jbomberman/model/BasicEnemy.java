@@ -31,7 +31,6 @@ public class BasicEnemy extends Enemy {
         health = 1;
         animationSpeed = 5;
         scoreValue = 100;
-        movingDirection = pickRandomDirection();
         loadSprites("/Sprites_Enemy1.png");
     }
 

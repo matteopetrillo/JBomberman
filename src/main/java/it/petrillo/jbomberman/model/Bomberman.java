@@ -26,17 +26,23 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         entityScale = 3.5d;
         xCollisionOffset = (int) (11*entityScale);
         yCollisionOffset = (int) (23*entityScale);
-        characterSpeed = 4;
         collisionBox.setLocation(super.x+ xCollisionOffset, super.y+ yCollisionOffset);
         collisionBox.setSize((int) (9*entityScale), (int) (5*entityScale));
         animationSpeed = 13;
         defaultSpriteHeight = 32;
         defaultSpriteWidth = 32;
-        health = 5;
-        visible = true;
-        movingDirection = Direction.DOWN;
-        hittedTimer = 80;
+        initDefaultValues();
         loadSprites("/spritesheeet_bomberman_32x32.png");
+    }
+
+    private void initDefaultValues() {
+        score = 0;
+        health = 5;
+        characterSpeed = 4;
+        bombBackpack = 1;
+        hittedTimer = 80;
+        movingDirection = Direction.DOWN;
+        visible = true;
     }
 
     /**
@@ -246,8 +252,14 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         else if (health <= 0) {
             animationIndex = 0;
             animationSpeed = 18;
-            notifyObservers(NotificationType.GAME_OVER,null);
         }
+    }
+
+    public void resetPlayer() {
+        initDefaultValues();
+        notifyObservers(NotificationType.HEALTH_UPDATE,health);
+        notifyObservers(NotificationType.SCORE_UPDATE, score);
+        notifyObservers(NotificationType.BOMB_UPDATE,getBombAvailable());
     }
 
     /**
@@ -284,6 +296,10 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
     public void alterScore(int k) {
         score += k;
         notifyObservers(NotificationType.SCORE_UPDATE,score);
+    }
+
+    public int getScore() {
+        return score;
     }
 
     /**

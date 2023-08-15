@@ -2,12 +2,13 @@ package it.petrillo.jbomberman.controller;
 
 import com.google.gson.*;
 import it.petrillo.jbomberman.model.Bomberman;
-import it.petrillo.jbomberman.model.CollisionListener;
 import it.petrillo.jbomberman.model.GameStateListener;
 import it.petrillo.jbomberman.util.CustomObserver;
 import it.petrillo.jbomberman.util.UserData;
 import it.petrillo.jbomberman.view.*;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.nio.file.Paths;
 import javax.swing.*;
 import javax.swing.Timer;
@@ -25,8 +26,8 @@ public class GameManager implements CustomObserver, GameStateListener {
     public static GameState GAME_STATE = GameState.MENU;
     private final GameFrame gameFrame = new GameFrame();
     private final GamePanel gamePanel = new GamePanel();
-    private final GameMenu gameMenu = new GameMenu();
-    private final GameMenuPanel gameMenuPanel = new GameMenuPanel();
+    private final MenuFrame menuFrame = new MenuFrame();
+    private final MenuPanel menuPanel = new MenuPanel();
     private final PlayerPanel playerPanel = new PlayerPanel();
     private final Bomberman bomberman = Bomberman.getPlayerInstance();
     private final LevelManager levelManager = LevelManager.getInstance();
@@ -42,8 +43,8 @@ public class GameManager implements CustomObserver, GameStateListener {
         gameFrame.add(playerPanel,BorderLayout.NORTH);
         gameFrame.pack();
         gameFrame.setLocationRelativeTo(null);
-        gameMenu.add(gameMenuPanel);
-        gameMenu.pack();
+        menuFrame.add(menuPanel);
+        menuFrame.pack();
         bomberman.addObserver(playerPanel);
         bomberman.addObserver(this);
         levelManager.setGameStateListener(this);
@@ -55,21 +56,21 @@ public class GameManager implements CustomObserver, GameStateListener {
      * Opens the game menu, allowing players to choose their nickname and avatar before starting the game.
      */
     public void openGame() {
-        gameMenuPanel.getPlayButton().addActionListener(e -> {
-            String nick = gameMenuPanel.getNickname();
-            String chosenAvatar = gameMenuPanel.getChosenAvatarPath();
+        menuPanel.getPlayButton().addActionListener(e -> {
+            String nick = menuPanel.getNickname();
+            String chosenAvatar = menuPanel.getChosenAvatarPath();
             if (nick != null && !nick.equals("") && chosenAvatar != null && !chosenAvatar.equals("")) {
                 setCurrentPlayerData(nick);
                 currentPlayerData.setAvatarPath(chosenAvatar);
                 playerPanel.uploadPlayerData(currentPlayerData);
                 SwingUtilities.invokeLater(this::startGame);
-                gameMenu.setVisible(false);
+                menuFrame.setVisible(false);
             }
             else
                 System.out.println("Inserire Nick e Scegliere un Avatar");
         });
-        gameMenu.setLocationRelativeTo(null);
-        gameMenu.setVisible(true);
+        menuFrame.setLocationRelativeTo(null);
+        menuFrame.setVisible(true);
     }
 
     /**
@@ -87,6 +88,14 @@ public class GameManager implements CustomObserver, GameStateListener {
         startingTimer.setRepeats(false);
         startingTimer.start();
     }
+
+    private void restartGame() {
+        levelManager.restartGame();
+        playerPanel.resetTimer();
+        bomberman.resetPlayer();
+        startGame();
+    }
+
 
     /**
      * Sets the current player's data based on the provided nickname.
@@ -200,12 +209,23 @@ public class GameManager implements CustomObserver, GameStateListener {
 
     @Override
     public void onLosing() {
-        System.out.println("Hai Perso!");
-        currentPlayerData.lose();
         GAME_STATE = GameState.GAME_OVER;
-        Timer exitTimer = new Timer(1500, e -> {
+        currentPlayerData.lose();
+        updateDatabase();
+        playerPanel.uploadPlayerData(currentPlayerData);
+        gamePanel.stopThread();
+        Timer exitTimer = new Timer(1000, e -> {
             updateDatabase();
-            System.exit(0);
+            EndingFrame endingFrame = new EndingFrame(false,currentPlayerData);
+            endingFrame.getRestartButton().addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    endingFrame.setVisible(false);
+                    restartGame();
+                }
+            });
+            endingFrame.setLocationRelativeTo(null);
+            endingFrame.setVisible(true);
         });
         exitTimer.setRepeats(false);
         exitTimer.start();
@@ -213,12 +233,23 @@ public class GameManager implements CustomObserver, GameStateListener {
 
     @Override
     public void onWinning() {
-        System.out.println("Hai Vinto!");
-        currentPlayerData.win();
         GAME_STATE = GameState.GAME_OVER;
-        Timer exitTimer = new Timer(1500, e -> {
+        currentPlayerData.win();
+        updateDatabase();
+        playerPanel.uploadPlayerData(currentPlayerData);
+        gamePanel.stopThread();
+        Timer exitTimer = new Timer(1000, e -> {
             updateDatabase();
-            System.exit(0);
+            EndingFrame endingFrame = new EndingFrame(true,currentPlayerData);
+            endingFrame.getRestartButton().addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    endingFrame.setVisible(false);
+                    restartGame();
+                }
+            });
+            endingFrame.setLocationRelativeTo(null);
+            endingFrame.setVisible(true);
         });
         exitTimer.setRepeats(false);
         exitTimer.start();
@@ -227,7 +258,6 @@ public class GameManager implements CustomObserver, GameStateListener {
     @Override
     public void onLoading() {
         GAME_STATE = GameState.LOADING;
-        playerPanel.resetTimer();
     }
 
     @Override

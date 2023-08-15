@@ -37,6 +37,7 @@ public class BombAdder extends PowerUp {
         }
     }
 
+
     /**
      * Applies the effect of the BombAdder power-up to the player.
      * Increases the player's bomb backpack capacity and marks the power-up for cleanup.

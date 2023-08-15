@@ -5,8 +5,8 @@ import javax.swing.*;
 import static it.petrillo.jbomberman.util.GameSettings.getImg;
 
 
-public class GameMenu extends JFrame {
-    public GameMenu() {
+public class MenuFrame extends JFrame {
+    public MenuFrame() {
         setTitle("JBomberman");
         setIconImage(getImg("/GameIcon.png"));
         setResizable(false);

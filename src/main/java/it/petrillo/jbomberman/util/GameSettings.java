@@ -56,6 +56,14 @@ public class GameSettings {
         WALL, FLOOR
     }
 
+    public static void drawBorder(Graphics2D g2d, int x, int y, int amount,String message) {
+        g2d.setColor(Color.BLACK);
+        g2d.drawString(message, x - amount, y - amount);
+        g2d.drawString(message, x + amount, y - amount);
+        g2d.drawString(message, x - amount, y + amount);
+        g2d.drawString(message, x + amount, y + amount);
+    }
+
     /**
      * Retrieves an image resource from the provided path.
      *

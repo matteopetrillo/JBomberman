@@ -60,7 +60,7 @@ public class LevelManager {
             loadingTimer.setRepeats(false);
             loadingTimer.start();
         }
-        else if (isGameFinished())
+        else if (isGameFinished() && isLevelFinished())
             gameStateListener.onWinning();
     }
 

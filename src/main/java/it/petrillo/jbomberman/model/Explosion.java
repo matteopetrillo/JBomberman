@@ -53,7 +53,6 @@ public class Explosion extends GameEntity {
             if (directions.contains(Direction.LEFT))
                 g.drawImage(spriteAnimation[4][animationIndex],x-TILE_SIZE,y,TILE_SIZE,TILE_SIZE,null);
             g.drawImage(spriteAnimation[0][animationIndex],x,y,TILE_SIZE,TILE_SIZE,null);
-            g.draw(collisionBox);
         }
     }
 

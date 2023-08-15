@@ -65,7 +65,7 @@ public class SoftBlock extends GameObject implements Explodable {
         for (int i = 0; i < spriteAnimation.length; i++) {
             if (i != spriteAnimation.length-1)
                 spriteAnimation[i] = new BufferedImage[4];
-            spriteAnimation[i] = new BufferedImage[6];
+            spriteAnimation[i] = new BufferedImage[5];
             for (int j = 0; j < spriteAnimation[i].length; j++) {
                 spriteAnimation[i][j] = spriteSheet.getSubimage(16*j,16*i, 16, 16);
             }
@@ -79,7 +79,7 @@ public class SoftBlock extends GameObject implements Explodable {
     public void update() {
         int maxIndex = 4;
         if (isExploding)
-            maxIndex = 6;
+            maxIndex = 5;
         animationTick++;
         if (animationTick >= animationSpeed) {
             animationTick = 0;

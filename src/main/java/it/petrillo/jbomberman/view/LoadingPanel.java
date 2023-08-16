@@ -6,13 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.InputStream;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class LoadingPanel {
-    private String message = "Loading...";
+    private String message;
     private int state;
     private Timer timer;
     private boolean started = false;
@@ -21,10 +19,11 @@ public class LoadingPanel {
     long startTime;
     public LoadingPanel(int lvl) {
         this.currentLvl = lvl;
+        this.message = "Level "+currentLvl+"!";
     }
     public void startAnimation() {
         if (!started) {
-            timer = new Timer(15, new ActionListener() {
+            timer = new Timer(10, new ActionListener() {
                 private long startTime = System.currentTimeMillis();
 
                 @Override
@@ -33,15 +32,11 @@ public class LoadingPanel {
 
                     if (state == 0) {
                         alpha -= 2;
-                        if (alpha <= 200 && alpha >= 61) {
-                            alpha -=2;
-                            message = "Level " + currentLvl;
-                        }
-                        else if (alpha <= 60) {
+                        if (alpha <= 60) {
                             alpha = 60;
                             state = 1;
                         }
-                    } else if (state == 1 && elapsedTime >= 2500) {
+                    } else if (state == 1 && elapsedTime >= 500) {
                         message = "Start!";
                         state = 2;
                     } else if (state == 2) {
@@ -58,9 +53,9 @@ public class LoadingPanel {
         g2d.setColor(new Color(0, 0, 0, alpha));
         g2d.fillRect(0, 0, GameSettings.SCREEN_WIDTH, GameSettings.SCREEN_HEIGHT);
 
-        g2d.setFont(retroFont.deriveFont(Font.PLAIN,70f));
+        g2d.setFont(RETRO_FONT.deriveFont(Font.PLAIN,70f));
 
-        Font font = retroFont.deriveFont(Font.PLAIN, 70f);
+        Font font = RETRO_FONT.deriveFont(Font.PLAIN, 70f);
         g2d.setFont(font);
 
         FontMetrics metrics = g2d.getFontMetrics(font);

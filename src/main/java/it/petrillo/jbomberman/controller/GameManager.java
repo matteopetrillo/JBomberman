@@ -9,6 +9,7 @@ import it.petrillo.jbomberman.view.*;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.*;
 import javax.swing.Timer;
@@ -31,6 +32,7 @@ public class GameManager implements CustomObserver, GameStateListener {
     private final PlayerPanel playerPanel = new PlayerPanel();
     private final Bomberman bomberman = Bomberman.getPlayerInstance();
     private final LevelManager levelManager = LevelManager.getInstance();
+    private final AudioManager audioManager = AudioManager.getAudioManagerInstance();
     private UserData currentPlayerData;
     private JsonObject database;
 
@@ -56,6 +58,7 @@ public class GameManager implements CustomObserver, GameStateListener {
      * Opens the game menu, allowing players to choose their nickname and avatar before starting the game.
      */
     public void openGame() {
+        audioManager.playMenuMusic();
         menuPanel.getPlayButton().addActionListener(e -> {
             String nick = menuPanel.getNickname();
             String chosenAvatar = menuPanel.getChosenAvatarPath();
@@ -71,22 +74,16 @@ public class GameManager implements CustomObserver, GameStateListener {
         });
         menuFrame.setLocationRelativeTo(null);
         menuFrame.setVisible(true);
+
     }
 
     /**
      * Starts the game by transitioning from the menu to the actual gameplay.
      */
     public void startGame() {
-        GAME_STATE = GameState.LOADING;
         gamePanel.startThread();
         gameFrame.setVisible(true);
-        System.out.println("******** Game Started! ********");
-        Timer startingTimer = new Timer(4000,
-                e -> {
-                    onPlaying();
-                    });
-        startingTimer.setRepeats(false);
-        startingTimer.start();
+        onLoading();
     }
 
     private void restartGame() {
@@ -210,6 +207,9 @@ public class GameManager implements CustomObserver, GameStateListener {
     @Override
     public void onLosing() {
         GAME_STATE = GameState.GAME_OVER;
+        audioManager.fadeOutGamePlayMusic();
+        audioManager.play(Path.of(USER_BASE_DIR,"JBomberman/src/main/resources/losing_sfx.wav").toString(),-12f);
+        audioManager.playMenuMusic();
         currentPlayerData.lose();
         updateDatabase();
         playerPanel.uploadPlayerData(currentPlayerData);
@@ -234,6 +234,9 @@ public class GameManager implements CustomObserver, GameStateListener {
     @Override
     public void onWinning() {
         GAME_STATE = GameState.GAME_OVER;
+        audioManager.fadeOutGamePlayMusic();
+        audioManager.play(Path.of(USER_BASE_DIR,"JBomberman/src/main/resources/winning_sfx.wav").toString(),-8f);
+        audioManager.playMenuMusic();
         currentPlayerData.win();
         updateDatabase();
         playerPanel.uploadPlayerData(currentPlayerData);
@@ -258,11 +261,20 @@ public class GameManager implements CustomObserver, GameStateListener {
     @Override
     public void onLoading() {
         GAME_STATE = GameState.LOADING;
+        audioManager.fadeOutMenuMusic();
+        audioManager.play("JBomberman/src/main/resources/loading_screen_music.wav",0f);
+        Timer startingTimer = new Timer(2500,
+                e -> {
+                    onPlaying();
+                });
+        startingTimer.setRepeats(false);
+        startingTimer.start();
     }
 
     @Override
     public void onPlaying() {
         GAME_STATE = GameState.PLAYING;
+        audioManager.playGameplayMusic();
         gamePanel.setLoadingPanel(null);
         playerPanel.startTimer();
     }

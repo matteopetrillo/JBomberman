@@ -1,5 +1,6 @@
 package it.petrillo.jbomberman.view;
 
+import it.petrillo.jbomberman.controller.AudioManager;
 import it.petrillo.jbomberman.model.GameStateListener;
 import it.petrillo.jbomberman.util.CustomObserver;
 import it.petrillo.jbomberman.util.UserData;
@@ -7,6 +8,7 @@ import it.petrillo.jbomberman.util.UserData;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -59,17 +61,17 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(playerUI,0,0,SCREEN_WIDTH,150,null);
         g2d.setColor(Color.BLACK);
-        g2d.setFont(retroFont.deriveFont(Font.PLAIN,60f));
+        g2d.setFont(RETRO_FONT.deriveFont(Font.PLAIN,60f));
         drawTimer(g2d);
         drawScore(g2d);
-        g2d.setFont(retroFont.deriveFont(Font.PLAIN,70f));
+        g2d.setFont(RETRO_FONT.deriveFont(Font.PLAIN,70f));
         drawBorder(g2d,120,53,4,String.valueOf(playerHealth));
         g2d.setColor(Color.WHITE);
         g2d.drawString(String.valueOf(playerHealth),120,53);
         drawBorder(g2d,120,133,4,String.valueOf(bombs));
         g2d.setColor(Color.WHITE);
         g2d.drawString(String.valueOf(bombs),120,133);
-        g2d.setFont(retroFont.deriveFont(Font.PLAIN,50));
+        g2d.setFont(RETRO_FONT.deriveFont(Font.PLAIN,50));
         drawPlayerInfo(g2d);
 
     }
@@ -86,7 +88,7 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         g2d.drawImage(avatarImg,383,3,138,138,null);
         String winRecord = "Win: "+win;
         String loseRecord = "Lose: "+lose;
-        g2d.setFont(retroFont.deriveFont(Font.PLAIN,35));
+        g2d.setFont(RETRO_FONT.deriveFont(Font.PLAIN,35));
         drawBorder(g2d,555,90,2,winRecord);
         g2d.setColor(Color.WHITE);
         g2d.drawString(winRecord,555,90);
@@ -125,9 +127,12 @@ public class PlayerPanel extends JPanel implements CustomObserver {
     }
     @Override
     public void update(NotificationType notificationType, Object arg) {
+
         switch (notificationType) {
             case SCORE_UPDATE -> {
                 score = (Integer) arg;
+                AudioManager.getAudioManagerInstance().play(Path.of(USER_BASE_DIR,
+                        "JBomberman/src/main/resources/enemy_defeated.wav").toString(),-16f);
                 repaint();
             }
             case HEALTH_UPDATE -> {
@@ -156,4 +161,5 @@ public class PlayerPanel extends JPanel implements CustomObserver {
     public void setGameStateListener(GameStateListener gameStateListener) {
         this.gameStateListener = gameStateListener;
     }
+
 }

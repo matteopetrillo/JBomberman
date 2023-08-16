@@ -1,8 +1,12 @@
 package it.petrillo.jbomberman.model;
 
+import it.petrillo.jbomberman.controller.AudioManager;
+
 import java.awt.*;
+import java.nio.file.Path;
 
 import static it.petrillo.jbomberman.util.GameSettings.TILE_SIZE;
+import static it.petrillo.jbomberman.util.GameSettings.USER_BASE_DIR;
 
 /**
  * The PowerUp class represents a game entity that provides a special effect or enhancement to the player's character.

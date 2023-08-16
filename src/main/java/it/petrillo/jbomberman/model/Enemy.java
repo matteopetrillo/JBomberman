@@ -1,8 +1,12 @@
 package it.petrillo.jbomberman.model;
 
 
+import it.petrillo.jbomberman.controller.AudioManager;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Random;
 
@@ -28,6 +32,40 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
         movingDirection = pickRandomDirection();
         visible = true;
     }
+
+    /**
+     * Updates the state of the BasicEnemy character.
+     * Handles movement, animation, and visibility.
+     */
+    @Override
+    public void update() {
+        if (hittedTimer > 0)
+            hittedTimer--;
+        if (health > 0) {
+            updatePosition();
+            animationTick++;
+            scoreTextY = y;
+            if (animationTick >= animationSpeed) {
+                animationTick = 0;
+                animationIndex++;
+                if (animationIndex >= (spriteAnimation[getAniIndexByDirection()].length-1))
+                    animationIndex = 0;
+            }
+        }
+        else {
+            if (hittedTimer <= 0) {
+                visible = false;
+                if (scoreTextY > 20)
+                    scoreTextY--;
+                Timer cleanTimer = new Timer(500, e -> {
+                    setToClean(true);
+                });
+                cleanTimer.setRepeats(false);
+                cleanTimer.start();
+            }
+        }
+    }
+
 
     /**
      * Picks a random movement direction for the enemy.
@@ -106,13 +144,8 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
         }
 
         else {
-            g.setFont(retroFont.deriveFont(Font.PLAIN,50f));
-            g.setColor(Color.WHITE);
-            g.setColor(Color.BLACK);
-            g.drawString(String.valueOf(scoreValue), x - 4, scoreTextY - 4);
-            g.drawString(String.valueOf(scoreValue), x + 4, scoreTextY - 4);
-            g.drawString(String.valueOf(scoreValue), x - 4, scoreTextY + 4);
-            g.drawString(String.valueOf(scoreValue), x + 4, scoreTextY + 4);
+            g.setFont(RETRO_FONT.deriveFont(Font.PLAIN,50f));
+            drawBorder(g, x, scoreTextY, 4, String.valueOf(scoreValue));
             g.setColor(Color.ORANGE);
             g.drawString(String.valueOf(scoreValue), x, scoreTextY);
         }

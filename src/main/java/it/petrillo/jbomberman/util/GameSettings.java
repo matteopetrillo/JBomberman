@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,12 +28,13 @@ public class GameSettings {
     public static final int SCREEN_WIDTH = MAP_COLUMNS * TILE_SIZE;
     public static final int SCREEN_HEIGHT = MAP_ROWS * TILE_SIZE;
     public static final String DB_PATH = "JBomberman/src/main/Database/PlayersDB.json";
-    public static Font retroFont;
+    public static final Font RETRO_FONT;
+    public static final String USER_BASE_DIR = System.getProperty("user.dir");
 
     static {
         try {
             InputStream is = GameSettings.class.getResourceAsStream("/RetroFont.ttf");
-            retroFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            RETRO_FONT = Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -150,5 +150,6 @@ public class GameSettings {
 
         return null;
     }
+
 
 }

@@ -44,7 +44,7 @@ public class LifeAdder extends PowerUp {
      */
     @Override
     public void applyEffect(Bomberman player) {
-        player.healCharacter();
+        player.incrHealthCharacter();
         visible = false;
         setToClean(true);
     }

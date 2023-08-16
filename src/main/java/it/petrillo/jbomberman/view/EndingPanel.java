@@ -1,6 +1,5 @@
 package it.petrillo.jbomberman.view;
 
-import it.petrillo.jbomberman.util.GameSettings;
 import it.petrillo.jbomberman.util.UserData;
 
 import javax.swing.*;
@@ -66,7 +65,7 @@ public class EndingPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bgImg,0,0,null);
-        g2d.setFont(retroFont.deriveFont(Font.PLAIN,80f));
+        g2d.setFont(RETRO_FONT.deriveFont(Font.PLAIN,80f));
         if (playerWin) {
             String winMessage = "YOU WON!";
             drawBorder(g2d,140,80,4, winMessage);
@@ -81,7 +80,7 @@ public class EndingPanel extends JPanel {
         }
         String winRecord = "Win: "+userData.getWin();
         String loseRecord = "Lose: "+userData.getLose();
-        g2d.setFont(retroFont.deriveFont(Font.PLAIN,50));
+        g2d.setFont(RETRO_FONT.deriveFont(Font.PLAIN,50));
         drawBorder(g2d,242,190,3,winRecord);
         g2d.setColor(Color.WHITE);
         g2d.drawString(winRecord,242,190);

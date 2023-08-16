@@ -1,13 +1,11 @@
 package it.petrillo.jbomberman.controller;
 
 import com.google.gson.JsonElement;
-import it.petrillo.jbomberman.model.Bomberman;
-import it.petrillo.jbomberman.model.GameEntityFactory;
-import it.petrillo.jbomberman.model.GameMap;
-import it.petrillo.jbomberman.model.GameStateListener;
+import it.petrillo.jbomberman.model.*;
 
 import javax.swing.*;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -50,15 +48,10 @@ public class LevelManager {
      */
     public void loadNextLevel() {
         if (isLevelFinished() && !isGameFinished()) {
-            gameStateListener.onLoading();
             currentLvl++;
             clearGame();
             loadLevel();
-            Timer loadingTimer = new Timer(4000, e -> {
-                gameStateListener.onPlaying();
-            });
-            loadingTimer.setRepeats(false);
-            loadingTimer.start();
+            gameStateListener.onLoading();
         }
         else if (isGameFinished() && isLevelFinished())
             gameStateListener.onWinning();
@@ -74,6 +67,7 @@ public class LevelManager {
         gameMap.clearMap();
         objectsManager.getObjects().clear();
         enemyManager.getEnemies().clear();
+        ExplosionManager.getInstance().getExplosionList().clear();
     }
 
     /**
@@ -93,10 +87,7 @@ public class LevelManager {
     public boolean isGameFinished() {
         String fileName = "Level"+(currentLvl+1)+".json";
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
-        if (inputStream != null)
-            return false;
-        else
-            return true;
+        return inputStream == null;
     }
 
     /**

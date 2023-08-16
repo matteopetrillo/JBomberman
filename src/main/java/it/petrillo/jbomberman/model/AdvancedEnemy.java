@@ -40,31 +40,4 @@ public class AdvancedEnemy extends Enemy {
         }
     }
 
-    @Override
-    public void update() {
-        if (hittedTimer > 0)
-            hittedTimer--;
-        if (health > 0) {
-            updatePosition();
-            animationTick++;
-            scoreTextY = y;
-            if (animationTick >= animationSpeed) {
-                animationTick = 0;
-                animationIndex++;
-                if (animationIndex >= (spriteAnimation[0].length-1))
-                    animationIndex = 0;
-            }
-        }
-        else {
-            if (hittedTimer <= 0) {
-                visible = false;
-                scoreTextY--;
-                Timer cleanTimer = new Timer(1500, e -> {
-                    setToClean(true);
-                });
-                cleanTimer.setRepeats(false);
-                cleanTimer.start();
-            }
-        }
-    }
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import it.petrillo.jbomberman.model.*;
 
 import java.awt.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,6 +67,8 @@ public class ObjectsManager {
                         bomberman.alterBombReleased(-1);
                         handleExplosion(bomb);
                         bomb.setExplosionStarted(true);
+                        AudioManager.getAudioManagerInstance().play(Path.of(USER_BASE_DIR,"JBomberman/src/main/resources/explosion_sfx.wav"
+                            ).toString(),-12f);
                     }
                 }
             }
@@ -83,6 +86,8 @@ public class ObjectsManager {
         if (o.isEmpty() && bomberman.canDropBomb()) {
             objects.add((GameEntityFactory.createBomb(x, y)));
             bomberman.alterBombReleased(1);
+            AudioManager.getAudioManagerInstance().play(Path.of(USER_BASE_DIR,
+                    "JBomberman/src/main/resources/bomb_dropped_sfx.wav").toString(),-16f);
         }
     }
 
@@ -100,11 +105,7 @@ public class ObjectsManager {
         if (bomberman.getCollisionBox().x / TILE_SIZE == xIndex && bomberman.getCollisionBox().y / TILE_SIZE == yIndex)
             bomberman.setHitted(true);
 
-        for (Collidable c : collisionManager.getCollidables()) {
-            Rectangle collisionBox = ((GameEntity)c).getCollisionBox();
-            if (collisionBox.x / TILE_SIZE == xIndex && collisionBox.y / TILE_SIZE == yIndex && c instanceof GameCharacter)
-                ((GameCharacter)c).setHitted(true);
-        }
+        checkHittedCharacter(xIndex, yIndex);
 
         for (int i = 0; i < 4; i++) {
             Direction checkingDirection = null;
@@ -130,13 +131,7 @@ public class ObjectsManager {
             }
             else {
                 explosionDirections.add(checkingDirection);
-                for (Collidable c : collisionManager.getCollidables()) {
-                    if (c instanceof GameEntity) {
-                        Rectangle collisionBox = ((GameEntity) c).getCollisionBox();
-                        if (collisionBox.x / TILE_SIZE == newX && collisionBox.y / TILE_SIZE == newY && c instanceof GameCharacter)
-                            ((GameCharacter) c).setHitted(true);
-                    }
-                }
+                checkHittedCharacter(newX, newY);
             }
             Explosion explosion = GameEntityFactory.createExplosion(xIndex,yIndex,explosionDirections);
             explosionManager.addExplosion(explosion);
@@ -149,6 +144,16 @@ public class ObjectsManager {
 
     }
 
+    private void checkHittedCharacter(int xIndex, int yIndex) {
+        for (Collidable c : collisionManager.getCollidables()) {
+            if (c instanceof GameEntity) {
+                Rectangle collisionBox = ((GameEntity) c).getCollisionBox();
+                if (collisionBox.x / TILE_SIZE == xIndex && collisionBox.y / TILE_SIZE == yIndex && c instanceof GameCharacter)
+                    ((GameCharacter) c).setHitted(true);
+            }
+        }
+    }
+
     /**
      * Cleans up destroyed objects from the list of game objects.
      */
@@ -157,7 +162,12 @@ public class ObjectsManager {
                 .filter(GameEntity::isToClean)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        destroyedObjects.forEach(objects::remove);
+        for (GameObject obj : destroyedObjects) {
+            if (obj instanceof PowerUp)
+                AudioManager.getAudioManagerInstance().play(Path.of(USER_BASE_DIR,
+                        "JBomberman/src/main/resources/power_up_sfx.wav").toString(),-16f);
+            objects.remove(obj);
+        };
     }
 
     /**

@@ -51,37 +51,4 @@ public class BasicEnemy extends Enemy {
         }
     }
 
-    /**
-     * Updates the state of the BasicEnemy character.
-     * Handles movement, animation, and visibility.
-     */
-    @Override
-    public void update() {
-        if (health > 0) {
-            if (hittedTimer > 0)
-                hittedTimer--;
-            updatePosition();
-            animationTick++;
-            scoreTextY = y;
-            if (animationTick >= animationSpeed) {
-                animationTick = 0;
-                animationIndex++;
-                if (animationIndex >= (spriteAnimation[getAniIndexByDirection()].length-1))
-                    animationIndex = 0;
-            }
-        }
-        else {
-            hittedTimer--;
-            if (hittedTimer <= 0) {
-                visible = false;
-                scoreTextY--;
-                Timer cleanTimer = new Timer(1500, e -> {
-                    setToClean(true);
-                });
-                cleanTimer.setRepeats(false);
-                cleanTimer.start();
-            }
-        }
-    }
-
 }

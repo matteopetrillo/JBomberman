@@ -1,5 +1,6 @@
 package it.petrillo.jbomberman.view;
 
+import it.petrillo.jbomberman.controller.GameManager;
 import it.petrillo.jbomberman.util.GameSettings;
 
 import javax.swing.*;
@@ -112,7 +113,4 @@ public class MenuPanel extends JPanel {
         return nickField.getText();
     }
 
-    private void exportJson() {
-
-    }
 }

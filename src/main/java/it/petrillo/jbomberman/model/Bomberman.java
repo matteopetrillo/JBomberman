@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
-import static java.awt.Color.white;
 
 /**
  * The Bomberman class represents the player character in the game.
@@ -65,7 +64,9 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
                     for (int row = 0; row < img.getHeight(); row++) {
                         for (int col = 0; col < img.getWidth(); col++) {
                             int originalPixel = img.getRGB(col, row);
+                            // 24 bit right-shift + bitwise AND with 255 (0xFF) to obtain the alpha value of the pixel
                             int alpha = (originalPixel >> 24) & 0xFF;
+                            // if not complete transparent (alpha == 255) the pixel will be converted to white pixel
                             int newPixel = (alpha == 255) ? Color.WHITE.getRGB() : originalPixel;
                             flashImage.setRGB(col, row, newPixel);
                         }
@@ -212,12 +213,11 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
     }
 
     /**
-     * Increases the player's health by one, if it's below the maximum health.
+     * Increases the player's health by one.
      */
-    public void healCharacter() {
-        if (health < 5) {
-            health++;
-        }
+    public void incrHealthCharacter() {
+        health++;
+        notifyObservers(NotificationType.HEALTH_UPDATE,health);
     }
 
     /**

@@ -67,8 +67,7 @@ public class ObjectsManager {
                         bomberman.alterBombReleased(-1);
                         handleExplosion(bomb);
                         bomb.setExplosionStarted(true);
-                        AudioManager.getAudioManagerInstance().play(Path.of(USER_BASE_DIR,"JBomberman/src/main/resources/explosion_sfx.wav"
-                            ).toString(),-12f);
+                        AudioManager.getAudioManagerInstance().play("/src/main/resources/explosion_sfx.wav",-12f);
                     }
                 }
             }
@@ -86,8 +85,7 @@ public class ObjectsManager {
         if (o.isEmpty() && bomberman.canDropBomb()) {
             objects.add((GameEntityFactory.createBomb(x, y)));
             bomberman.alterBombReleased(1);
-            AudioManager.getAudioManagerInstance().play(Path.of(USER_BASE_DIR,
-                    "JBomberman/src/main/resources/bomb_dropped_sfx.wav").toString(),-16f);
+            AudioManager.getAudioManagerInstance().play("/src/main/resources/bomb_dropped_sfx.wav",-16f);
         }
     }
 
@@ -164,8 +162,7 @@ public class ObjectsManager {
 
         for (GameObject obj : destroyedObjects) {
             if (obj instanceof PowerUp)
-                AudioManager.getAudioManagerInstance().play(Path.of(USER_BASE_DIR,
-                        "JBomberman/src/main/resources/power_up_sfx.wav").toString(),-16f);
+                AudioManager.getAudioManagerInstance().play("/src/main/resources/power_up_sfx.wav",-16f);
             objects.remove(obj);
         };
     }

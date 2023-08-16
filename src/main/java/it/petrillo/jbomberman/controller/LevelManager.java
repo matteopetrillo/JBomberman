@@ -22,7 +22,7 @@ public class LevelManager {
     private final ObjectsManager objectsManager = ObjectsManager.getInstance();
     private final EnemyManager enemyManager = EnemyManager.getInstance();
     private GameStateListener gameStateListener;
-    private int currentLvl = 1;
+    private int currentLvl = 2;
 
     private LevelManager() {}
 

@@ -3,10 +3,13 @@ package it.petrillo.jbomberman.controller;
 import it.petrillo.jbomberman.util.GameSettings;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.sound.sampled.*;
 import javax.sound.sampled.FloatControl;
 import javax.swing.*;
+
+import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class AudioManager {
 
@@ -18,9 +21,9 @@ public class AudioManager {
 	private Timer fadeOutTimer;
 
 	private AudioManager() {
-		walking = getClipFromPath("JBomberman/src/main/resources/walking_sfx.wav");
-		menuMusic = getClipFromPath("JBomberman/src/main/resources/menu_music.wav");
-		gameMusic = getClipFromPath("JBomberman/src/main/resources/gaming_music.wav");
+		walking = getClipFromPath("/src/main/resources/walking_sfx.wav");
+		menuMusic = getClipFromPath("/src/main/resources/menu_music.wav");
+		gameMusic = getClipFromPath("/src/main/resources/gaming_music.wav");
 	}
 
 	public void playMenuMusic() {
@@ -78,8 +81,9 @@ public class AudioManager {
 	}
 
 	public void play(String filename, float dbVolume) {
+		String path = Path.of(USER_BASE_DIR,filename).toString();
 		try {
-			InputStream in = new BufferedInputStream(new FileInputStream(filename));
+			InputStream in = new BufferedInputStream(new FileInputStream(path));
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(in);
 			Clip clip = AudioSystem.getClip();
 			clip.open(audioIn);
@@ -94,7 +98,7 @@ public class AudioManager {
 
 	public Clip getClipFromPath(String path) {
 		try {
-			InputStream in = new BufferedInputStream(new FileInputStream(Paths.get(GameSettings.USER_BASE_DIR,
+			InputStream in = new BufferedInputStream(new FileInputStream(Paths.get(USER_BASE_DIR,
 					path).toString()));
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(in);
 			Clip clip = AudioSystem.getClip();

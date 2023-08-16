@@ -24,6 +24,7 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
  */
 public class GameManager implements CustomObserver, GameStateListener {
 
+    private static GameManager gameManagerInstance;
     public static GameState GAME_STATE = GameState.MENU;
     private final GameFrame gameFrame = new GameFrame();
     private final GamePanel gamePanel = new GamePanel();
@@ -208,7 +209,7 @@ public class GameManager implements CustomObserver, GameStateListener {
     public void onLosing() {
         GAME_STATE = GameState.GAME_OVER;
         audioManager.fadeOutGamePlayMusic();
-        audioManager.play(Path.of(USER_BASE_DIR,"JBomberman/src/main/resources/losing_sfx.wav").toString(),-12f);
+        audioManager.play("/src/main/resources/losing_sfx.wav",-12f);
         audioManager.playMenuMusic();
         currentPlayerData.lose();
         updateDatabase();
@@ -235,7 +236,7 @@ public class GameManager implements CustomObserver, GameStateListener {
     public void onWinning() {
         GAME_STATE = GameState.GAME_OVER;
         audioManager.fadeOutGamePlayMusic();
-        audioManager.play(Path.of(USER_BASE_DIR,"JBomberman/src/main/resources/winning_sfx.wav").toString(),-8f);
+        audioManager.play("/src/main/resources/winning_sfx.wav",-8f);
         audioManager.playMenuMusic();
         currentPlayerData.win();
         updateDatabase();
@@ -262,7 +263,7 @@ public class GameManager implements CustomObserver, GameStateListener {
     public void onLoading() {
         GAME_STATE = GameState.LOADING;
         audioManager.fadeOutMenuMusic();
-        audioManager.play("JBomberman/src/main/resources/loading_screen_music.wav",0f);
+        audioManager.play("/src/main/resources/loading_screen_music.wav",0f);
         Timer startingTimer = new Timer(2500,
                 e -> {
                     onPlaying();
@@ -279,4 +280,9 @@ public class GameManager implements CustomObserver, GameStateListener {
         playerPanel.startTimer();
     }
 
+    public static GameManager getInstance() {
+        if (gameManagerInstance == null)
+            gameManagerInstance = new GameManager();
+        return gameManagerInstance;
+    }
 }

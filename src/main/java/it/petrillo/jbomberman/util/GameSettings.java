@@ -27,7 +27,7 @@ public class GameSettings {
     public static final int TILE_SIZE = (int) (DEFAULT_TILE_SIZE * SCALE);
     public static final int SCREEN_WIDTH = MAP_COLUMNS * TILE_SIZE;
     public static final int SCREEN_HEIGHT = MAP_ROWS * TILE_SIZE;
-    public static final String DB_PATH = "JBomberman/src/main/Database/PlayersDB.json";
+    public static final String DB_PATH = "/src/main/Database/PlayersDB.json";
     public static final Font RETRO_FONT;
     public static final String USER_BASE_DIR = System.getProperty("user.dir");
 

@@ -131,8 +131,7 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         switch (notificationType) {
             case SCORE_UPDATE -> {
                 score = (Integer) arg;
-                AudioManager.getAudioManagerInstance().play(Path.of(USER_BASE_DIR,
-                        "JBomberman/src/main/resources/enemy_defeated.wav").toString(),-16f);
+                AudioManager.getAudioManagerInstance().play("/src/main/resources/enemy_defeated.wav",-16f);
                 repaint();
             }
             case HEALTH_UPDATE -> {

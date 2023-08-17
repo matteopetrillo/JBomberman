@@ -77,8 +77,6 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
                 g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
                         x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
             }
-            g.setColor(Color.RED);
-            g.draw(collisionBox);
         }
     }
 

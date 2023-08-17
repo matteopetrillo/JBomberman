@@ -23,10 +23,10 @@ public class BasicEnemy extends Enemy {
         super(x, (int) (y-8*SCALE));
         entityScale = 3.5d;
         characterSpeed = 2;
-        yCollisionOffset = (int)(16*entityScale);
-        xCollisionOffset = (int)(4*entityScale);
+        yCollisionOffset = (int)(15.5*entityScale);
+        xCollisionOffset = (int)(2*entityScale);
         collisionBox = new Area(new Rectangle(super.x+xCollisionOffset,super.y+yCollisionOffset,
-                (int)(10*entityScale), (int) (9*entityScale)));
+                (int)(12*entityScale), (int) (10.5*entityScale)));
         defaultSpriteWidth = 16;
         defaultSpriteHeight = 24;
         health = 1;

@@ -1,6 +1,6 @@
 package it.petrillo.jbomberman.model;
 
-import java.awt.*;
+import java.awt.geom.Area;
 import java.util.List;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
@@ -20,7 +20,7 @@ public interface CollisionListener {
      * @param collisionBox The collision box of the entity.
      * @return True if the entity can move to the specified position, otherwise false.
      */
-    boolean canMoveThere(int dx, int dy, Rectangle collisionBox);
+    boolean canMoveThere(int dx, int dy, Area collisionBox);
 
     /**
      * Returns a list of available directions for movement based on speed and collision box.
@@ -29,5 +29,5 @@ public interface CollisionListener {
      * @param collisionBox The collision box of the entity.
      * @return A list of available directions for movement.
      */
-    List<Direction> getAvailableDirections(int speed, Rectangle collisionBox);
+    List<Direction> getAvailableDirections(int speed, Area collisionBox);
 }

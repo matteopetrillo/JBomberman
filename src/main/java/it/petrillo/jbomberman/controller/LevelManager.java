@@ -37,8 +37,9 @@ public class LevelManager {
         GameEntityFactory.setSoftBlockSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("soft_blocks").getAsString());
         GameEntityFactory.setExplosionSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("explosion").getAsString());
         gameMap.initMap(settings.get("mapImg").getAsString(),settings.get("map_data").getAsJsonArray());
-        bomberman.setX(settings.get("player_spawn").getAsJsonObject().get("x").getAsInt() * TILE_SIZE);
-        bomberman.setY(settings.get("player_spawn").getAsJsonObject().get("y").getAsInt() * TILE_SIZE);
+        int playerX = settings.get("player_spawn").getAsJsonObject().get("x").getAsInt() * TILE_SIZE;
+        int playerY = settings.get("player_spawn").getAsJsonObject().get("y").getAsInt() * TILE_SIZE;
+        bomberman.setPosition(playerX,playerY);
         objectsManager.initObjects(settings.get("map_data").getAsJsonArray(), settings.get("power_ups_spawn").getAsJsonArray());
         enemyManager.initEnemies(settings.get("enemies_spawn").getAsJsonArray());
     }

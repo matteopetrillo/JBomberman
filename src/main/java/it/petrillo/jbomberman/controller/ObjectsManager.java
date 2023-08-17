@@ -100,7 +100,7 @@ public class ObjectsManager {
         int xIndex = bomb.getX() / TILE_SIZE;
         int yIndex = bomb.getY() / TILE_SIZE;
         ArrayList<Direction> explosionDirections = new ArrayList<>();
-        if (bomberman.getCollisionBox().x / TILE_SIZE == xIndex && bomberman.getCollisionBox().y / TILE_SIZE == yIndex)
+        if (bomberman.getCollisionBox().getBounds().getX() / TILE_SIZE == xIndex && bomberman.getCollisionBox().getBounds().getY()/ TILE_SIZE == yIndex)
             bomberman.setHitted(true);
 
         checkHittedCharacter(xIndex, yIndex);
@@ -133,7 +133,7 @@ public class ObjectsManager {
             }
             Explosion explosion = GameEntityFactory.createExplosion(xIndex,yIndex,explosionDirections);
             explosionManager.addExplosion(explosion);
-            collisionManager.addExplosionCollisions(explosion);
+            collisionManager.addCollidable(explosion);
         }
 
         collisionManager.getCollidables().stream()
@@ -144,9 +144,9 @@ public class ObjectsManager {
 
     private void checkHittedCharacter(int xIndex, int yIndex) {
         for (Collidable c : collisionManager.getCollidables()) {
-            if (c instanceof GameEntity) {
-                Rectangle collisionBox = ((GameEntity) c).getCollisionBox();
-                if (collisionBox.x / TILE_SIZE == xIndex && collisionBox.y / TILE_SIZE == yIndex && c instanceof GameCharacter)
+            if (c instanceof GameCharacter) {
+                Rectangle collisionBox = ((GameEntity) c).getCollisionBox().getBounds();
+                if (collisionBox.x / TILE_SIZE == xIndex && collisionBox.y / TILE_SIZE == yIndex)
                     ((GameCharacter) c).setHitted(true);
             }
         }

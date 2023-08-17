@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
 public class EndingPanel extends JPanel {
-    private boolean playerWin;
-    private UserData userData;
+    private final boolean playerWin;
+    private final UserData userData;
     private final BufferedImage bgImg = getImg("/EndingDef.png");
     private final JButton restartButton;
 
@@ -21,7 +21,6 @@ public class EndingPanel extends JPanel {
         this.userData = userData;
         setPreferredSize(new Dimension(640,480));
         setLayout(null);
-
         restartButton = new JButton();
         restartButton.setBounds(87,326,216,84);
         restartButton.setContentAreaFilled(false);

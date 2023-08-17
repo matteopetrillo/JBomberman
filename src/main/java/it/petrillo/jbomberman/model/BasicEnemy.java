@@ -2,6 +2,7 @@ package it.petrillo.jbomberman.model;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
@@ -24,8 +25,8 @@ public class BasicEnemy extends Enemy {
         characterSpeed = 2;
         yCollisionOffset = (int)(16*entityScale);
         xCollisionOffset = (int)(4*entityScale);
-        collisionBox.setLocation(super.x+xCollisionOffset,super.y+yCollisionOffset);
-        collisionBox.setSize((int)(10*entityScale), (int) (9*entityScale));
+        collisionBox = new Area(new Rectangle(super.x+xCollisionOffset,super.y+yCollisionOffset,
+                (int)(10*entityScale), (int) (9*entityScale)));
         defaultSpriteWidth = 16;
         defaultSpriteHeight = 24;
         health = 1;

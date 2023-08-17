@@ -59,6 +59,7 @@ public class GameManager implements CustomObserver, GameStateListener {
      * Opens the game menu, allowing players to choose their nickname and avatar before starting the game.
      */
     public void openGame() {
+        System.out.println("****WELCOME TO JBOMBERMAN!****");
         audioManager.playMenuMusic();
         menuPanel.getPlayButton().addActionListener(e -> {
             String nick = menuPanel.getNickname();
@@ -82,6 +83,7 @@ public class GameManager implements CustomObserver, GameStateListener {
      * Starts the game by transitioning from the menu to the actual gameplay.
      */
     public void startGame() {
+        System.out.println("****HAVE A GOOD TIME PLAYING JBOMBERMAN!****");
         gamePanel.startThread();
         gameFrame.setVisible(true);
         onLoading();
@@ -208,12 +210,12 @@ public class GameManager implements CustomObserver, GameStateListener {
     @Override
     public void onLosing() {
         GAME_STATE = GameState.GAME_OVER;
+        System.out.println("****YOU LOSE!!****");
         audioManager.fadeOutGamePlayMusic();
         audioManager.play("/src/main/resources/losing_sfx.wav",-12f);
         audioManager.playMenuMusic();
         currentPlayerData.lose();
         updateDatabase();
-        playerPanel.uploadPlayerData(currentPlayerData);
         gamePanel.stopThread();
         Timer exitTimer = new Timer(1000, e -> {
             updateDatabase();
@@ -221,7 +223,9 @@ public class GameManager implements CustomObserver, GameStateListener {
             endingFrame.getRestartButton().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    System.out.println("****RESTARTING!****");
                     endingFrame.setVisible(false);
+                    playerPanel.uploadPlayerData(currentPlayerData);
                     restartGame();
                 }
             });
@@ -235,12 +239,12 @@ public class GameManager implements CustomObserver, GameStateListener {
     @Override
     public void onWinning() {
         GAME_STATE = GameState.GAME_OVER;
+        System.out.println("****YOU WON!****");
         audioManager.fadeOutGamePlayMusic();
         audioManager.play("/src/main/resources/winning_sfx.wav",-8f);
         audioManager.playMenuMusic();
         currentPlayerData.win();
         updateDatabase();
-        playerPanel.uploadPlayerData(currentPlayerData);
         gamePanel.stopThread();
         Timer exitTimer = new Timer(1000, e -> {
             updateDatabase();
@@ -248,7 +252,9 @@ public class GameManager implements CustomObserver, GameStateListener {
             endingFrame.getRestartButton().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    System.out.println("****RESTARTING!****");
                     endingFrame.setVisible(false);
+                    playerPanel.uploadPlayerData(currentPlayerData);
                     restartGame();
                 }
             });

@@ -1,6 +1,7 @@
 package it.petrillo.jbomberman.model;
 
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;

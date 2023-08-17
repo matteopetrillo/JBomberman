@@ -5,6 +5,8 @@ import it.petrillo.jbomberman.controller.AudioManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.List;
@@ -101,6 +103,11 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
         int[] deltaSpeed = getDeltaSpeedByDirection();
         xSpeed = deltaSpeed[0];
         ySpeed = deltaSpeed[1];
+
+        Area newCollisionBox = new Area(collisionBox);
+        AffineTransform transform = AffineTransform.getTranslateInstance(xSpeed, ySpeed);
+        newCollisionBox.transform(transform);
+
         if(!collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
             changeDirection();
             int[] deltas = getDeltaSpeedByDirection();
@@ -109,7 +116,7 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
         }
         super.x += xSpeed;
         super.y += ySpeed;
-        collisionBox.setLocation(super.x+xCollisionOffset, super.y+yCollisionOffset);
+        collisionBox = newCollisionBox;
     }
 
     /**

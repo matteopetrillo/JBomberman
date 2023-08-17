@@ -1,6 +1,7 @@
 package it.petrillo.jbomberman.model;
 
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +13,9 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
  * The Explosion class represents an explosion entity in the game.
  * It extends the GameEntity class and is responsible for rendering and animating explosion graphics.
  */
-public class Explosion extends GameEntity {
+public class Explosion extends GameEntity implements Collidable {
 
     private final List<Direction> directions;
-    private List<ExplosionCollisions> explosionCollisionsList = new ArrayList<>();
 
     /**
      * Constructs an Explosion instance with the specified initial position and explosion directions.
@@ -30,10 +30,27 @@ public class Explosion extends GameEntity {
         this.directions = directions;
         animationSpeed = 7;
         visible = true;
-        initExplosionCollisions();
+        createCollisionBox();
         loadSprites(spritesPath);
     }
 
+    private void createCollisionBox() {
+        collisionBox = new Area(new Rectangle(x,y,TILE_SIZE,TILE_SIZE));
+        for (Direction d : directions) {
+            int xOffset = 0;
+            int yOffset = 0;
+
+            switch (d) {
+                case UP -> yOffset = -TILE_SIZE;
+                case DOWN -> yOffset = TILE_SIZE;
+                case LEFT -> xOffset = -TILE_SIZE;
+                case RIGHT -> xOffset = TILE_SIZE;
+            }
+
+            Rectangle box = new Rectangle(x + xOffset, y + yOffset, TILE_SIZE, TILE_SIZE);
+            collisionBox.add(new Area(box));
+        }
+    }
 
     /**
      * Draws the explosion graphics onto the provided Graphics2D object.
@@ -86,52 +103,15 @@ public class Explosion extends GameEntity {
             if (animationIndex >= 5) {
                 visible = false;
                 animationIndex = 0;
-                explosionCollisionsList.forEach(e -> e.setExpired(true));
                 setToClean(true);
             }
         }
     }
 
-    public void initExplosionCollisions() {
-        explosionCollisionsList.add(new ExplosionCollisions(x, y));
-        for (Direction d : directions) {
-            switch (d) {
-                case UP -> explosionCollisionsList.add(new ExplosionCollisions(x, y - TILE_SIZE));
-                case DOWN -> explosionCollisionsList.add(new ExplosionCollisions(x, y + TILE_SIZE));
-                case LEFT -> explosionCollisionsList.add(new ExplosionCollisions(x - TILE_SIZE, y));
-                case RIGHT -> explosionCollisionsList.add(new ExplosionCollisions(x + TILE_SIZE, y));
-            }
-        }
-    }
-
-    public List<ExplosionCollisions> getExplosionCollisionsList() {
-        return explosionCollisionsList;
-    }
-
-    public static class ExplosionCollisions extends Rectangle implements Collidable {
-
-        boolean expired;
-        private ExplosionCollisions(int x, int y) {
-            super.x = x;
-            super.y = y;
-            super.width = TILE_SIZE;
-            super.height = TILE_SIZE;
-
-        }
-
-        public void setExpired(boolean expired) {
-            this.expired = expired;
-        }
-
-        public boolean isExpired() {
-            return expired;
-        }
-
-        @Override
-        public void onCollision(Collidable other) {
-            if (other instanceof GameCharacter)
-                ((GameCharacter) other).hitCharacter();
-        }
+    @Override
+    public void onCollision(Collidable other) {
+        if (other instanceof GameCharacter)
+            ((GameCharacter)other).hitCharacter();
     }
 
 }

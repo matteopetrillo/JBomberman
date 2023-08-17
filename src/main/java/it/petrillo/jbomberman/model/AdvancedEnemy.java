@@ -2,6 +2,7 @@ package it.petrillo.jbomberman.model;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
@@ -18,10 +19,10 @@ public class AdvancedEnemy extends Enemy {
         super(x, y);
         entityScale = 3.5d;
         characterSpeed = 2;
-        xCollisionOffset = (int) (1*entityScale);
-        yCollisionOffset = (int) (3*entityScale);
-        collisionBox.setLocation(super.x+xCollisionOffset,super.y+yCollisionOffset);
-        collisionBox.setSize((int) (12*SCALE), (int) (10*SCALE));
+        xCollisionOffset = (int) (2*entityScale);
+        yCollisionOffset = (int) (1*entityScale);
+        collisionBox = new Area(new Rectangle(super.x+xCollisionOffset,super.y+yCollisionOffset,
+                (int) (12*entityScale), (int) (13*entityScale)));
         defaultSpriteWidth = 16;
         defaultSpriteHeight = 16;
         health = 2;

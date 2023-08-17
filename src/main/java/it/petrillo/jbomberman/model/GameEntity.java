@@ -3,6 +3,7 @@ package it.petrillo.jbomberman.model;
 import it.petrillo.jbomberman.util.CustomObservable;
 
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
@@ -13,7 +14,7 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
  * Subclasses of GameEntity define specific entities with their unique characteristics.
  */
 public abstract class GameEntity extends CustomObservable implements Renderable {
-    protected Rectangle collisionBox;
+    protected Area collisionBox;
     protected boolean visible, toClean;
     protected int x,y,animationTick,animationIndex, animationSpeed, xCollisionOffset, yCollisionOffset;
     protected double entityScale = 1.0d;
@@ -29,7 +30,6 @@ public abstract class GameEntity extends CustomObservable implements Renderable 
     public GameEntity(int x, int y) {
         this.x = x;
         this.y = y;
-        this.collisionBox = new Rectangle(x,y, TILE_SIZE, TILE_SIZE);
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class GameEntity extends CustomObservable implements Renderable 
      *
      * @return The collision box of the entity.
      */
-    public Rectangle getCollisionBox() {
+    public Area getCollisionBox() {
         return collisionBox;
     }
 
@@ -82,7 +82,7 @@ public abstract class GameEntity extends CustomObservable implements Renderable 
      *
      * @param collisionBox The new collision box to set.
      */
-    public void setCollisionBox(Rectangle collisionBox) {
+    public void setCollisionBox(Area collisionBox) {
         this.collisionBox = collisionBox;
     }
 

@@ -3,9 +3,10 @@ package it.petrillo.jbomberman.controller;
 import it.petrillo.jbomberman.model.*;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
 
@@ -63,19 +64,26 @@ public class CollisionManager implements CollisionListener {
      * @return True if the entity can move to the specified position, false otherwise.
      */
     @Override
-    public boolean canMoveThere(int dx, int dy, Rectangle collisionBox) {
+    public boolean canMoveThere(int dx, int dy, Area collisionBox) {
         int steps = Math.max(Math.abs(dx), Math.abs(dy));
-        double xStep = (double) dx / steps;
-        double yStep = (double) dy / steps;
 
-        for (int i = 0; i < steps; i++) {
-            int x = (int) (collisionBox.getX() + i * xStep);
-            int y = (int) (collisionBox.getY() + i * yStep);
-            int width = (int) collisionBox.getWidth();
-            int height = (int) collisionBox.getHeight();
+        if (steps == 0) {
+            return true;
+        }
 
-            if (!isWalkable(x, y) || !isWalkable(x + width, y) || !isWalkable(x + width, y + height) || !isWalkable(x, y + height))
+        Rectangle box = collisionBox.getBounds();
+        int collisionX = (int) box.getX();
+        int collisionY = (int) box.getY();
+        int width = (int) box.getWidth();
+        int height = (int) box.getHeight();
+
+        for (int i = 0; i <= steps; i++) {
+            int x = collisionX + (dx * i / steps);
+            int y = collisionY + (dy * i / steps);
+
+            if (!isWalkable(x, y) || !isWalkable(x + width, y) || !isWalkable(x + width, y + height) || !isWalkable(x, y + height)) {
                 return false;
+            }
         }
 
         return true;
@@ -89,13 +97,14 @@ public class CollisionManager implements CollisionListener {
      * @return A list of available directions for movement.
      */
     @Override
-    public List<Direction> getAvailableDirections(int speed, Rectangle collisionBox) {
-        Direction[] directions = {Direction.UP,Direction.DOWN,Direction.LEFT,Direction.RIGHT};
+    public List<Direction> getAvailableDirections(int speed, Area collisionBox) {
+        Direction[] directions = {Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
         List<Direction> availableDirections = new ArrayList<>();
 
         for (Direction d : directions) {
             int dx = 0;
             int dy = 0;
+
             if (d == Direction.UP)
                 dy = -speed;
             else if (d == Direction.DOWN)
@@ -105,9 +114,12 @@ public class CollisionManager implements CollisionListener {
             else if (d == Direction.RIGHT)
                 dx = speed;
 
-            if (canMoveThere(dx,dy,new Rectangle(collisionBox)))
-                availableDirections.add(d);
+            Area newCollisionBox = new Area(collisionBox);
+            AffineTransform transform = AffineTransform.getTranslateInstance(dx, dy);
+            newCollisionBox.transform(transform);
 
+            if (canMoveThere(dx, dy, newCollisionBox))
+                availableDirections.add(d);
         }
 
         return availableDirections;
@@ -122,23 +134,21 @@ public class CollisionManager implements CollisionListener {
             for (int j = i+1; j < collidables.size(); j++) {
                 Collidable g1 = collidables.get(i);
                 Collidable g2 = collidables.get(j);
-                Rectangle g1CollisionBox = null;
-                Rectangle g2CollisionBox = null;
-                if (g1 instanceof GameEntity && ((GameEntity)g1).isVisible())
-                    g1CollisionBox = ((GameEntity)g1).getCollisionBox();
-                else if (g1 instanceof Explosion.ExplosionCollisions)
-                    g1CollisionBox = (Rectangle) g1;
-                if (g2 instanceof GameEntity && ((GameEntity)g2).isVisible())
-                    g2CollisionBox = ((GameEntity)g2).getCollisionBox();
-                else if (g2 instanceof Explosion.ExplosionCollisions)
-                    g2CollisionBox = (Rectangle) g2;
+                Area g1CollisionBox = ((GameEntity)g1).getCollisionBox();
+                Area g2CollisionBox = ((GameEntity)g2).getCollisionBox();
 
-                if (g1CollisionBox != null && g2CollisionBox != null && g1CollisionBox.intersects(g2CollisionBox)) {
+                if (g1CollisionBox != null && g2CollisionBox != null && checkAreasCollision(g1CollisionBox,g2CollisionBox)) {
                     g1.onCollision(g2);
                     g2.onCollision(g1);
                 }
             }
         }
+    }
+
+    private boolean checkAreasCollision(Area area1, Area area2) {
+        Area intersection = new Area(area1);
+        intersection.intersect(area2);
+        return !intersection.isEmpty();
     }
 
     /**
@@ -160,10 +170,6 @@ public class CollisionManager implements CollisionListener {
     }
 
 
-    public void addExplosionCollisions(Explosion explosion) {
-        collidables.addAll(explosion.getExplosionCollisionsList());
-    }
-
     /**
      * Removes collidable entities that are flagged for cleaning from the list of registered collidables.
      */
@@ -174,11 +180,7 @@ public class CollisionManager implements CollisionListener {
                 if (((GameEntity) c).isToClean())
                     toClean.add(c);
             }
-            else if (c instanceof Explosion.ExplosionCollisions) {
-                if (((Explosion.ExplosionCollisions)c).isExpired())
-                    toClean.add(c);
-                }
-            }
+        }
 
         toClean.forEach(collidables::remove);
     }

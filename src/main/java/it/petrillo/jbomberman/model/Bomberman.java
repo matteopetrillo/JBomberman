@@ -1,6 +1,8 @@
 package it.petrillo.jbomberman.model;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.GameSettings.*;
@@ -13,8 +15,7 @@ import static it.petrillo.jbomberman.util.GameSettings.*;
 public class Bomberman extends GameCharacter implements Movable, Renderable {
 
     private static Bomberman bombermanInstance;
-    private int bombBackpack = 1;
-    private int bombReleased, score;
+    private int bombBackpack,bombReleased, score;
 
     /**
      * Private constructor for the Bomberman singleton.
@@ -25,8 +26,6 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         entityScale = 3.5d;
         xCollisionOffset = (int) (11*entityScale);
         yCollisionOffset = (int) (23*entityScale);
-        collisionBox.setLocation(super.x+ xCollisionOffset, super.y+ yCollisionOffset);
-        collisionBox.setSize((int) (9*entityScale), (int) (5*entityScale));
         animationSpeed = 13;
         defaultSpriteHeight = 32;
         defaultSpriteWidth = 32;
@@ -78,6 +77,8 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
                 g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
                         x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
             }
+            g.setColor(Color.RED);
+            g.draw(collisionBox);
         }
     }
 
@@ -120,6 +121,14 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         super.setY((int) (y-14*SCALE));
     }
 
+
+    public void setPosition(int x, int y) {
+        super.setX((int) (x-6*SCALE));
+        super.setY((int) (y-14*SCALE));
+        collisionBox = new Area(new Rectangle(super.x+xCollisionOffset,super.y+yCollisionOffset,
+                (int) (9*entityScale), (int) (5*entityScale)));
+    }
+
     /**
      * Returns the X position of the character's hitbox.
      *
@@ -127,7 +136,7 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
      */
     @Override
     public int getX() {
-        return collisionBox.x;
+        return (int) collisionBox.getBounds().getX();
     }
 
     /**
@@ -137,7 +146,7 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
      */
     @Override
     public int getY() {
-        return collisionBox.y;
+        return (int) collisionBox.getBounds().getY();
     }
 
     /**
@@ -194,10 +203,14 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
             movingDirection = Direction.RIGHT;
         }
 
-        if(collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
+        Area newCollisionBox = new Area(collisionBox);
+        AffineTransform transform = AffineTransform.getTranslateInstance(xSpeed, ySpeed);
+        newCollisionBox.transform(transform);
+
+        if (collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
             super.x += xSpeed;
             super.y += ySpeed;
-            collisionBox.setLocation(super.x+xCollisionOffset, super.y+yCollisionOffset);
+            collisionBox = newCollisionBox;
         }
     }
 

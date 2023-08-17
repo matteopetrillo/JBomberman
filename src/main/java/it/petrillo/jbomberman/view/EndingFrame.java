@@ -20,10 +20,6 @@ public class EndingFrame extends JFrame {
         pack();
     }
 
-    public EndingPanel getEndingPanel() {
-        return endingPanel;
-    }
-
     public JButton getRestartButton() {
         return endingPanel.getRestartButton();
     }

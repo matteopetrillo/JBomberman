@@ -36,7 +36,9 @@ public class AdvancedEnemy extends Enemy {
         spriteSheet = getImg(path);
         spriteAnimation = new BufferedImage[1][10];
         for (int i = 0; i < spriteAnimation[0].length; i++) {
-            spriteAnimation[0][i] = spriteSheet.getSubimage(16*i,0,16,16);
+            if (spriteSheet != null) {
+                spriteAnimation[0][i] = spriteSheet.getSubimage(16*i,0,16,16);
+            }
         }
     }
 

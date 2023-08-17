@@ -66,7 +66,7 @@ public class EnemyManager {
         for (Enemy e : killedEnemy) {
             bomberman.alterScore(e.getScoreValue());
             enemies.remove(e);
-        };
+        }
     }
 
     /**
@@ -87,13 +87,6 @@ public class EnemyManager {
         if (enemyManagerInstance == null)
             enemyManagerInstance = new EnemyManager();
         return enemyManagerInstance;
-    }
-
-    /**
-     * Clears the list of enemy entities.
-     */
-    public void clear() {
-        enemies.clear();
     }
 
 }

@@ -76,15 +76,6 @@ public abstract class GameEntity extends CustomObservable implements Renderable 
     }
 
     /**
-     * Sets the collision box of the entity.
-     *
-     * @param collisionBox The new collision box to set.
-     */
-    public void setCollisionBox(Area collisionBox) {
-        this.collisionBox = collisionBox;
-    }
-
-    /**
      * Returns whether the entity is currently visible on the screen.
      *
      * @return True if the entity is visible, false otherwise.

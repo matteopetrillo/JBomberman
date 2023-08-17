@@ -46,8 +46,10 @@ public class BasicEnemy extends Enemy {
         spriteAnimation = new BufferedImage[4][4];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
-                spriteAnimation[i][j] = spriteSheet.getSubimage(defaultSpriteWidth*j,defaultSpriteHeight*i,
-                        defaultSpriteWidth,defaultSpriteHeight);
+                if (spriteSheet != null) {
+                    spriteAnimation[i][j] = spriteSheet.getSubimage(defaultSpriteWidth*j,defaultSpriteHeight*i,
+                            defaultSpriteWidth,defaultSpriteHeight);
+                }
             }
         }
     }

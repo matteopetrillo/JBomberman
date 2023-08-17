@@ -63,7 +63,10 @@ public class SoftBlock extends GameObject implements Explodable {
     @Override
     public void loadSprites(String path) {
         spriteSheet = getImg(path);
-        int rows = spriteSheet.getHeight()/DEFAULT_TILE_SIZE;
+        int rows = 0;
+        if (spriteSheet != null) {
+            rows = spriteSheet.getHeight()/DEFAULT_TILE_SIZE;
+        }
         spriteAnimation = new BufferedImage[rows][];
         for (int i = 0; i < spriteAnimation.length; i++) {
             if (i != spriteAnimation.length-1)

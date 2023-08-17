@@ -157,15 +157,6 @@ public class CollisionManager implements CollisionListener {
     }
 
     /**
-     * Returns the list of registered collidable entities.
-     *
-     * @return The list of registered collidable entities.
-     */
-    public List<Collidable> getCollidables() {
-        return collidables;
-    }
-
-    /**
      * Registers a collidable entity for collision management.
      *
      * @param c The collidable entity to be registered.

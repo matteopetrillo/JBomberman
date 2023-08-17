@@ -57,8 +57,12 @@ public class Bomb extends GameObject implements Explodable {
     @Override
     public void loadSprites(String path) {
         spriteSheet = getImg(path);
-        int rows = spriteSheet.getHeight()/DEFAULT_TILE_SIZE;
-        int height = spriteSheet.getWidth()/DEFAULT_TILE_SIZE;
+        int rows = 0;
+        int height = 0;
+        if (spriteSheet != null) {
+            rows = spriteSheet.getHeight()/DEFAULT_TILE_SIZE;
+            height = spriteSheet.getWidth()/DEFAULT_TILE_SIZE;
+        }
         spriteAnimation = new BufferedImage[rows][height];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
@@ -137,7 +141,7 @@ public class Bomb extends GameObject implements Explodable {
      */
     @Override
     public boolean isExploding() {
-        return this.isExploding;
+        return isExploding;
     }
 
 }

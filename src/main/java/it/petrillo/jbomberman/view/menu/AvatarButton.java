@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static it.petrillo.jbomberman.util.GameConstants.*;
 import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
 
 
@@ -14,7 +13,8 @@ public class AvatarButton extends JButton {
     private final BufferedImage normalImg;
     private final BufferedImage selectedImg;
     private boolean isHover, isSelected;
-    private int x,y;
+    private final int x;
+    private final int y;
     public AvatarButton(String normalPath, String selectedPath, int x, int y) {
         this.normalImg = getImg(normalPath);
         this.selectedImg = getImg(selectedPath);
@@ -35,10 +35,6 @@ public class AvatarButton extends JButton {
     }
     public void setHover(boolean hover) {
         this.isHover = hover;
-    }
-
-    public boolean isHover() {
-        return isHover;
     }
 
     public String getAvatarPath() {

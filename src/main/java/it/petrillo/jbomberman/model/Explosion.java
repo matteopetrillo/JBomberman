@@ -87,7 +87,9 @@ public class Explosion extends GameEntity implements Collidable {
         spriteAnimation = new BufferedImage[5][5];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
-                spriteAnimation[i][j] = spriteSheet.getSubimage(16*j, 16*i,16,16);
+                if (spriteSheet != null) {
+                    spriteAnimation[i][j] = spriteSheet.getSubimage(16*j, 16*i,16,16);
+                }
             }
         }
     }

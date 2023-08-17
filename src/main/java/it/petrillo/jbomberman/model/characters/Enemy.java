@@ -62,9 +62,7 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
                 visible = false;
                 if (scoreTextY > 20)
                     scoreTextY--;
-                Timer cleanTimer = new Timer(500, e -> {
-                    setToClean(true);
-                });
+                Timer cleanTimer = new Timer(500, e -> setToClean(true));
                 cleanTimer.setRepeats(false);
                 cleanTimer.start();
             }
@@ -133,26 +131,12 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
         if (visible) {
             BufferedImage img = spriteAnimation[getAniIndexByDirection()][animationIndex];
             if (hittedTimer > 0) {
-                g.drawImage(img, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
-                if (hittedTimer % 3 == 0) {
-                    BufferedImage flashImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
-                    for (int row = 0; row < img.getHeight(); row++) {
-                        for (int col = 0; col < img.getWidth(); col++) {
-                            int originalPixel = img.getRGB(col, row);
-                            int alpha = (originalPixel >> 24) & 0xFF;
-                            int newPixel = (alpha == 255) ? Color.WHITE.getRGB() : originalPixel;
-                            flashImage.setRGB(col, row, newPixel);
-                        }
-                    }
-                    g.drawImage(flashImage, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
-                }
+                drawFlashingSprite(g,img);
             }
-
             else {
                 g.drawImage(img, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
             }
         }
-
         else {
             g.setFont(RETRO_FONT.deriveFont(Font.PLAIN,50f));
             drawBorder(g, x, scoreTextY, 4, String.valueOf(scoreValue));
@@ -212,18 +196,10 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
      */
     private void invertDirection(Direction direction) {
         switch (direction) {
-            case UP -> {
-                movingDirection = Direction.DOWN;
-            }
-            case DOWN -> {
-                movingDirection = Direction.UP;
-            }
-            case LEFT -> {
-                movingDirection = Direction.RIGHT;
-            }
-            case RIGHT -> {
-                movingDirection = Direction.LEFT;
-            }
+            case UP -> movingDirection = Direction.DOWN;
+            case DOWN -> movingDirection = Direction.UP;
+            case LEFT -> movingDirection = Direction.RIGHT;
+            case RIGHT -> movingDirection = Direction.LEFT;
         }
         setFlagFromDirection();
     }
@@ -238,18 +214,10 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
         movingUp = false;
 
         switch (movingDirection) {
-            case UP -> {
-                movingUp = true;
-            }
-            case DOWN -> {
-                movingDown = true;
-            }
-            case LEFT -> {
-                movingLeft = true;
-            }
-            case RIGHT -> {
-                movingRight = true;
-            }
+            case UP -> movingUp = true;
+            case DOWN -> movingDown = true;
+            case LEFT -> movingLeft = true;
+            case RIGHT -> movingRight = true;
         }
     }
 

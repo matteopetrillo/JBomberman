@@ -35,7 +35,9 @@ public class LevelAdvancer extends PowerUp {
         spriteAnimation = new BufferedImage[1][2];
         for (int i = 0; i < spriteAnimation.length; i++) {
             for (int j = 0; j < spriteAnimation[i].length; j++) {
-                spriteAnimation[i][j] = spriteSheet.getSubimage(16*j,0,16,16);
+                if (spriteSheet != null) {
+                    spriteAnimation[i][j] = spriteSheet.getSubimage(16*j,0,16,16);
+                }
             }
         }
     }

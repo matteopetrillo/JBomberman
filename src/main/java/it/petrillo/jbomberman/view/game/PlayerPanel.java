@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static it.petrillo.jbomberman.util.GameConstants.*;
+import static it.petrillo.jbomberman.util.UtilFunctions.drawBorder;
 import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
 
 public class PlayerPanel extends JPanel implements CustomObserver {
@@ -119,13 +120,6 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         g2d.drawString(timerText, textX, textY);
     }
 
-    private void drawBorder(Graphics2D g2d, int x, int y, int amount,String message) {
-        g2d.setColor(Color.BLACK);
-        g2d.drawString(message, x - amount, y - amount);
-        g2d.drawString(message, x + amount, y - amount);
-        g2d.drawString(message, x - amount, y + amount);
-        g2d.drawString(message, x + amount, y + amount);
-    }
     @Override
     public void update(NotificationType notificationType, Object arg) {
 

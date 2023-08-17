@@ -6,6 +6,7 @@ import it.petrillo.jbomberman.model.characters.Bomberman;
 import it.petrillo.jbomberman.model.gamemap.GameMap;
 import it.petrillo.jbomberman.util.GameStateListener;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -35,15 +36,18 @@ public class LevelManager {
         String settingPath = getJsonLvlPath();
         List<String> fields = List.of("mapImg","map_data","sprite_sheets_path", "player_spawn", "explosion", "enemies_spawn", "power_ups_spawn");
         Map<String, JsonElement> settings = getMultipleJsonFields(settingPath, fields);
-        GameEntityFactory.setBombSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("bomb").getAsString());
-        GameEntityFactory.setSoftBlockSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("soft_blocks").getAsString());
-        GameEntityFactory.setExplosionSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("explosion").getAsString());
-        gameMap.initMap(settings.get("mapImg").getAsString(),settings.get("map_data").getAsJsonArray());
-        int playerX = settings.get("player_spawn").getAsJsonObject().get("x").getAsInt() * TILE_SIZE;
-        int playerY = settings.get("player_spawn").getAsJsonObject().get("y").getAsInt() * TILE_SIZE;
-        bomberman.setPosition(playerX,playerY);
-        objectsManager.initObjects(settings.get("map_data").getAsJsonArray(), settings.get("power_ups_spawn").getAsJsonArray());
-        enemyManager.initEnemies(settings.get("enemies_spawn").getAsJsonArray());
+        if (settings != null) {
+            GameEntityFactory.setBombSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("bomb").getAsString());
+            GameEntityFactory.setSoftBlockSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("soft_blocks").getAsString());
+            GameEntityFactory.setExplosionSpriteSheet(settings.get("sprite_sheets_path").getAsJsonObject().get("explosion").getAsString());
+            gameMap.initMap(settings.get("mapImg").getAsString(),settings.get("map_data").getAsJsonArray());
+            int playerX = settings.get("player_spawn").getAsJsonObject().get("x").getAsInt() * TILE_SIZE;
+            int playerY = settings.get("player_spawn").getAsJsonObject().get("y").getAsInt() * TILE_SIZE;
+            bomberman.setPosition(playerX,playerY);
+            objectsManager.initObjects(settings.get("map_data").getAsJsonArray(), settings.get("power_ups_spawn").getAsJsonArray());
+            enemyManager.initEnemies(settings.get("enemies_spawn").getAsJsonArray());
+        }
+
     }
 
     /**
@@ -89,8 +93,13 @@ public class LevelManager {
      */
     public boolean isGameFinished() {
         String fileName = "Level"+(currentLvl+1)+".json";
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
-        return inputStream == null;
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+            return inputStream == null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     /**

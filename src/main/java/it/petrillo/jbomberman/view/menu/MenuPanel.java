@@ -13,8 +13,9 @@ public class MenuPanel extends JPanel {
     private final BufferedImage backgroundImage = getImg("/GameMenuBg.png");
     private final JTextField nickField = new JTextField();
     private String chosenAvatarPath;
-    private JButton playButton, quitButton;
-    private ArrayList<AvatarButton> avatarsButtonList = new ArrayList<>();
+    private final JButton playButton;
+    private final JButton quitButton;
+    private final ArrayList<AvatarButton> avatarsButtonList = new ArrayList<>();
     public MenuPanel() {
         setPreferredSize(new Dimension(backgroundImage.getWidth(),backgroundImage.getHeight()));
         setLayout(null);

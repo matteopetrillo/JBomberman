@@ -14,9 +14,9 @@ public class LoadingPanel {
     private int state;
     private Timer timer;
     private boolean started = false;
-    int currentLvl;
+    final int currentLvl;
     int alpha = 255;
-    long startTime;
+
     public LoadingPanel(int lvl) {
         this.currentLvl = lvl;
         this.message = "Level "+currentLvl+"!";
@@ -24,7 +24,7 @@ public class LoadingPanel {
     public void startAnimation() {
         if (!started) {
             timer = new Timer(10, new ActionListener() {
-                private long startTime = System.currentTimeMillis();
+                private final long startTime = System.currentTimeMillis();
 
                 @Override
                 public void actionPerformed(ActionEvent e) {

@@ -19,17 +19,15 @@ public class GameMap {
 
     private static GameMap gameMapInstance;
     private BufferedImage mapImg;
-    private MapTile[][] tiles = new MapTile[MAP_ROWS][MAP_COLUMNS];
+    private final MapTile[][] tiles = new MapTile[MAP_ROWS][MAP_COLUMNS];
 
     private GameMap() {}
 
     /**
-     * Initializes the game mapImg using data from a JSON file.
-     *
+     * Initializes the game mapImg using data from a JSON file
      *
      */
     public void initMap(String imgPath, JsonArray mapData) {
-        List<String> fields = List.of("mapImg", "map_data");
         this.mapImg = getImg(imgPath);
         analyzeMapData(mapData);
     }

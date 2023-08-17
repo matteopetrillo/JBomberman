@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.sound.sampled.*;
-import javax.sound.sampled.FloatControl;
 import javax.swing.*;
 
 import static it.petrillo.jbomberman.util.GameConstants.*;

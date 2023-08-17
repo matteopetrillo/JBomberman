@@ -17,7 +17,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.file.Paths;
 import javax.swing.*;
-import javax.swing.Timer;
 import java.awt.*;
 import java.io.*;
 
@@ -30,7 +29,7 @@ import static it.petrillo.jbomberman.util.GameConstants.*;
 public class GameManager implements CustomObserver, GameStateListener {
 
     public enum GameState {
-        MENU,PLAYING,VICTORY,GAME_OVER,PAUSE,LOADING
+        MENU,PLAYING,GAME_FINISHED,LOADING
     }
 
     private static GameManager gameManagerInstance;
@@ -218,7 +217,7 @@ public class GameManager implements CustomObserver, GameStateListener {
 
     @Override
     public void onLosing() {
-        GAME_STATE = GameState.GAME_OVER;
+        GAME_STATE = GameState.GAME_FINISHED;
         System.out.println("****YOU LOSE!!****");
         audioManager.fadeOutGamePlayMusic();
         audioManager.play("/src/main/resources/losing_sfx.wav",-12f);
@@ -229,17 +228,7 @@ public class GameManager implements CustomObserver, GameStateListener {
         Timer exitTimer = new Timer(1000, e -> {
             updateDatabase();
             EndingFrame endingFrame = new EndingFrame(false,currentPlayerData);
-            endingFrame.getRestartButton().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    System.out.println("****RESTARTING!****");
-                    endingFrame.setVisible(false);
-                    playerPanel.uploadPlayerData(currentPlayerData);
-                    restartGame();
-                }
-            });
-            endingFrame.setLocationRelativeTo(null);
-            endingFrame.setVisible(true);
+            showEndingFrame(endingFrame);
         });
         exitTimer.setRepeats(false);
         exitTimer.start();
@@ -247,7 +236,7 @@ public class GameManager implements CustomObserver, GameStateListener {
 
     @Override
     public void onWinning() {
-        GAME_STATE = GameState.GAME_OVER;
+        GAME_STATE = GameState.GAME_FINISHED;
         System.out.println("****YOU WON!****");
         audioManager.fadeOutGamePlayMusic();
         audioManager.play("/src/main/resources/winning_sfx.wav",-8f);
@@ -258,17 +247,7 @@ public class GameManager implements CustomObserver, GameStateListener {
         Timer exitTimer = new Timer(1000, e -> {
             updateDatabase();
             EndingFrame endingFrame = new EndingFrame(true,currentPlayerData);
-            endingFrame.getRestartButton().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    System.out.println("****RESTARTING!****");
-                    endingFrame.setVisible(false);
-                    playerPanel.uploadPlayerData(currentPlayerData);
-                    restartGame();
-                }
-            });
-            endingFrame.setLocationRelativeTo(null);
-            endingFrame.setVisible(true);
+            showEndingFrame(endingFrame);
         });
         exitTimer.setRepeats(false);
         exitTimer.start();
@@ -280,9 +259,7 @@ public class GameManager implements CustomObserver, GameStateListener {
         audioManager.fadeOutMenuMusic();
         audioManager.play("/src/main/resources/loading_screen_music.wav",0f);
         Timer startingTimer = new Timer(2500,
-                e -> {
-                    onPlaying();
-                });
+                e -> onPlaying());
         startingTimer.setRepeats(false);
         startingTimer.start();
     }
@@ -293,6 +270,20 @@ public class GameManager implements CustomObserver, GameStateListener {
         audioManager.playGameplayMusic();
         gamePanel.setLoadingPanel(null);
         playerPanel.startTimer();
+    }
+
+    private void showEndingFrame(EndingFrame endingFrame) {
+        endingFrame.getRestartButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("****RESTARTING!****");
+                endingFrame.setVisible(false);
+                playerPanel.uploadPlayerData(currentPlayerData);
+                restartGame();
+            }
+        });
+        endingFrame.setLocationRelativeTo(null);
+        endingFrame.setVisible(true);
     }
 
     public static GameManager getInstance() {

@@ -63,21 +63,7 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
                         x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
             else if (hittedTimer > 0){
                 BufferedImage img = spriteAnimation[getAniIndexByDirection()][animationIndex];
-                g.drawImage(img, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
-                if (hittedTimer % 3 == 0) {
-                    BufferedImage flashImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
-                    for (int row = 0; row < img.getHeight(); row++) {
-                        for (int col = 0; col < img.getWidth(); col++) {
-                            int originalPixel = img.getRGB(col, row);
-                            // 24 bit right-shift + bitwise AND with 255 (0xFF) to obtain the alpha value of the pixel
-                            int alpha = (originalPixel >> 24) & 0xFF;
-                            // if not complete transparent (alpha == 255) the pixel will be converted to white pixel
-                            int newPixel = (alpha == 255) ? Color.WHITE.getRGB() : originalPixel;
-                            flashImage.setRGB(col, row, newPixel);
-                        }
-                    }
-                    g.drawImage(flashImage, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
-                }
+                drawFlashingSprite(g,img);
             }
             else {
                 g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
@@ -95,12 +81,12 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
     public void loadSprites(String path) {
         spriteSheet = getImg(path);
         spriteAnimation = new BufferedImage[5][3];
-        if (spriteSheet != null) {
-            for (int i = 0; i < spriteAnimation.length; i++) {
-                for (int j = 0; j < spriteAnimation[i].length; j++) {
+
+        for (int i = 0; i < spriteAnimation.length; i++) {
+            for (int j = 0; j < spriteAnimation[i].length; j++) {
+                if (spriteSheet != null)
                     spriteAnimation[i][j] = spriteSheet.getSubimage(defaultSpriteWidth * j, defaultSpriteHeight * i,
                             defaultSpriteWidth, defaultSpriteHeight);
-                }
             }
         }
     }
@@ -313,10 +299,6 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
     public void alterScore(int k) {
         score += k;
         notifyObservers(NotificationType.SCORE_UPDATE,score);
-    }
-
-    public int getScore() {
-        return score;
     }
 
     /**

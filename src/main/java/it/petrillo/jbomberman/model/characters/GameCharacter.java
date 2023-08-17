@@ -5,6 +5,9 @@ import it.petrillo.jbomberman.util.CollisionListener;
 import it.petrillo.jbomberman.model.GameEntity;
 import it.petrillo.jbomberman.util.Direction;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 /**
  * The GameCharacter abstract class represents a character entity in the game.
  * It extends the GameEntity class and implements the Collidable interface.
@@ -53,15 +56,6 @@ public abstract class GameCharacter extends GameEntity implements Collidable {
     }
 
     /**
-     * Returns the CollisionListener associated with the character.
-     *
-     * @return The CollisionListener associated with the character.
-     */
-    public CollisionListener getCollisionListener() {
-        return collisionListener;
-    }
-
-    /**
      * Sets the CollisionListener for the character.
      *
      * @param collisionListener The CollisionListener to associate with the character.
@@ -72,63 +66,40 @@ public abstract class GameCharacter extends GameEntity implements Collidable {
 
     // Getter and setter methods for moving direction and movement flags
 
-    public Direction getMovingDirection() {
-        return movingDirection;
-    }
-
-    public void setMovingDirection(Direction movingDirection) {
-        this.movingDirection = movingDirection;
-    }
-
-    public boolean isMovingUp() {
-        return movingUp;
-    }
-
     public void setMovingUp(boolean movingUp) {
         this.movingUp = movingUp;
-    }
-
-    public boolean isMovingDown() {
-        return movingDown;
     }
 
     public void setMovingDown(boolean movingDown) {
         this.movingDown = movingDown;
     }
 
-    public boolean isMovingLeft() {
-        return movingLeft;
-    }
-
     public void setMovingLeft(boolean movingLeft) {
         this.movingLeft = movingLeft;
-    }
-
-    public boolean isMovingRight() {
-        return movingRight;
     }
 
     public void setMovingRight(boolean movingRight) {
         this.movingRight = movingRight;
     }
 
-    /**
-     * Sets the flag indicating whether the character has been hit.
-     *
-     * @param hitted True if the character has been hit, false otherwise.
-     */
-    public void setHitted(boolean hitted) {
-        this.hitted = hitted;
+    protected void drawFlashingSprite(Graphics2D g, BufferedImage img) {
+        g.drawImage(img, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
+        if (hittedTimer % 3 == 0) {
+            BufferedImage flashImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            for (int row = 0; row < img.getHeight(); row++) {
+                for (int col = 0; col < img.getWidth(); col++) {
+                    int originalPixel = img.getRGB(col, row);
+                    // 24 bit right-shift + bitwise AND with 255 (0xFF) to obtain the alpha value of the pixel
+                    int alpha = (originalPixel >> 24) & 0xFF;
+                    // if not complete transparent (alpha == 255) the pixel will be converted to white pixel
+                    int newPixel = (alpha == 255) ? Color.WHITE.getRGB() : originalPixel;
+                    flashImage.setRGB(col, row, newPixel);
+                }
+            }
+            g.drawImage(flashImage, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
+        }
     }
 
-    /**
-     * Checks if the character has been hit.
-     *
-     * @return True if the character has been hit, false otherwise.
-     */
-    public boolean isHitted() {
-        return hitted;
-    }
 
     /**
      * Defines the behavior when the character is hit by a collision.

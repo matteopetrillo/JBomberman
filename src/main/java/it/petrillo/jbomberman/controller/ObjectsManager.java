@@ -65,11 +65,10 @@ public class ObjectsManager {
     public void updateObjects() {
         cleanObjects();
 
-        for (GameObject e : objects) {
-            if (e.isVisible()) {
-                e.update();
-                if (e instanceof Bomb && ((Bomb) e).isExploding()) {
-                    Bomb bomb = (Bomb) e;
+        for (GameObject obj : objects) {
+            if (obj.isVisible()) {
+                obj.update();
+                if (obj instanceof Bomb bomb && ((Bomb) obj).isExploding()) {
                     if (!bomb.isExplosionStarted()) {
                         bomb.setExplosionStarted(true);
                         bomberman.alterBombReleased(-1);
@@ -194,10 +193,4 @@ public class ObjectsManager {
         return objectsManagerInstance;
     }
 
-    /**
-     * Clears the list of game objects.
-     */
-    public void clear() {
-        objects.clear();
-    }
 }

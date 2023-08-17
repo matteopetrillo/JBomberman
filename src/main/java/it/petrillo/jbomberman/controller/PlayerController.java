@@ -12,6 +12,7 @@ import static it.petrillo.jbomberman.util.GameConstants.*;
  * The PlayerController class handles user input for controlling the Bomberman character.
  */
 public class PlayerController implements KeyListener {
+
     private final Bomberman bombermanInstance = Bomberman.getPlayerInstance();
     private final ObjectsManager objectsManager = ObjectsManager.getInstance();
     private boolean moving;

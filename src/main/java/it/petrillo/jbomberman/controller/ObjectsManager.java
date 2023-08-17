@@ -3,15 +3,20 @@ package it.petrillo.jbomberman.controller;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import it.petrillo.jbomberman.model.*;
+import it.petrillo.jbomberman.model.characters.Bomberman;
+import it.petrillo.jbomberman.model.gamemap.GameMap;
+import it.petrillo.jbomberman.model.gamemap.MapTile;
+import it.petrillo.jbomberman.model.objects.Bomb;
+import it.petrillo.jbomberman.model.objects.GameObject;
+import it.petrillo.jbomberman.model.objects.PowerUp;
+import it.petrillo.jbomberman.model.objects.SoftBlock;
+import it.petrillo.jbomberman.util.Direction;
 
-import java.awt.*;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
-import static it.petrillo.jbomberman.util.GameSettings.TILE_SIZE;
+import static it.petrillo.jbomberman.util.GameConstants.TILE_SIZE;
 
 /**
  * The ObjectsManager class is responsible for managing and updating various game objects
@@ -23,6 +28,7 @@ public class ObjectsManager {
     private final GameMap gameMap = GameMap.getInstance();
     private final Bomberman bomberman = Bomberman.getPlayerInstance();
     private final List<GameObject> objects = new ArrayList<>();
+    private final List<GameObject> objectsToRemove = new ArrayList<>();
     private final ExplosionManager explosionManager = ExplosionManager.getInstance();
     private final CollisionManager collisionManager = CollisionManager.getInstance();
     private ObjectsManager() {}
@@ -58,10 +64,12 @@ public class ObjectsManager {
      */
     public void updateObjects() {
         cleanObjects();
+
         for (GameObject e : objects) {
             if (e.isVisible()) {
                 e.update();
-                if (e instanceof Bomb bomb && ((Bomb) e).isExploding()) {
+                if (e instanceof Bomb && ((Bomb) e).isExploding()) {
+                    Bomb bomb = (Bomb) e;
                     if (!bomb.isExplosionStarted()) {
                         bomb.setExplosionStarted(true);
                         bomberman.alterBombReleased(-1);
@@ -73,6 +81,26 @@ public class ObjectsManager {
             }
         }
     }
+
+    /**
+     * Cleans up destroyed objects from the list of game objects.
+     */
+    private void cleanObjects() {
+        List<GameObject> destroyedObjects = objects.stream()
+                .filter(GameEntity::isToClean)
+                .toList();
+
+        for (GameObject obj : destroyedObjects) {
+            if (obj instanceof PowerUp) {
+                AudioManager.getAudioManagerInstance().play("/src/main/resources/power_up_sfx.wav",-16f);
+            }
+            objectsToRemove.add(obj);
+        }
+
+        objects.removeAll(objectsToRemove);
+        objectsToRemove.clear();
+    }
+
 
     /**
      * Drops a bomb at the specified grid cell if allowed by Bomberman.
@@ -112,7 +140,7 @@ public class ObjectsManager {
             int newX = xIndex + dx[i];
             int newY = yIndex + dy[i];
             List<GameObject> objectList = getObjectsFromCoords(newX,newY);
-            if (gameMap.getTileFromCoords(newX,newY).getTileType() == TileType.WALL)
+            if (gameMap.getTileFromCoords(newX,newY).getTileType() == MapTile.TileType.WALL)
                 continue;
             else if (!objectList.isEmpty()) {
                 for (GameObject obj : objectList) {
@@ -131,31 +159,6 @@ public class ObjectsManager {
             collisionManager.addCollidable(explosion);
         }
 
-    }
-
-    private void checkHittedCharacter(int xIndex, int yIndex) {
-        for (Collidable c : collisionManager.getCollidables()) {
-            if (c instanceof GameCharacter) {
-                Rectangle collisionBox = ((GameEntity) c).getCollisionBox().getBounds();
-                if (collisionBox.x / TILE_SIZE == xIndex && collisionBox.y / TILE_SIZE == yIndex)
-                    ((GameCharacter) c).setHitted(true);
-            }
-        }
-    }
-
-    /**
-     * Cleans up destroyed objects from the list of game objects.
-     */
-    private void cleanObjects() {
-        List<GameObject> destroyedObjects = objects.stream()
-                .filter(GameEntity::isToClean)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        for (GameObject obj : destroyedObjects) {
-            if (obj instanceof PowerUp)
-                AudioManager.getAudioManagerInstance().play("/src/main/resources/power_up_sfx.wav",-16f);
-            objects.remove(obj);
-        };
     }
 
     /**

@@ -1,8 +1,13 @@
 package it.petrillo.jbomberman.model;
 
+import it.petrillo.jbomberman.model.characters.AdvancedEnemy;
+import it.petrillo.jbomberman.model.characters.BasicEnemy;
+import it.petrillo.jbomberman.model.objects.*;
+import it.petrillo.jbomberman.util.Direction;
+
 import java.util.ArrayList;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameConstants.*;
 
 /**
  * The GameEntityFactory class provides static methods to create various game entities such as

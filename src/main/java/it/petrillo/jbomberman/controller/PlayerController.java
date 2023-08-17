@@ -1,12 +1,12 @@
 package it.petrillo.jbomberman.controller;
 
 
-import it.petrillo.jbomberman.model.Bomberman;
+import it.petrillo.jbomberman.model.characters.Bomberman;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameConstants.*;
 
 /**
  * The PlayerController class handles user input for controlling the Bomberman character.

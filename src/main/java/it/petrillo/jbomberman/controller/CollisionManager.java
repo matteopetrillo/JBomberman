@@ -1,6 +1,11 @@
 package it.petrillo.jbomberman.controller;
 
 import it.petrillo.jbomberman.model.*;
+import it.petrillo.jbomberman.model.gamemap.GameMap;
+import it.petrillo.jbomberman.model.interfaces.Collidable;
+import it.petrillo.jbomberman.util.CollisionListener;
+import it.petrillo.jbomberman.model.objects.GameObject;
+import it.petrillo.jbomberman.util.Direction;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -8,7 +13,7 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameConstants.*;
 
 /**
  * Manages collision detection and interactions between collidable entities in the game world.

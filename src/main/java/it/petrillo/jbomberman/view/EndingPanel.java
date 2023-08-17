@@ -8,7 +8,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameConstants.*;
+import static it.petrillo.jbomberman.util.UtilFunctions.drawBorder;
+import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
 
 public class EndingPanel extends JPanel {
     private final boolean playerWin;

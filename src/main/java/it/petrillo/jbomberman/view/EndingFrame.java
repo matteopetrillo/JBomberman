@@ -4,7 +4,8 @@ import it.petrillo.jbomberman.util.UserData;
 
 import javax.swing.*;
 
-import static it.petrillo.jbomberman.util.GameSettings.getImg;
+import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
+
 
 public class EndingFrame extends JFrame {
 

@@ -1,13 +1,16 @@
 package it.petrillo.jbomberman.model;
 
+import it.petrillo.jbomberman.model.characters.GameCharacter;
+import it.petrillo.jbomberman.model.interfaces.Collidable;
+import it.petrillo.jbomberman.util.Direction;
+
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameConstants.*;
+import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
 
 /**
  * The Explosion class represents an explosion entity in the game.

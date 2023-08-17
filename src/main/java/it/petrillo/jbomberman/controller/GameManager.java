@@ -1,28 +1,37 @@
 package it.petrillo.jbomberman.controller;
 
 import com.google.gson.*;
-import it.petrillo.jbomberman.model.Bomberman;
-import it.petrillo.jbomberman.model.GameStateListener;
+import it.petrillo.jbomberman.model.characters.Bomberman;
+import it.petrillo.jbomberman.util.GameStateListener;
 import it.petrillo.jbomberman.util.CustomObserver;
+import it.petrillo.jbomberman.util.NotificationType;
 import it.petrillo.jbomberman.util.UserData;
 import it.petrillo.jbomberman.view.*;
+import it.petrillo.jbomberman.view.game.GameFrame;
+import it.petrillo.jbomberman.view.game.GamePanel;
+import it.petrillo.jbomberman.view.game.PlayerPanel;
+import it.petrillo.jbomberman.view.menu.MenuFrame;
+import it.petrillo.jbomberman.view.menu.MenuPanel;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
 import java.io.*;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameConstants.*;
 
 
 /**
  * The GameManager class manages the overall game flow, including level loading, player interactions, and game state transitions.
  */
 public class GameManager implements CustomObserver, GameStateListener {
+
+    public enum GameState {
+        MENU,PLAYING,VICTORY,GAME_OVER,PAUSE,LOADING
+    }
 
     private static GameManager gameManagerInstance;
     public static GameState GAME_STATE = GameState.MENU;

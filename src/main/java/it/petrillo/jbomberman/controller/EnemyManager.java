@@ -3,6 +3,10 @@ package it.petrillo.jbomberman.controller;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import it.petrillo.jbomberman.model.*;
+import it.petrillo.jbomberman.model.characters.AdvancedEnemy;
+import it.petrillo.jbomberman.model.characters.BasicEnemy;
+import it.petrillo.jbomberman.model.characters.Bomberman;
+import it.petrillo.jbomberman.model.characters.Enemy;
 
 import java.util.*;
 import java.util.stream.Collectors;

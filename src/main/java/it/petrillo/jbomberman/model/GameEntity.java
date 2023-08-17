@@ -1,12 +1,10 @@
 package it.petrillo.jbomberman.model;
 
+import it.petrillo.jbomberman.model.interfaces.Renderable;
 import it.petrillo.jbomberman.util.CustomObservable;
 
-import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
-
-import static it.petrillo.jbomberman.util.GameSettings.*;
 
 /**
  * The GameEntity class represents a basic entity in the game, providing common properties and behaviors.

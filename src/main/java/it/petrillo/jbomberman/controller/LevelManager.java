@@ -2,14 +2,16 @@ package it.petrillo.jbomberman.controller;
 
 import com.google.gson.JsonElement;
 import it.petrillo.jbomberman.model.*;
+import it.petrillo.jbomberman.model.characters.Bomberman;
+import it.petrillo.jbomberman.model.gamemap.GameMap;
+import it.petrillo.jbomberman.util.GameStateListener;
 
-import javax.swing.*;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameConstants.*;
+import static it.petrillo.jbomberman.util.UtilFunctions.getMultipleJsonFields;
 
 /**
  * The LevelManager class handles loading and transitioning between game levels.

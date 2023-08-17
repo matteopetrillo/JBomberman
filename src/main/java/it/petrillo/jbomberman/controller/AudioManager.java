@@ -1,7 +1,5 @@
 package it.petrillo.jbomberman.controller;
 
-import it.petrillo.jbomberman.util.GameSettings;
-
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,7 +7,7 @@ import javax.sound.sampled.*;
 import javax.sound.sampled.FloatControl;
 import javax.swing.*;
 
-import static it.petrillo.jbomberman.util.GameSettings.*;
+import static it.petrillo.jbomberman.util.GameConstants.*;
 
 public class AudioManager {
 

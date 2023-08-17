@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomObservable {
-    private List<CustomObserver> observers;
+
+    private final List<CustomObserver> observers;
 
     public CustomObservable() {
         observers = new ArrayList<>();
@@ -18,7 +19,7 @@ public class CustomObservable {
         observers.remove(observer);
     }
 
-    public void notifyObservers(GameSettings.NotificationType notificationType, Object arg) {
+    public void notifyObservers(NotificationType notificationType, Object arg) {
         for (CustomObserver observer : observers) {
             observer.update(notificationType, arg);
         }

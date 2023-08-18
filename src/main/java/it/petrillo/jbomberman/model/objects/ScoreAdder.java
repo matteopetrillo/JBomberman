@@ -19,7 +19,7 @@ public class ScoreAdder extends PowerUp {
      */
     public ScoreAdder(int x, int y) {
         super(x, y);
-        loadSprites("/Sprites.Objects/Sprite_Items_16x16.png");
+        loadSprites("/Sprites/Objects/Sprite_Items_16x16.png");
     }
 
     /**

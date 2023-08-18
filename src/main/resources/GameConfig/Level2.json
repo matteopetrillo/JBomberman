@@ -43,9 +43,9 @@
     ],
   "sprite_sheets_path":
     {
-      "bomb":"/Sprites.Objects/Bomb_SpriteSheet_Level2.png",
-      "soft_blocks": "/Sprites.Objects/SoftBlocks_SpriteSheet_Level2.png",
-      "explosion": "/Sprites.Objects/Explosion_SpriteSheet_Level2.png"
+      "bomb":"/Sprites/Objects/Bomb_SpriteSheet_Level2.png",
+      "soft_blocks": "/Sprites/Objects/SoftBlocks_SpriteSheet_Level2.png",
+      "explosion": "/Sprites/Objects/Explosion_SpriteSheet_Level2.png"
     },
   "power_ups_spawn": [
     {

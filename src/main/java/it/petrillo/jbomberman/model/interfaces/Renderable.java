@@ -22,6 +22,7 @@ public interface Renderable {
      */
     void loadSprites(String path);
 
+
     /**
      * Updates the object's state, typically for animation or gameplay logic.
      * This method is called in each game frame.

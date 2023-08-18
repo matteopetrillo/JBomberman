@@ -32,7 +32,7 @@ public class AdvancedEnemy extends Enemy {
         animationSpeed = 15;
         scoreValue = 250;
         movingDirection = pickRandomDirection();
-        loadSprites("/Sprites.Enemies/Sprites_Enemy2.png");
+        loadSprites("/Sprites/Enemies/Sprites_Enemy2.png");
     }
 
     /**

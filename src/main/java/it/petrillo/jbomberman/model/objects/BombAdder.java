@@ -21,7 +21,7 @@ public class BombAdder extends PowerUp {
      */
     public BombAdder(int x, int y) {
         super(x, y);
-        loadSprites("/Sprites.Objects/Sprite_Items_16x16.png");
+        loadSprites("/Sprites/Objects/Sprite_Items_16x16.png");
     }
 
     /**

@@ -6,6 +6,7 @@ import it.petrillo.jbomberman.model.characters.Bomberman;
 import java.awt.*;
 
 import static it.petrillo.jbomberman.util.GameConstants.TILE_SIZE;
+import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
 
 /**
  * The PowerUp class represents a game entity that provides a special effect or enhancement to the player's character.
@@ -23,6 +24,7 @@ public abstract class PowerUp extends GameObject implements Collidable{
         super(x, y);
         visible = false;
         animationSpeed = 5;
+        spriteSheet = getImg("/Sprites/Objects/Sprite_Items_16x16.png");
     }
 
     /**
@@ -59,6 +61,8 @@ public abstract class PowerUp extends GameObject implements Collidable{
             applyEffect((Bomberman)other);
         }
     }
+
+
 
     /**
      * Renders the power-up by drawing its current animation frame on the game canvas.

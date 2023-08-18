@@ -32,7 +32,7 @@ public class BasicEnemy extends Enemy {
         health = 1;
         animationSpeed = 5;
         scoreValue = 100;
-        loadSprites("/Sprites.Enemies/Sprites_Enemy1.png");
+        loadSprites("/Sprites/Enemies/Sprites_Enemy1.png");
     }
 
     /**

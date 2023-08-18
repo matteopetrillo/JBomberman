@@ -223,7 +223,7 @@ public class Bomberman extends GameCharacter {
     /**
      * Increases the player's health by one.
      */
-    public void incrHealthCharacter() {
+    public void increaseHealthCharacter() {
         health++;
         notifyObservers(NotificationType.HEALTH_UPDATE,health);
     }
@@ -233,7 +233,7 @@ public class Bomberman extends GameCharacter {
      */
     public void increaseBombBackpack() {
         bombBackpack++;
-        notifyObservers(NotificationType.BOMB_UPDATE,getBombAvailable());
+        notifyObservers(NotificationType.BOMB_UPDATE, getAvailableBombs());
     }
 
     /**
@@ -241,7 +241,7 @@ public class Bomberman extends GameCharacter {
      *
      * @return The number of available bombs.
      */
-    public int getBombAvailable() {
+    public int getAvailableBombs() {
         return bombBackpack-bombReleased;
     }
 
@@ -270,7 +270,7 @@ public class Bomberman extends GameCharacter {
         initDefaultValues();
         notifyObservers(NotificationType.HEALTH_UPDATE,health);
         notifyObservers(NotificationType.SCORE_UPDATE, score);
-        notifyObservers(NotificationType.BOMB_UPDATE,getBombAvailable());
+        notifyObservers(NotificationType.BOMB_UPDATE, getAvailableBombs());
     }
 
     /**
@@ -286,7 +286,7 @@ public class Bomberman extends GameCharacter {
      * @return True if the player can drop a bomb, otherwise false.
      */
     public boolean canDropBomb() {
-        return getBombAvailable()>0;
+        return getAvailableBombs()>0;
     }
 
     /**
@@ -296,7 +296,7 @@ public class Bomberman extends GameCharacter {
      */
     public void alterBombReleased(int k) {
         bombReleased += k;
-        notifyObservers(NotificationType.BOMB_UPDATE,getBombAvailable());
+        notifyObservers(NotificationType.BOMB_UPDATE, getAvailableBombs());
     }
 
     /**

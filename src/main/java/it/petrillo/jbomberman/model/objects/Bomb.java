@@ -75,7 +75,7 @@ public class Bomb extends GameObject implements Explodable {
 
     /**
      * Updates the state of the bomb.
-     * Manages the timer, explosion animation, and visibility.
+     * Manages the timer, animation and visibility.
      */
     @Override
     public void update() {
@@ -86,14 +86,6 @@ public class Bomb extends GameObject implements Explodable {
                 animationSpeed = 5;
             }
         }
-        updateAnimation();
-    }
-
-    /**
-     * Updates the animation state of the bomb.
-     * Handles animation timing and sets the bomb to be cleaned up when appropriate.
-     */
-    public void updateAnimation() {
         animationTick++;
         if (animationTick >= animationSpeed) {
             animationTick = 0;
@@ -107,6 +99,7 @@ public class Bomb extends GameObject implements Explodable {
                 }
         }
     }
+
 
     /**
      * Checks if the explosion has started.

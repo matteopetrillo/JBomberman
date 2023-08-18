@@ -22,7 +22,7 @@ import static it.petrillo.jbomberman.util.UtilFunctions.drawBorder;
  */
 public abstract class Enemy extends GameCharacter {
 
-    int scoreTextY, scoreValue;
+    protected int scoreTextYOffset, scoreValue;
 
     /**
      * Constructs an Enemy instance with the specified initial position.
@@ -47,7 +47,7 @@ public abstract class Enemy extends GameCharacter {
         if (health > 0) {
             updatePosition();
             animationTick++;
-            scoreTextY = y;
+            scoreTextYOffset = y;
             if (animationTick >= animationSpeed) {
                 animationTick = 0;
                 animationIndex++;
@@ -58,8 +58,8 @@ public abstract class Enemy extends GameCharacter {
         else {
             if (armorTimer <= 0) {
                 visible = false;
-                if (scoreTextY > 20)
-                    scoreTextY--;
+                if (scoreTextYOffset > 20)
+                    scoreTextYOffset--;
                 Timer cleanTimer = new Timer(500, e -> setToClean(true));
                 cleanTimer.setRepeats(false);
                 cleanTimer.start();
@@ -137,9 +137,9 @@ public abstract class Enemy extends GameCharacter {
         }
         else {
             g.setFont(RETRO_FONT.deriveFont(Font.PLAIN,50f));
-            drawBorder(g, x, scoreTextY, 4, String.valueOf(scoreValue));
+            drawBorder(g, x, scoreTextYOffset, 4, String.valueOf(scoreValue));
             g.setColor(Color.ORANGE);
-            g.drawString(String.valueOf(scoreValue), x, scoreTextY);
+            g.drawString(String.valueOf(scoreValue), x, scoreTextYOffset);
         }
     }
 
@@ -147,7 +147,7 @@ public abstract class Enemy extends GameCharacter {
     /**
      * Changes the enemy's direction to an available direction other than the current one.
      */
-    public void changeDirection() {
+    private void changeDirection() {
         List<Direction> availableDirections = collisionListener.getAvailableDirections(characterSpeed,collisionBox);
         Random rd = new Random();
         try {

@@ -95,12 +95,12 @@ public class UtilFunctions {
     }
 
     /**
-     * Configures the provided JFrame with common settings for JBomberman's game frames
+     * Configures the provided JFrame with common settings for JBomberMan's game frames
      *
      * @param frame The JFrame to be configured.
      */
     public static void setJBombermanFrame(JFrame frame) {
-        frame.setTitle("JBomberman");
+        frame.setTitle("JBomberMan");
         frame.setIconImage(getImg("/GUI/GameIcon.png"));
         frame.setResizable(false);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);

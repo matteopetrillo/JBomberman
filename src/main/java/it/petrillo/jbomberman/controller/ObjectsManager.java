@@ -169,8 +169,8 @@ public class ObjectsManager {
      */
     public List<GameObject> getObjectsFromCoords(int x, int y) {
         return objects.stream()
-                        .filter(obj -> obj.getX()/TILE_SIZE == x && obj.getY()/TILE_SIZE == y)
-                        .collect(Collectors.toList());
+                .filter(obj -> obj.getX()/TILE_SIZE == x && obj.getY()/TILE_SIZE == y)
+                .collect(Collectors.toList());
     }
 
     /**

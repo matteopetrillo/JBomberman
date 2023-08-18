@@ -21,7 +21,7 @@ public class LevelAdvancer extends PowerUp {
      */
     public LevelAdvancer(int x, int y) {
         super(x, y);
-        loadSprites("/Sprite_Items_16x16.png");
+        loadSprites("/Sprites.Objects/Sprite_Items_16x16.png");
     }
 
     /**

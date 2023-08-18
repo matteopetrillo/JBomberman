@@ -1,21 +1,21 @@
 package it.petrillo.jbomberman.model;
 
 import it.petrillo.jbomberman.model.interfaces.Renderable;
-import it.petrillo.jbomberman.util.CustomObservable;
+import it.petrillo.jbomberman.util.ModelObservable;
 
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 /**
  * The GameEntity class represents a basic entity in the game, providing common properties and behaviors.
- * It extends the CustomObservable class and implements the Renderable interface.
+ * It extends the ModelObservable class and implements the Renderable interface.
  * Subclasses of GameEntity define specific entities with their unique characteristics.
  */
-public abstract class GameEntity extends CustomObservable implements Renderable {
+public abstract class GameEntity extends ModelObservable implements Renderable {
     protected Area collisionBox;
     protected boolean visible, toClean;
     protected int x,y,animationTick,animationIndex, animationSpeed, xCollisionOffset, yCollisionOffset;
-    protected double entityScale = 1.0d;
+    protected double entityScale;
     protected BufferedImage spriteSheet;
     protected BufferedImage[][] spriteAnimation;
 

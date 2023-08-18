@@ -12,12 +12,23 @@ import static it.petrillo.jbomberman.util.GameConstants.*;
 import static it.petrillo.jbomberman.util.UtilFunctions.drawBorder;
 import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
 
+/**
+ * The EndingPanel class represents a JPanel that contains visual elements
+ * for the ending screen, including buttons and messages.
+ */
 public class EndingPanel extends JPanel {
+
     private final boolean playerWin;
     private final UserData userData;
-    private final BufferedImage bgImg = getImg("/EndingDef.png");
+    private final BufferedImage bgImg = getImg("/GUI/EndingScreenBG.png");
     private final JButton restartButton;
 
+    /**
+     * Constructs a new instance of the EndingPanel class with the specified victory status and user data.
+     *
+     * @param playerWin True if the player has won, false if the player has lost.
+     * @param userData  The user data containing player information.
+     */
     public EndingPanel(boolean playerWin, UserData userData) {
         this.playerWin = playerWin;
         this.userData = userData;
@@ -61,6 +72,11 @@ public class EndingPanel extends JPanel {
         add(restartButton);
     }
 
+    /**
+     * Draw the ending screen elements, including background, messages, and buttons.
+     *
+     * @param g The Graphics object for rendering.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -91,6 +107,11 @@ public class EndingPanel extends JPanel {
 
     }
 
+    /**
+     * Gets the restart button from the EndingPanel.
+     *
+     * @return The restart button.
+     */
     public JButton getRestartButton() {
         return restartButton;
     }

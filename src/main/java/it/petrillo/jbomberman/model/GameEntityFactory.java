@@ -6,6 +6,7 @@ import it.petrillo.jbomberman.model.objects.*;
 import it.petrillo.jbomberman.util.Direction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static it.petrillo.jbomberman.util.GameConstants.*;
 
@@ -50,7 +51,7 @@ public class GameEntityFactory {
      * @param directions The directions in which the Explosion should be drawn.
      * @return The newly created Explosion entity.
      */
-    public static Explosion createExplosion(int x, int y, ArrayList<Direction> directions) {
+    public static Explosion createExplosion(int x, int y, List<Direction> directions) {
         return new Explosion(x*TILE_SIZE,y*TILE_SIZE,explosionSpriteSheet,directions);
     }
 
@@ -65,6 +66,13 @@ public class GameEntityFactory {
         return new BasicEnemy(x*TILE_SIZE,y*TILE_SIZE);
     }
 
+    /**
+     * Creates and returns a new AdvancedEnemy entity.
+     *
+     * @param x The x-coordinate of the AdvancedEnemy.
+     * @param y The y-coordinate of the AdvancedEnemy.
+     * @return The newly created AdvancedEnemy entity.
+     */
     public static AdvancedEnemy createAdvancedEnemy(int x, int y) {return new AdvancedEnemy(x*TILE_SIZE,y*TILE_SIZE);}
 
     /**

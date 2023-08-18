@@ -3,7 +3,7 @@ package it.petrillo.jbomberman.controller;
 import com.google.gson.*;
 import it.petrillo.jbomberman.model.characters.Bomberman;
 import it.petrillo.jbomberman.util.GameStateListener;
-import it.petrillo.jbomberman.util.CustomObserver;
+import it.petrillo.jbomberman.util.ModelObserver;
 import it.petrillo.jbomberman.util.NotificationType;
 import it.petrillo.jbomberman.util.UserData;
 import it.petrillo.jbomberman.view.*;
@@ -26,8 +26,11 @@ import static it.petrillo.jbomberman.util.GameConstants.*;
 /**
  * The GameManager class manages the overall game flow, including level loading, player interactions, and game state transitions.
  */
-public class GameManager implements CustomObserver, GameStateListener {
+public class GameManager implements ModelObserver, GameStateListener {
 
+    /**
+     * Represents the different states of the game.
+     */
     public enum GameState {
         MENU,PLAYING,GAME_FINISHED,LOADING
     }
@@ -48,7 +51,7 @@ public class GameManager implements CustomObserver, GameStateListener {
     /**
      * Initializes the GameManager by setting up UI components and registering observers.
      */
-    public GameManager() {
+    private GameManager() {
         gameFrame.setLayout(new BorderLayout());
         gameFrame.add(gamePanel,BorderLayout.CENTER);
         gameFrame.add(playerPanel,BorderLayout.NORTH);
@@ -97,6 +100,9 @@ public class GameManager implements CustomObserver, GameStateListener {
         onLoading();
     }
 
+    /**
+     * Restarts the game, including resetting player stats and level progress.
+     */
     private void restartGame() {
         levelManager.restartGame();
         playerPanel.resetTimer();
@@ -215,12 +221,15 @@ public class GameManager implements CustomObserver, GameStateListener {
         }
     }
 
+    /**
+     * Handles the game state when the player loses.
+     */
     @Override
     public void onLosing() {
         GAME_STATE = GameState.GAME_FINISHED;
         System.out.println("****YOU LOSE!!****");
         audioManager.fadeOutGamePlayMusic();
-        audioManager.play("/src/main/resources/losing_sfx.wav",-12f);
+        audioManager.play("/SFX/losing_sfx.wav",-12f);
         audioManager.playMenuMusic();
         currentPlayerData.lose();
         updateDatabase();
@@ -234,12 +243,15 @@ public class GameManager implements CustomObserver, GameStateListener {
         exitTimer.start();
     }
 
+    /**
+     * Handles the game state when the player wins.
+     */
     @Override
     public void onWinning() {
         GAME_STATE = GameState.GAME_FINISHED;
         System.out.println("****YOU WON!****");
         audioManager.fadeOutGamePlayMusic();
-        audioManager.play("/src/main/resources/winning_sfx.wav",-8f);
+        audioManager.play("/SFX/winning_sfx.wav",-8f);
         audioManager.playMenuMusic();
         currentPlayerData.win();
         updateDatabase();
@@ -253,17 +265,23 @@ public class GameManager implements CustomObserver, GameStateListener {
         exitTimer.start();
     }
 
+    /**
+     * Handles the game state during the loading phase.
+     */
     @Override
     public void onLoading() {
         GAME_STATE = GameState.LOADING;
         audioManager.fadeOutMenuMusic();
-        audioManager.play("/src/main/resources/loading_screen_music.wav",0f);
+        audioManager.play("/SFX/loading_screen_music.wav",0f);
         Timer startingTimer = new Timer(2500,
                 e -> onPlaying());
         startingTimer.setRepeats(false);
         startingTimer.start();
     }
 
+    /**
+     * Handles the game state during the playing phase.
+     */
     @Override
     public void onPlaying() {
         GAME_STATE = GameState.PLAYING;
@@ -272,6 +290,11 @@ public class GameManager implements CustomObserver, GameStateListener {
         playerPanel.startTimer();
     }
 
+    /**
+     * Displays the ending frame and handles user interaction after the game ends.
+     *
+     * @param endingFrame The ending frame to be displayed.
+     */
     private void showEndingFrame(EndingFrame endingFrame) {
         endingFrame.getRestartButton().addMouseListener(new MouseAdapter() {
             @Override
@@ -286,6 +309,11 @@ public class GameManager implements CustomObserver, GameStateListener {
         endingFrame.setVisible(true);
     }
 
+    /**
+     * Retrieves the singleton instance of the GameManager.
+     *
+     * @return The GameManager instance.
+     */
     public static GameManager getInstance() {
         if (gameManagerInstance == null)
             gameManagerInstance = new GameManager();

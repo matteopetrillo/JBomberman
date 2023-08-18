@@ -9,13 +9,21 @@ import java.util.ArrayList;
 
 import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
 
+/**
+ * The MenuPanel class represents the graphic of game's menu.
+ */
 public class MenuPanel extends JPanel {
-    private final BufferedImage backgroundImage = getImg("/GameMenuBg.png");
+    private final BufferedImage backgroundImage = getImg("/GUI/GameMenuBg.png");
     private final JTextField nickField = new JTextField();
     private String chosenAvatarPath;
     private final JButton playButton;
     private final JButton quitButton;
     private final ArrayList<AvatarButton> avatarsButtonList = new ArrayList<>();
+
+    /**
+     * Constructs a new instance of the MenuPanel class.
+     * Initializes the layout, components, and their positions.
+     */
     public MenuPanel() {
         setPreferredSize(new Dimension(backgroundImage.getWidth(),backgroundImage.getHeight()));
         setLayout(null);
@@ -29,7 +37,7 @@ public class MenuPanel extends JPanel {
         avatarsButtonList.add(new AvatarButton("/Avatars/Avatar3_Normal.png", "/Avatars/Avatar3_Selected.png",405,420));
         avatarsButtonList.add(new AvatarButton("/Avatars/Avatar4_Normal.png", "/Avatars/Avatar4_Selected.png",555,420));
         for (AvatarButton buttons : avatarsButtonList) {
-            buttons.setBounds(buttons.getX(), buttons.getY(),140,140);
+            buttons.setBounds(buttons.getButtonX(), buttons.getButtonY(),140,140);
             buttons.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
@@ -47,7 +55,7 @@ public class MenuPanel extends JPanel {
                 public void mouseClicked(MouseEvent e) {
                     chosenAvatarPath = buttons.getAvatarPath();
                     avatarsButtonList.stream().filter(AvatarButton::isSelected).forEach(b -> b.setSelected(false));
-                    buttons.setSelected(true);
+                    buttons.setChecked(true);
                     repaint();
                 }
             });
@@ -94,6 +102,11 @@ public class MenuPanel extends JPanel {
 
     }
 
+    /**
+     * Draw the background and buttons on screen.
+     *
+     * @param g the graphic to render on.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -103,12 +116,29 @@ public class MenuPanel extends JPanel {
 
     }
 
+    /**
+     * Gets the play button component.
+     *
+     * @return The play button component.
+     */
     public JButton getPlayButton() {
         return playButton;
     }
+
+    /**
+     * Gets the path of the chosen avatar image.
+     *
+     * @return The path of the chosen avatar image.
+     */
     public String getChosenAvatarPath() {
         return chosenAvatarPath;
     }
+
+    /**
+     * Gets the entered nickname.
+     *
+     * @return The entered nickname.
+     */
     public String getNickname() {
         return nickField.getText();
     }

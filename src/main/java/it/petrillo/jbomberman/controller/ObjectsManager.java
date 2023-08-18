@@ -72,9 +72,9 @@ public class ObjectsManager {
                     if (!bomb.isExplosionStarted()) {
                         bomb.setExplosionStarted(true);
                         bomberman.alterBombReleased(-1);
-                        handleExplosion(bomb);
+                        initExplosionEffects(bomb);
                         bomb.setExplosionStarted(true);
-                        AudioManager.getAudioManagerInstance().play("/src/main/resources/explosion_sfx.wav",-12f);
+                        AudioManager.getAudioManagerInstance().play("/SFX/explosion_sfx.wav",-12f);
                     }
                 }
             }
@@ -91,7 +91,7 @@ public class ObjectsManager {
 
         for (GameObject obj : destroyedObjects) {
             if (obj instanceof PowerUp) {
-                AudioManager.getAudioManagerInstance().play("/src/main/resources/power_up_sfx.wav",-16f);
+                AudioManager.getAudioManagerInstance().play("/SFX/power_up_sfx.wav",-16f);
             }
             objectsToRemove.add(obj);
         }
@@ -102,7 +102,7 @@ public class ObjectsManager {
 
 
     /**
-     * Drops a bomb at the specified grid cell if allowed by Bomberman.
+     * Drops a bomb at the specified grid cell if there is space in Bomberman's backpack.
      *
      * @param x The x-coordinate of the grid cell.
      * @param y The y-coordinate of the grid cell.
@@ -112,23 +112,23 @@ public class ObjectsManager {
         if (o.isEmpty() && bomberman.canDropBomb()) {
             objects.add((GameEntityFactory.createBomb(x, y)));
             bomberman.alterBombReleased(1);
-            AudioManager.getAudioManagerInstance().play("/src/main/resources/bomb_dropped_sfx.wav",-16f);
+            AudioManager.getAudioManagerInstance().play("/SFX/bomb_dropped_sfx.wav",-16f);
         }
     }
 
     /**
-     * Handles the explosion caused by a bomb, affecting nearby objects and characters.
+     * Initiates the explosion effects and interactions caused by a bomb.
      *
      * @param bomb The Bomb instance triggering the explosion.
      */
-    public void handleExplosion(Bomb bomb) {
+    public void initExplosionEffects(Bomb bomb) {
         int[] dx = {-1, 1, 0, 0};
         int[] dy = {0, 0, -1, 1};
         int xIndex = bomb.getX() / TILE_SIZE;
         int yIndex = bomb.getY() / TILE_SIZE;
         ArrayList<Direction> explosionDirections = new ArrayList<>();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < Direction.values().length; i++) {
             Direction checkingDirection = null;
             switch (i) {
                 case 0 -> checkingDirection = Direction.LEFT;

@@ -2,8 +2,6 @@ package it.petrillo.jbomberman.model.characters;
 
 
 import it.petrillo.jbomberman.model.interfaces.Collidable;
-import it.petrillo.jbomberman.model.interfaces.Movable;
-import it.petrillo.jbomberman.model.interfaces.Renderable;
 import it.petrillo.jbomberman.util.Direction;
 
 import javax.swing.*;
@@ -19,10 +17,10 @@ import static it.petrillo.jbomberman.util.UtilFunctions.drawBorder;
 
 /**
  * The Enemy abstract class serves as a base for enemy characters in the game.
- * It extends the GameCharacter class and implements the Movable and Renderable interfaces.
+ * It extends the GameCharacter class.
  * This class encapsulates common behavior and attributes for enemy characters.
  */
-public abstract class Enemy extends GameCharacter implements Movable, Renderable {
+public abstract class Enemy extends GameCharacter {
 
     int scoreTextY, scoreValue;
 
@@ -44,8 +42,8 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
      */
     @Override
     public void update() {
-        if (hittedTimer > 0)
-            hittedTimer--;
+        if (armorTimer > 0)
+            armorTimer--;
         if (health > 0) {
             updatePosition();
             animationTick++;
@@ -53,12 +51,12 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
             if (animationTick >= animationSpeed) {
                 animationTick = 0;
                 animationIndex++;
-                if (animationIndex >= (spriteAnimation[getAniIndexByDirection()].length-1))
+                if (animationIndex >= (spriteAnimation[getAnimationIndexByDirection()].length-1))
                     animationIndex = 0;
             }
         }
         else {
-            if (hittedTimer <= 0) {
+            if (armorTimer <= 0) {
                 visible = false;
                 if (scoreTextY > 20)
                     scoreTextY--;
@@ -76,8 +74,8 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
      * @return A randomly chosen Direction for movement.
      */
     protected Direction pickRandomDirection() {
-        Random rd = new Random();
-        int n = rd.nextInt(1,4);
+        Random random = new Random();
+        int n = random.nextInt(1,4);
         switch (n) {
             case 1 -> {
                 return Direction.UP;
@@ -91,8 +89,8 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
             case 4 -> {
                 return Direction.RIGHT;
             }
+            default -> throw new IllegalStateException("Unexpected value: " + n);
         }
-        return null;
     }
 
     /**
@@ -100,8 +98,8 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
      */
     @Override
     public void updatePosition() {
-        setFlagFromDirection();
-        int[] deltaSpeed = getDeltaSpeedByDirection();
+        setMovementFlag();
+        int[] deltaSpeed = getDeltasByDirection();
         xSpeed = deltaSpeed[0];
         ySpeed = deltaSpeed[1];
 
@@ -111,12 +109,12 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
 
         if(!collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
             changeDirection();
-            int[] deltas = getDeltaSpeedByDirection();
+            int[] deltas = getDeltasByDirection();
             xSpeed = deltas[0];
             ySpeed = deltas[1];
         }
-        super.x += xSpeed;
-        super.y += ySpeed;
+        x += xSpeed;
+        y += ySpeed;
         collisionBox = newCollisionBox;
     }
 
@@ -129,8 +127,8 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
     @Override
     public void draw(Graphics2D g) {
         if (visible) {
-            BufferedImage img = spriteAnimation[getAniIndexByDirection()][animationIndex];
-            if (hittedTimer > 0) {
+            BufferedImage img = spriteAnimation[getAnimationIndexByDirection()][animationIndex];
+            if (armorTimer > 0) {
                 drawFlashingSprite(g,img);
             }
             else {
@@ -149,16 +147,16 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
     /**
      * Changes the enemy's direction to an available direction other than the current one.
      */
-    private void changeDirection() {
+    public void changeDirection() {
         List<Direction> availableDirections = collisionListener.getAvailableDirections(characterSpeed,collisionBox);
         Random rd = new Random();
         try {
             int n = rd.nextInt(0, availableDirections.size());
             movingDirection = availableDirections.get(n);
         } catch (IllegalArgumentException e) {
-            invertDirection(movingDirection);
+            invertDirection();
         }
-        setFlagFromDirection();
+        setMovementFlag();
     }
 
     /**
@@ -166,8 +164,8 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
      *
      * @return An array containing the change in X-speed and Y-speed.
      */
-    private int[] getDeltaSpeedByDirection() {
-        int[] deltaSpeed = new int[2];
+    private int[] getDeltasByDirection() {
+        int[] deltaSpeeds = new int[2];
         xSpeed = 0;
         ySpeed = 0;
 
@@ -183,31 +181,30 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
         else if (movingRight) {
             xSpeed = characterSpeed;
         }
-        deltaSpeed[0] = xSpeed;
-        deltaSpeed[1] = ySpeed;
+        deltaSpeeds[0] = xSpeed;
+        deltaSpeeds[1] = ySpeed;
 
-        return deltaSpeed;
+        return deltaSpeeds;
     }
 
     /**
      * Inverts the enemy's direction, used for collision handling.
      *
-     * @param direction The current direction to be inverted.
      */
-    private void invertDirection(Direction direction) {
-        switch (direction) {
+    private void invertDirection() {
+        switch (movingDirection) {
             case UP -> movingDirection = Direction.DOWN;
             case DOWN -> movingDirection = Direction.UP;
             case LEFT -> movingDirection = Direction.RIGHT;
             case RIGHT -> movingDirection = Direction.LEFT;
         }
-        setFlagFromDirection();
+        setMovementFlag();
     }
 
     /**
      * Sets the movement flags based on the current movement direction.
      */
-    private void setFlagFromDirection() {
+    private void setMovementFlag() {
         movingLeft = false;
         movingRight = false;
         movingDown = false;
@@ -227,13 +224,16 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
      */
     @Override
     public void hitCharacter() {
-        if (hittedTimer <= 0) {
+        if (armorTimer <= 0) {
             health--;
-            hittedTimer = 60;
-            hitted = false;
+            armorTimer = 60;
         }
     }
 
+    /**
+     * Returns the score values of the enemy, increased by difficult to defeat it.
+     * @return Enemy score value
+     */
     public int getScoreValue() {
         return scoreValue;
     }
@@ -246,7 +246,7 @@ public abstract class Enemy extends GameCharacter implements Movable, Renderable
     public void onCollision(Collidable other) {
         if (other instanceof Bomberman)
             changeDirection();
-        if (other instanceof Enemy)
-            invertDirection(movingDirection);
+        else if (other instanceof Enemy)
+            invertDirection();
     }
 }

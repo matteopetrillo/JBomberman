@@ -29,7 +29,7 @@ public abstract class GameObject extends GameEntity {
     /**
      * Checks whether the game object is solid (blocks movement) or not.
      *
-     * @return True if the game object is solid, otherwise false.
+     * @return true if the game object is solid, false otherwise.
      */
     public boolean isSolid() {
         return isSolid;

@@ -6,10 +6,14 @@ import java.awt.image.BufferedImage;
 
 import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
 
+/**
+ * The BasicEnemy class represents an advanced enemy character in the game.
+ * It extends the Enemy class and encapsulates the behavior of an advanced enemy.
+ */
 public class AdvancedEnemy extends Enemy {
 
     /**
-     * Constructs an Enemy instance with the specified initial position.
+     * Constructs an AdvancedEnemy instance with the specified initial position.
      *
      * @param x The X-coordinate of the enemy's initial position.
      * @param y The Y-coordinate of the enemy's initial position.
@@ -28,9 +32,14 @@ public class AdvancedEnemy extends Enemy {
         animationSpeed = 15;
         scoreValue = 250;
         movingDirection = pickRandomDirection();
-        loadSprites( "/Sprites_Enemy2.png");
+        loadSprites("/Sprites.Enemies/Sprites_Enemy2.png");
     }
 
+    /**
+     * Loads the sprite images for the enemy character from the specified image path.
+     *
+     * @param path The path to the sprite image file.
+     */
     @Override
     public void loadSprites(String path) {
         spriteSheet = getImg(path);

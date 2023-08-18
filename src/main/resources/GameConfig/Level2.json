@@ -1,5 +1,5 @@
 {
-  "mapImg": "/Map_Level2.png",
+  "mapImg": "/Maps/Map_Level2.png",
   "map_data": [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
               [1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 1, 1],
               [1, 1, 0, 1, 0, 1, 3, 1, 0, 1, 3, 1, 0, 1, 0, 1, 1],
@@ -31,16 +31,21 @@
         "typeID": 2
       },
       {
-        "x": 4,
+        "x": 14,
+        "y": 11,
+        "typeID": 1
+      },
+      {
+        "x": 10,
         "y": 5,
         "typeID": 1
       }
     ],
   "sprite_sheets_path":
     {
-      "bomb":"/Bomb_SpriteSheet_Level2.png",
-      "soft_blocks": "/SoftBlocks_SpriteSheet_Level2.png",
-      "explosion": "/Explosion_SpriteSheet_Level2.png"
+      "bomb":"/Sprites.Objects/Bomb_SpriteSheet_Level2.png",
+      "soft_blocks": "/Sprites.Objects/SoftBlocks_SpriteSheet_Level2.png",
+      "explosion": "/Sprites.Objects/Explosion_SpriteSheet_Level2.png"
     },
   "power_ups_spawn": [
     {

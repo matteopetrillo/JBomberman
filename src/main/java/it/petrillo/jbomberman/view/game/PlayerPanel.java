@@ -2,7 +2,7 @@ package it.petrillo.jbomberman.view.game;
 
 import it.petrillo.jbomberman.controller.AudioManager;
 import it.petrillo.jbomberman.util.GameStateListener;
-import it.petrillo.jbomberman.util.CustomObserver;
+import it.petrillo.jbomberman.util.ModelObserver;
 import it.petrillo.jbomberman.util.NotificationType;
 import it.petrillo.jbomberman.util.UserData;
 
@@ -16,7 +16,13 @@ import static it.petrillo.jbomberman.util.GameConstants.*;
 import static it.petrillo.jbomberman.util.UtilFunctions.drawBorder;
 import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
 
-public class PlayerPanel extends JPanel implements CustomObserver {
+/**
+ * The PlayerPanel class represents the graphical user interface (GUI) component that displays the player's status
+ * information during gameplay. It provides information such as the player's health, remaining time, score, and other
+ * relevant data.
+ * The panel also handles the display of the player's avatar and win/lose records.
+ */
+public class PlayerPanel extends JPanel implements ModelObserver {
 
     private String timerText = "01:30";
     private int score, win, lose;
@@ -24,15 +30,22 @@ public class PlayerPanel extends JPanel implements CustomObserver {
     private int bombs = 1;
     private Timer timer;
     private long countdownDuration = 90 * 1000;
-    private final BufferedImage playerUI = getImg("/PlayerUI.png");
+    private final BufferedImage playerUI = getImg("/GUI/PlayerUI.png");
     private BufferedImage avatarImg;
     private String nickname;
     private GameStateListener gameStateListener;
+
+    /**
+     * Constructs a new instance of the PlayerPanel class. Sets up the dimensions and initializes the necessary properties.
+     */
     public PlayerPanel() {
         setDoubleBuffered(true);
         setPreferredSize(new Dimension(SCREEN_WIDTH,150));
     }
 
+    /**
+     * Starts the countdown timer for the player's remaining time in the current level.
+     */
     public void startTimer() {
         this.timer = new Timer(1000, e -> {
             countdownDuration -= 1000;
@@ -47,6 +60,9 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         this.timer.start();
     }
 
+    /**
+     * Resets the countdown timer to its initial state.
+     */
     public void resetTimer() {
         if (timer != null) {
             timer.stop();
@@ -57,6 +73,11 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         repaint();
     }
 
+    /**
+     * Draws the UI components and relevant information on the panel.
+     *
+     * @param g The Graphics object used for rendering.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -78,11 +99,17 @@ public class PlayerPanel extends JPanel implements CustomObserver {
 
     }
 
+    /**
+     * Updates the countdown timer display.
+     */
     private void updateTimer() {
         SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
         timerText = sdf.format(new Date(countdownDuration));
     }
 
+    /**
+     * Draws the player information on the panel.
+     */
     private void drawPlayerInfo(Graphics2D g2d) {
         drawBorder(g2d,525,50,3,nickname);
         g2d.setColor(Color.WHITE);
@@ -99,6 +126,9 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         g2d.drawString(loseRecord,555,120);
     }
 
+    /**
+     * Draws the player's score on the panel.
+     */
     private void drawScore(Graphics2D g2d) {
         String scoreText = Integer.toString(score);
         FontMetrics fontMetrics = g2d.getFontMetrics();
@@ -110,6 +140,9 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         g2d.drawString(scoreText, textX, textY);
     }
 
+    /**
+     * Draws the countdown timer on the panel.
+     */
     private void drawTimer(Graphics2D g2d) {
         FontMetrics fontMetrics = g2d.getFontMetrics();
         int textWidth = fontMetrics.stringWidth(timerText);
@@ -120,13 +153,19 @@ public class PlayerPanel extends JPanel implements CustomObserver {
         g2d.drawString(timerText, textX, textY);
     }
 
+    /**
+     * Handles update notifications from the game model and adjusts the GUI accordingly.
+     *
+     * @param notificationType The type of update notification.
+     * @param arg              The argument associated with the notification.
+     */
     @Override
     public void update(NotificationType notificationType, Object arg) {
 
         switch (notificationType) {
             case SCORE_UPDATE -> {
                 score = (Integer) arg;
-                AudioManager.getAudioManagerInstance().play("/src/main/resources/enemy_defeated.wav",-16f);
+                AudioManager.getAudioManagerInstance().play("/SFX/enemy_defeated.wav",-16f);
                 repaint();
             }
             case HEALTH_UPDATE -> {
@@ -141,6 +180,12 @@ public class PlayerPanel extends JPanel implements CustomObserver {
             case GAME_OVER -> timer.stop();
         }
     }
+
+    /**
+     * Uploads the player's data to the panel for display.
+     *
+     * @param playerData The UserData containing the player's information.
+     */
     public void uploadPlayerData(UserData playerData) {
         this.nickname = playerData.getNickname();
         this.avatarImg = getImg(playerData.getAvatarPath());
@@ -152,6 +197,11 @@ public class PlayerPanel extends JPanel implements CustomObserver {
                 "\n  Lose: "+lose);
     }
 
+    /**
+     * Sets the GameStateListener to call game state changes.
+     *
+     * @param gameStateListener The listener to be set.
+     */
     public void setGameStateListener(GameStateListener gameStateListener) {
         this.gameStateListener = gameStateListener;
     }

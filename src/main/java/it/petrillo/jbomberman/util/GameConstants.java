@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * This class holds various game settings and utility methods for managing resources and JSON data.
+ * The GameConstants class provides a collection of constants used throughout the game.
+ * It defines attributes related to map dimensions, scaling, font, and database path.
+ * The class also initializes a custom font for a retro-styled appearance.
  */
 public class GameConstants {
 
@@ -20,9 +22,10 @@ public class GameConstants {
     public static Font RETRO_FONT = null;
     public static final String USER_BASE_DIR = System.getProperty("user.dir");
 
+    // Static block to initialize the custom font
     static {
         try {
-            InputStream is = GameConstants.class.getResourceAsStream("/RetroFont.ttf");
+            InputStream is = GameConstants.class.getResourceAsStream("/GUI/RetroFont.ttf");
             if (is != null) {
                 RETRO_FONT = Font.createFont(Font.TRUETYPE_FONT, is);
             }

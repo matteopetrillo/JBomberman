@@ -31,14 +31,17 @@ public class EnemyManager {
             int x = element.getAsJsonObject().get("x").getAsInt();
             int y = element.getAsJsonObject().get("y").getAsInt();
             int enemyType = element.getAsJsonObject().get("typeID").getAsInt();
-            if (enemyType == 1) {
-                BasicEnemy basicEnemy = GameEntityFactory.createBasicEnemy(x, y);
-                basicEnemy.setCollisionListener(collisionManager);
-                enemies.add(basicEnemy);
-            } else if (enemyType == 2) {
-                AdvancedEnemy advancedEnemy = GameEntityFactory.createAdvancedEnemy(x, y);
-                advancedEnemy.setCollisionListener(collisionManager);
-                enemies.add(advancedEnemy);
+            switch (enemyType) {
+                case 1 -> {
+                    BasicEnemy basicEnemy = GameEntityFactory.createBasicEnemy(x, y);
+                    basicEnemy.setCollisionListener(collisionManager);
+                    enemies.add(basicEnemy);
+                }
+                case 2 -> {
+                    AdvancedEnemy advancedEnemy = GameEntityFactory.createAdvancedEnemy(x, y);
+                    advancedEnemy.setCollisionListener(collisionManager);
+                    enemies.add(advancedEnemy);
+                }
             }
 
         }

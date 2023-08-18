@@ -64,12 +64,18 @@ public class LevelManager {
             gameStateListener.onWinning();
     }
 
+    /**
+     * Restarts the game, resetting the level and game elements.
+     */
     public void restartGame() {
         currentLvl = 1;
         clearGame();
         loadLevel();
     }
 
+    /**
+     * Clear game elements.
+     */
     private void clearGame() {
         gameMap.clearMap();
         objectsManager.getObjects().clear();
@@ -83,7 +89,7 @@ public class LevelManager {
      * @return The JSON file path for the current level.
      */
     private String getJsonLvlPath() {
-        return "/Level"+currentLvl+".json";
+        return "/GameConfig/Level"+currentLvl+".json";
     }
 
     /**
@@ -92,11 +98,11 @@ public class LevelManager {
      * @return True if the game is finished, false otherwise.
      */
     public boolean isGameFinished() {
-        String fileName = "Level"+(currentLvl+1)+".json";
+        String fileName = "GameConfig/Level"+(currentLvl+1)+".json";
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
             return inputStream == null;
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
         return true;
@@ -111,16 +117,26 @@ public class LevelManager {
         return enemyManager.getEnemies().isEmpty();
     }
 
+    /**
+     * Sets the GameStateListener to call game state change events.
+     *
+     * @param gameStateListener The listener to set.
+     */
     public void setGameStateListener(GameStateListener gameStateListener) {
         this.gameStateListener = gameStateListener;
     }
 
+    /**
+     * Returns the current level number.
+     *
+     * @return The current level number.
+     */
     public int getCurrentLvl() {
         return currentLvl;
     }
 
     /**
-     * Returns the singleton instance of the LevelManager class.
+     * Retrieves the singleton instance of the LevelManager class.
      *
      * @return The singleton instance of LevelManager.
      */

@@ -11,7 +11,7 @@ import static it.petrillo.jbomberman.util.GameConstants.TILE_SIZE;
  * The PowerUp class represents a game entity that provides a special effect or enhancement to the player's character.
  * PowerUp objects can be collected by the player's character upon collision.
  */
-public abstract class PowerUp extends GameObject implements Collidable {
+public abstract class PowerUp extends GameObject implements Collidable{
 
     /**
      * Constructs a PowerUp object with the specified position.

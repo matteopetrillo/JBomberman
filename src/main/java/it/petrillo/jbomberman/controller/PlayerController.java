@@ -9,7 +9,8 @@ import java.awt.event.KeyListener;
 import static it.petrillo.jbomberman.util.GameConstants.*;
 
 /**
- * The PlayerController class handles user input for controlling the Bomberman character.
+ * The PlayerController class handles user input for controlling the Bomberman character and handles
+ * walking sfx.
  */
 public class PlayerController implements KeyListener {
 

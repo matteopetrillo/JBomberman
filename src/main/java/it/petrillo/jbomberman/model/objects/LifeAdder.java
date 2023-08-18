@@ -20,7 +20,7 @@ public class LifeAdder extends PowerUp {
      */
     public LifeAdder(int x, int y) {
         super(x, y);
-        loadSprites("/Sprite_Items_16x16.png");
+        loadSprites("/Sprites.Objects/Sprite_Items_16x16.png");
     }
 
     /**

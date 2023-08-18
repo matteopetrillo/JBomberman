@@ -12,6 +12,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static it.petrillo.jbomberman.util.GameConstants.*;
 
@@ -45,18 +46,24 @@ public class CollisionManager implements CollisionListener {
         this.objectsManager = objectsManager;
     }
 
-    private boolean isWalkable(int x, int y) {
+    /**
+     * Checks whether a given position is walkable on the game map, considering both tiles and objects.
+     *
+     * @param x The x-coordinate of the position.
+     * @param y The y-coordinate of the position.
+     * @return True if the position is walkable, false otherwise.
+     */
+    private boolean isPositionWalkable(int x, int y) {
         int xIndex = x / TILE_SIZE;
         int yIndex = y / TILE_SIZE;
-        boolean tileWalkable = gameMap.getTileFromCoords(xIndex,yIndex).isWalkable();
-        List<GameObject> objects = objectsManager.getObjectsFromCoords(xIndex,yIndex);
-        if (!objects.isEmpty()) {
-            boolean solid = true;
-            for (GameObject obj : objects) {
-                solid = obj.isSolid();
-            }
-            return tileWalkable && !solid;
+
+        boolean tileWalkable = gameMap.getTileFromCoords(xIndex, yIndex).isWalkable();
+        List<GameObject> gameObjects = objectsManager.getObjectsFromCoords(xIndex, yIndex);
+
+        if (!gameObjects.isEmpty()) {
+            return tileWalkable && gameObjects.stream().noneMatch(GameObject::isSolid);
         }
+
         return tileWalkable;
     }
 
@@ -86,7 +93,8 @@ public class CollisionManager implements CollisionListener {
             int x = collisionX + (dx * i / steps);
             int y = collisionY + (dy * i / steps);
 
-            if (!isWalkable(x, y) || !isWalkable(x + width, y) || !isWalkable(x + width, y + height) || !isWalkable(x, y + height)) {
+            if (!isPositionWalkable(x, y) || !isPositionWalkable(x + width, y)
+                    || !isPositionWalkable(x + width, y + height) || !isPositionWalkable(x, y + height)) {
                 return false;
             }
         }
@@ -150,6 +158,13 @@ public class CollisionManager implements CollisionListener {
         }
     }
 
+    /**
+     * Checks for intersections between two Area objects.
+     *
+     * @param area1 The first Area object.
+     * @param area2 The second Area object.
+     * @return True if the two areas collide, false otherwise.
+     */
     private boolean checkAreasCollision(Area area1, Area area2) {
         Area intersection = new Area(area1);
         intersection.intersect(area2);
@@ -170,13 +185,9 @@ public class CollisionManager implements CollisionListener {
      * Removes collidable entities that are flagged for cleaning from the list of registered collidables.
      */
     private void cleanCollidables() {
-        List<Collidable> toClean = new ArrayList<>();
-        for (Collidable c : collidables) {
-            if (c instanceof GameEntity) {
-                if (((GameEntity) c).isToClean())
-                    toClean.add(c);
-            }
-        }
+        List<Collidable> toClean = collidables.stream()
+                        .filter(collidable -> ((GameEntity)collidable).isToClean())
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         toClean.forEach(collidables::remove);
     }

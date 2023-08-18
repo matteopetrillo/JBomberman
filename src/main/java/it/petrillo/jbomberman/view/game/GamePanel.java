@@ -13,7 +13,9 @@ import java.util.List;
 import static it.petrillo.jbomberman.util.GameConstants.*;
 
 /**
- * This class represents the game panel where the gameplay is displayed.
+ * The GamePanel class represents the main gameplay display area where the game is rendered and played.
+ * It handles rendering game components, updating the game state, and managing interactions between
+ * different game entities.
  */
 public class GamePanel extends JPanel implements Runnable {
 
@@ -62,6 +64,9 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
+    /**
+     * Stops the game thread.
+     */
     public void stopThread() {
         running = false;
         gameThread = new Thread(this);
@@ -131,6 +136,11 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * Sets the loading panel for displaying loading animations.
+     *
+     * @param loadingPanel The LoadingPanel instance to set.
+     */
     public void setLoadingPanel(LoadingPanel loadingPanel) {
         this.loadingPanel = loadingPanel;
     }

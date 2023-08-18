@@ -1,5 +1,7 @@
 package it.petrillo.jbomberman.model.objects;
 
+import it.petrillo.jbomberman.model.characters.Enemy;
+import it.petrillo.jbomberman.model.interfaces.Collidable;
 import it.petrillo.jbomberman.model.interfaces.Explodable;
 
 import java.awt.*;

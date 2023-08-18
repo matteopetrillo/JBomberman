@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -15,14 +16,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+
+/**
+ * The UtilFunctions class provides utility methods for common tasks, such as reading JSON data,
+ * loading images, and drawing borders on graphics contexts.
+ */
 public class UtilFunctions {
 
     /**
-     * Retrieves selected JSON fields from a JSON file as a map.
+     * Retrieves selected fields from a JSON string and returns them as a map.
      *
-     * @param jsonString The path to the JSON file.
-     * @param fields     A list of JSON field names to retrieve.
-     * @return A map containing selected JSON fields.
+     * @param jsonString The JSON string to extract data from.
+     * @param fields The list of field names to retrieve from the JSON.
+     * @return A map containing selected fields and their corresponding JSON elements.
      */
     public static Map<String, JsonElement> getMultipleJsonFields(String jsonString, List<String> fields) {
         Map<String, JsonElement> selectedFields = new HashMap<>();
@@ -50,12 +57,11 @@ public class UtilFunctions {
         return null;
     }
 
-
     /**
-     * Retrieves an image resource from the provided path.
+     * Loads an image from the specified path.
      *
      * @param path The path to the image resource.
-     * @return The BufferedImage object representing the loaded image.
+     * @return The loaded BufferedImage, or null if the image was not found.
      */
     public static BufferedImage getImg(String path) {
         try (InputStream is = GameConstants.class.getResourceAsStream(path)) {
@@ -70,11 +76,33 @@ public class UtilFunctions {
         return null;
     }
 
+
+    /**
+     * Draws a border around a specified point with a given amount and message.
+     *
+     * @param g2d The Graphics2D context to draw on.
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @param amount The border amount.
+     * @param message The message to draw at the point.
+     */
     public static void drawBorder(Graphics2D g2d, int x, int y, int amount, String message) {
         g2d.setColor(Color.BLACK);
         g2d.drawString(message, x - amount, y - amount);
         g2d.drawString(message, x + amount, y - amount);
         g2d.drawString(message, x - amount, y + amount);
         g2d.drawString(message, x + amount, y + amount);
+    }
+
+    /**
+     * Configures the provided JFrame with common settings for JBomberman's game frames
+     *
+     * @param frame The JFrame to be configured.
+     */
+    public static void setJBombermanFrame(JFrame frame) {
+        frame.setTitle("JBomberman");
+        frame.setIconImage(getImg("/GUI/GameIcon.png"));
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 }

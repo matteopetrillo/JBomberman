@@ -1,8 +1,6 @@
 package it.petrillo.jbomberman.model.characters;
 
 import it.petrillo.jbomberman.model.interfaces.Collidable;
-import it.petrillo.jbomberman.model.interfaces.Movable;
-import it.petrillo.jbomberman.model.interfaces.Renderable;
 import it.petrillo.jbomberman.util.Direction;
 import it.petrillo.jbomberman.util.NotificationType;
 
@@ -15,10 +13,10 @@ import static it.petrillo.jbomberman.util.UtilFunctions.*;
 
 /**
  * The Bomberman class represents the player character in the game.
- * It extends the abstract class GameCharacter and implements the Movable and Renderable interfaces.
+ * It extends the abstract class GameCharacter.
  * It manages player-specific information and behavior.
  */
-public class Bomberman extends GameCharacter implements Movable, Renderable {
+public class Bomberman extends GameCharacter {
 
     private static Bomberman bombermanInstance;
     private int bombBackpack,bombReleased, score;
@@ -30,13 +28,13 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
     private Bomberman() {
         super(0, 0);
         entityScale = 3.5d;
-        xCollisionOffset = (int) (11*entityScale);
-        yCollisionOffset = (int) (23*entityScale);
+        xCollisionOffset = (int) (4*entityScale);
+        yCollisionOffset = (int) (7*entityScale);
         animationSpeed = 13;
         defaultSpriteHeight = 32;
         defaultSpriteWidth = 32;
         initDefaultValues();
-        loadSprites("/spritesheeet_bomberman_32x32.png");
+        loadSprites("/Sprites/Bomberman/Sprites_Bomberman.png");
     }
 
     private void initDefaultValues() {
@@ -44,7 +42,7 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         health = 5;
         characterSpeed = 4;
         bombBackpack = 1;
-        hittedTimer = 80;
+        armorTimer = 80;
         movingDirection = Direction.DOWN;
         visible = true;
     }
@@ -61,12 +59,12 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
             if (health <= 0)
                 g.drawImage(spriteAnimation[4][animationIndex],
                         x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
-            else if (hittedTimer > 0){
-                BufferedImage img = spriteAnimation[getAniIndexByDirection()][animationIndex];
+            else if (armorTimer > 0){
+                BufferedImage img = spriteAnimation[getAnimationIndexByDirection()][animationIndex];
                 drawFlashingSprite(g,img);
             }
             else {
-                g.drawImage(spriteAnimation[getAniIndexByDirection()][animationIndex],
+                g.drawImage(spriteAnimation[getAnimationIndexByDirection()][animationIndex],
                         x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
             }
         }
@@ -112,11 +110,18 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
     }
 
 
+    /**
+     * Sets the position of the character to the specified coordinates,
+     * updating also the collision box.
+     *
+     * @param x The X-coordinate to set the character's position to.
+     * @param y The Y-coordinate to set the character's position to.
+     */
     public void setPosition(int x, int y) {
         super.setX((int) (x-6*SCALE));
         super.setY((int) (y-14*SCALE));
-        collisionBox = new Area(new Rectangle(super.x+xCollisionOffset,super.y+yCollisionOffset,
-                (int) (9*entityScale), (int) (5*entityScale)));
+        collisionBox = new Area(new Rectangle(x+xCollisionOffset,y+yCollisionOffset,
+                (int) (10*entityScale), (int) (6*entityScale)));
     }
 
     /**
@@ -144,8 +149,8 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
      */
     @Override
     public void update() {
-        if (hittedTimer > 0)
-            hittedTimer--;
+        if (armorTimer > 0)
+            armorTimer--;
         if (health > 0)
             updatePosition();
         animationTick++;
@@ -153,14 +158,14 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
             animationTick = 0;
             if (health <= 0) {
                 animationIndex++;
-                if (animationIndex >= (spriteAnimation[getAniIndexByDirection()].length-1)) {
+                if (animationIndex >= (spriteAnimation[getAnimationIndexByDirection()].length-1)) {
                     visible = false;
                     notifyObservers(NotificationType.GAME_OVER,null);
                 }
             }
             else if (movingDown || movingLeft || movingUp || movingRight) {
                 animationIndex++;
-                if (animationIndex >= (spriteAnimation[getAniIndexByDirection()].length-1))
+                if (animationIndex >= (spriteAnimation[getAnimationIndexByDirection()].length-1))
                     animationIndex = 0;
             }
             else
@@ -169,7 +174,7 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
     }
 
     /**
-     * Updates the character's position based on the movement state.
+     * Updates the character's state, handling movement and animation.
      */
     @Override
     public void updatePosition() {
@@ -198,8 +203,8 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         newCollisionBox.transform(transform);
 
         if (collisionListener.canMoveThere(xSpeed, ySpeed,collisionBox)) {
-            super.x += xSpeed;
-            super.y += ySpeed;
+            x += xSpeed;
+            y += ySpeed;
             collisionBox = newCollisionBox;
         }
     }
@@ -241,16 +246,16 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
     }
 
     /**
-     * Handles the action of being hit by a collision.
+     * Handles the action of being hit by a collision or attack.
      * Reduces the character's health and manages the hit timer.
+     * If health drops to zero or below, triggers the death animation.
      */
     @Override
     public void hitCharacter() {
-        if (hittedTimer <= 0 && health > 0) {
+        if (armorTimer <= 0 && health > 0) {
             health--;
+            armorTimer = 60;
             notifyObservers(NotificationType.HEALTH_UPDATE,health);
-            hittedTimer = 60;
-            hitted = false;
         }
         else if (health <= 0) {
             animationIndex = 0;
@@ -258,6 +263,9 @@ public class Bomberman extends GameCharacter implements Movable, Renderable {
         }
     }
 
+    /**
+     * Reset player's stat to default and notify it to observers.
+     */
     public void resetPlayer() {
         initDefaultValues();
         notifyObservers(NotificationType.HEALTH_UPDATE,health);

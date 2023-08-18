@@ -1,6 +1,7 @@
 package it.petrillo.jbomberman.model.characters;
 
 import it.petrillo.jbomberman.model.interfaces.Collidable;
+import it.petrillo.jbomberman.model.interfaces.Movable;
 import it.petrillo.jbomberman.util.CollisionListener;
 import it.petrillo.jbomberman.model.GameEntity;
 import it.petrillo.jbomberman.util.Direction;
@@ -10,15 +11,15 @@ import java.awt.image.BufferedImage;
 
 /**
  * The GameCharacter abstract class represents a character entity in the game.
- * It extends the GameEntity class and implements the Collidable interface.
+ * It extends the GameEntity class and implements the Collidable and Movable interface.
  * Subclasses of GameCharacter define specific characters with behavior and properties.
  */
-public abstract class GameCharacter extends GameEntity implements Collidable {
+public abstract class GameCharacter extends GameEntity implements Collidable,Movable {
 
     protected CollisionListener collisionListener;
     protected Direction movingDirection;
-    protected boolean movingUp, movingDown, movingLeft, movingRight, hitted;
-    protected int health, xSpeed, ySpeed, characterSpeed, hittedTimer, defaultSpriteWidth,defaultSpriteHeight;
+    protected boolean movingUp, movingDown, movingLeft, movingRight;
+    protected int health, xSpeed, ySpeed, characterSpeed, armorTimer, defaultSpriteWidth,defaultSpriteHeight;
 
     /**
      * Constructs a GameCharacter with the specified initial position.
@@ -35,7 +36,7 @@ public abstract class GameCharacter extends GameEntity implements Collidable {
      *
      * @return The animation index corresponding to the character's moving direction.
      */
-    protected int getAniIndexByDirection() {
+    protected int getAnimationIndexByDirection() {
         if (spriteAnimation.length <= 1)
             return 0;
         switch (movingDirection) {
@@ -56,7 +57,7 @@ public abstract class GameCharacter extends GameEntity implements Collidable {
     }
 
     /**
-     * Sets the CollisionListener for the character.
+     * Sets the CollisionListener for the character to handle collisions.
      *
      * @param collisionListener The CollisionListener to associate with the character.
      */
@@ -64,7 +65,7 @@ public abstract class GameCharacter extends GameEntity implements Collidable {
         this.collisionListener = collisionListener;
     }
 
-    // Getter and setter methods for moving direction and movement flags
+    // Setter methods for moving direction and movement flags.
 
     public void setMovingUp(boolean movingUp) {
         this.movingUp = movingUp;
@@ -82,9 +83,16 @@ public abstract class GameCharacter extends GameEntity implements Collidable {
         this.movingRight = movingRight;
     }
 
+    /**
+     * Draws the character's sprite with a flashing effect.
+     * The sprite alternates between its original appearance and white, creating a flashing effect.
+     *
+     * @param g   The Graphics2D object to draw on.
+     * @param img The original sprite image.
+     */
     protected void drawFlashingSprite(Graphics2D g, BufferedImage img) {
         g.drawImage(img, x, y, (int) (defaultSpriteWidth * entityScale), (int) (defaultSpriteHeight * entityScale), null);
-        if (hittedTimer % 3 == 0) {
+        if (armorTimer % 3 == 0) {
             BufferedImage flashImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
             for (int row = 0; row < img.getHeight(); row++) {
                 for (int col = 0; col < img.getWidth(); col++) {
@@ -102,8 +110,8 @@ public abstract class GameCharacter extends GameEntity implements Collidable {
 
 
     /**
-     * Defines the behavior when the character is hit by a collision.
-     * Subclasses should implement this method to handle character reactions.
+     * Defines the behavior when the character is hit by a collision or other event.
+     * Subclasses must implement this method to handle specific character reactions.
      */
     public abstract void hitCharacter();
 }

@@ -21,6 +21,8 @@ public class EnemyManager {
     private final List<Enemy> enemies = new ArrayList<>();
     private final CollisionManager collisionManager = CollisionManager.getInstance();
 
+    private EnemyManager() {}
+
     /**
      * Initializes the enemy entities based on the provided JSON data.
      *
@@ -53,9 +55,7 @@ public class EnemyManager {
      */
     public void updateEnemies() {
         cleanEnemies();
-        for (Enemy enemy : enemies) {
-            enemy.update();
-        }
+        enemies.forEach(Enemy::update);
     }
 
     /**

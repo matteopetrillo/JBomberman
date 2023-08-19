@@ -1,7 +1,7 @@
 package it.petrillo.jbomberman.model;
 
 import it.petrillo.jbomberman.model.interfaces.Renderable;
-import it.petrillo.jbomberman.util.ModelObservable;
+import it.petrillo.jbomberman.util.observer.ModelObservable;
 
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;

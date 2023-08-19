@@ -94,15 +94,4 @@ public class UtilFunctions {
         g2d.drawString(message, x + amount, y + amount);
     }
 
-    /**
-     * Configures the provided JFrame with common settings for JBomberMan's game frames
-     *
-     * @param frame The JFrame to be configured.
-     */
-    public static void setJBombermanFrame(JFrame frame) {
-        frame.setTitle("JBomberMan");
-        frame.setIconImage(getImg("/GUI/GameIcon.png"));
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-    }
 }

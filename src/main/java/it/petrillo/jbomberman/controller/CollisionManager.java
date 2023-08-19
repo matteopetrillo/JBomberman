@@ -3,7 +3,6 @@ package it.petrillo.jbomberman.controller;
 import it.petrillo.jbomberman.model.*;
 import it.petrillo.jbomberman.model.gamemap.GameMap;
 import it.petrillo.jbomberman.model.interfaces.Collidable;
-import it.petrillo.jbomberman.util.CollisionListener;
 import it.petrillo.jbomberman.model.objects.GameObject;
 import it.petrillo.jbomberman.util.Direction;
 
@@ -22,29 +21,13 @@ import static it.petrillo.jbomberman.util.GameConstants.*;
 public class CollisionManager implements CollisionListener {
 
     private static CollisionManager collisionManagerInstance;
-    private GameMap gameMap;
-    private ObjectsManager objectsManager;
+    private final GameMap gameMap = GameMap.getInstance();
     private final List<Collidable> collidables = new ArrayList<>();
 
     private CollisionManager() {}
 
-    /**
-     * Sets the reference to the game map for collision checking.
-     *
-     * @param gameMap The game map instance.
-     */
-    public void setGameMap(GameMap gameMap) {
-        this.gameMap = gameMap;
-    }
 
-    /**
-     * Sets the reference to the objects manager for collision checking.
-     *
-     * @param objectsManager The objects manager instance.
-     */
-    public void setObjectsManager(ObjectsManager objectsManager) {
-        this.objectsManager = objectsManager;
-    }
+
 
     /**
      * Checks whether a given position is walkable on the game map, considering both tiles and objects.
@@ -58,7 +41,7 @@ public class CollisionManager implements CollisionListener {
         int yIndex = y / TILE_SIZE;
 
         boolean tileWalkable = gameMap.getTileFromCoords(xIndex, yIndex).isWalkable();
-        List<GameObject> gameObjects = objectsManager.getObjectsFromCoords(xIndex, yIndex);
+        List<GameObject> gameObjects = ObjectsManager.getInstance().getObjectsFromCoords(xIndex, yIndex);
 
         if (!gameObjects.isEmpty()) {
             return tileWalkable && gameObjects.stream().noneMatch(GameObject::isSolid);

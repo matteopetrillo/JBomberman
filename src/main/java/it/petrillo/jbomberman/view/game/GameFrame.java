@@ -3,7 +3,6 @@ package it.petrillo.jbomberman.view.game;
 import javax.swing.*;
 
 import static it.petrillo.jbomberman.util.UtilFunctions.getImg;
-import static it.petrillo.jbomberman.util.UtilFunctions.setJBombermanFrame;
 
 /**
  * The GameFrame class represents the main game window. It extends the JFrame class
@@ -15,7 +14,11 @@ public class GameFrame extends JFrame {
      * Creates a new instance of the game frame and apply customization to it.
      */
     public GameFrame() {
-        setJBombermanFrame(this);
+        setTitle("JBomberMan");
+        setIconImage(getImg("/GUI/GameIcon.png"));
+        setResizable(false);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
+
 
 }

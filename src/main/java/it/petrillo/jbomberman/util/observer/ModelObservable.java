@@ -1,4 +1,6 @@
-package it.petrillo.jbomberman.util;
+package it.petrillo.jbomberman.util.observer;
+
+import it.petrillo.jbomberman.util.NotificationType;
 
 import java.util.ArrayList;
 import java.util.List;

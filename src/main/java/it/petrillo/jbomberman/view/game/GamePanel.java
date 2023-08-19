@@ -49,8 +49,6 @@ public class GamePanel extends JPanel implements Runnable {
      * Connects collision manager, sets up collision listener for the player, and loads the initial game level.
      */
     private void init() {
-        collisionManager.setGameMap(gameMap);
-        collisionManager.setObjectsManager(objectsManager);
         bombermanInstance.setCollisionListener(collisionManager);
         collisionManager.addCollidable(bombermanInstance);
         levelManager.loadLevel();

@@ -41,13 +41,13 @@ public class MenuPanel extends JPanel {
             buttons.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    buttons.setHover(true);
+                    buttons.setHovered(true);
                     setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                     repaint();
                 }
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    buttons.setHover(false);
+                    buttons.setHovered(false);
                     setCursor(Cursor.getDefaultCursor());
                     repaint();
                 }

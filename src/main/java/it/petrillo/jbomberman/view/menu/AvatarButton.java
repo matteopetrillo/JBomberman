@@ -15,8 +15,8 @@ public class AvatarButton extends JButton {
 
     private final String avatarPath;
     private final BufferedImage normalImg;
-    private final BufferedImage selectedImg;
-    private boolean isHover, isChecked;
+    private final BufferedImage hoveredImg;
+    private boolean hovered, checked;
     private final int x;
     private final int y;
 
@@ -24,14 +24,14 @@ public class AvatarButton extends JButton {
      * Constructs a new instance of the AvatarButton class with the specified image paths and position.
      *
      * @param normalPath   The path to the normal avatar image.
-     * @param selectedPath The path to the selected avatar image.
+     * @param hoveredPath The path to the selected avatar image.
      * @param x            The x-coordinate of the button's position.
      * @param y            The y-coordinate of the button's position.
      */
-    public AvatarButton(String normalPath, String selectedPath, int x, int y) {
+    public AvatarButton(String normalPath, String hoveredPath, int x, int y) {
         this.normalImg = getImg(normalPath);
-        this.selectedImg = getImg(selectedPath);
-        this.avatarPath = selectedPath;
+        this.hoveredImg = getImg(hoveredPath);
+        this.avatarPath = hoveredPath;
         this.x = x;
         this.y = y;
         setFocusable(false);
@@ -46,8 +46,8 @@ public class AvatarButton extends JButton {
      * @param g2d The Graphics2D object used for rendering.
      */
     public void draw(Graphics2D g2d) {
-        if (isHover || isChecked)
-            g2d.drawImage(selectedImg,x,y,140,140,null);
+        if (hovered || checked)
+            g2d.drawImage(hoveredImg,x,y,140,140,null);
         else
             g2d.drawImage(normalImg,x,y,140,140,null);
     }
@@ -55,10 +55,10 @@ public class AvatarButton extends JButton {
     /**
      * Sets whether the button is being hovered over.
      *
-     * @param hover True if the button is being hovered over, false otherwise.
+     * @param hovered True if the button is being hovered over, false otherwise.
      */
-    public void setHover(boolean hover) {
-        this.isHover = hover;
+    public void setHovered(boolean hovered) {
+        this.hovered = hovered;
     }
 
     /**
@@ -95,15 +95,7 @@ public class AvatarButton extends JButton {
      * @param checked True if the button is checked (selected), false otherwise.
      */
     public void setChecked(boolean checked) {
-        isChecked = checked;
+        this.checked = checked;
     }
 
-    /**
-     * Checks whether the button is currently checked (selected).
-     *
-     * @return True if the button is checked (selected), false otherwise.
-     */
-    public boolean isChecked() {
-        return isChecked;
-    }
 }

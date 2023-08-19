@@ -2,7 +2,7 @@ package it.petrillo.jbomberman.model.characters;
 
 import it.petrillo.jbomberman.model.interfaces.Collidable;
 import it.petrillo.jbomberman.model.interfaces.Movable;
-import it.petrillo.jbomberman.util.CollisionListener;
+import it.petrillo.jbomberman.controller.CollisionListener;
 import it.petrillo.jbomberman.model.GameEntity;
 import it.petrillo.jbomberman.util.Direction;
 

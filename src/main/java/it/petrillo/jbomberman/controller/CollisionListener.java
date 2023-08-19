@@ -1,4 +1,4 @@
-package it.petrillo.jbomberman.util;
+package it.petrillo.jbomberman.controller;
 
 import it.petrillo.jbomberman.util.Direction;
 

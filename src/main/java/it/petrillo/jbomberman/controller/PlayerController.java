@@ -14,7 +14,7 @@ import static it.petrillo.jbomberman.util.GameConstants.*;
  */
 public class PlayerController implements KeyListener {
 
-    private final Bomberman bombermanInstance = Bomberman.getPlayerInstance();
+    private final Bomberman bomberman = Bomberman.getPlayerInstance();
     private final ObjectsManager objectsManager = ObjectsManager.getInstance();
     private boolean moving;
 
@@ -28,19 +28,19 @@ public class PlayerController implements KeyListener {
         int keyCode = e.getKeyCode();
 
         if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
-            bombermanInstance.setMovingUp(true);
+            bomberman.setMovingUp(true);
             moving = true;
         } else if (keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN) {
-            bombermanInstance.setMovingDown(true);
+            bomberman.setMovingDown(true);
             moving = true;
         } else if (keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) {
-            bombermanInstance.setMovingLeft(true);
+            bomberman.setMovingLeft(true);
             moving = true;
         } else if (keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) {
-            bombermanInstance.setMovingRight(true);
+            bomberman.setMovingRight(true);
             moving = true;
         } else if (keyCode == KeyEvent.VK_SPACE) {
-            objectsManager.dropBomb(bombermanInstance.getX()/TILE_SIZE, bombermanInstance.getY()/TILE_SIZE);
+            objectsManager.dropBomb(bomberman.getX()/TILE_SIZE, bomberman.getY()/TILE_SIZE);
         }
 
         if(moving)
@@ -56,16 +56,16 @@ public class PlayerController implements KeyListener {
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
-            bombermanInstance.setMovingUp(false);
+            bomberman.setMovingUp(false);
             moving = false;
         } else if (keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN) {
-            bombermanInstance.setMovingDown(false);
+            bomberman.setMovingDown(false);
             moving = false;
         } else if (keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) {
-            bombermanInstance.setMovingLeft(false);
+            bomberman.setMovingLeft(false);
             moving = false;
         } else if (keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) {
-            bombermanInstance.setMovingRight(false);
+            bomberman.setMovingRight(false);
             moving = false;
         }
 

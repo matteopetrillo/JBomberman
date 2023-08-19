@@ -19,8 +19,7 @@ public class LoadingPanel {
     private int state;
     private Timer timer;
     private boolean started = false;
-    final int currentLvl;
-    int alpha = 255;
+    private int alpha = 255;
 
     /**
      * Creates a LoadingPanel instance for the specified level.
@@ -28,8 +27,7 @@ public class LoadingPanel {
      * @param lvl The level number to be displayed in the loading message.
      */
     public LoadingPanel(int lvl) {
-        this.currentLvl = lvl;
-        this.message = "Level "+currentLvl+"!";
+        this.message = "Level "+ lvl +"!";
     }
 
     /**

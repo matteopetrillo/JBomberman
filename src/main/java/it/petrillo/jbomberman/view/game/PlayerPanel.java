@@ -1,8 +1,8 @@
 package it.petrillo.jbomberman.view.game;
 
 import it.petrillo.jbomberman.controller.AudioManager;
-import it.petrillo.jbomberman.util.GameStateListener;
-import it.petrillo.jbomberman.util.ModelObserver;
+import it.petrillo.jbomberman.controller.GameStateListener;
+import it.petrillo.jbomberman.util.observer.ModelObserver;
 import it.petrillo.jbomberman.util.NotificationType;
 import it.petrillo.jbomberman.util.UserData;
 
@@ -29,7 +29,7 @@ public class PlayerPanel extends JPanel implements ModelObserver {
     private int playerHealth = 5;
     private int bombs = 1;
     private Timer timer;
-    private long countdownDuration = 90 * 1000;
+    private int countdownDuration = 90 * 1000;
     private final BufferedImage playerUI = getImg("/GUI/PlayerUI.png");
     private BufferedImage avatarImg;
     private String nickname;

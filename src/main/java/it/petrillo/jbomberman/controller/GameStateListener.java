@@ -1,4 +1,4 @@
-package it.petrillo.jbomberman.util;
+package it.petrillo.jbomberman.controller;
 
 /**
  * The GameStateListener interface defines the contract for objects that listen to changes in the game's state.

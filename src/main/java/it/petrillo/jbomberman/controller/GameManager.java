@@ -2,15 +2,13 @@ package it.petrillo.jbomberman.controller;
 
 import com.google.gson.*;
 import it.petrillo.jbomberman.model.characters.Bomberman;
-import it.petrillo.jbomberman.util.GameStateListener;
-import it.petrillo.jbomberman.util.ModelObserver;
+import it.petrillo.jbomberman.util.observer.ModelObserver;
 import it.petrillo.jbomberman.util.NotificationType;
 import it.petrillo.jbomberman.util.UserData;
 import it.petrillo.jbomberman.view.*;
 import it.petrillo.jbomberman.view.game.GameFrame;
 import it.petrillo.jbomberman.view.game.GamePanel;
 import it.petrillo.jbomberman.view.game.PlayerPanel;
-import it.petrillo.jbomberman.view.menu.MenuFrame;
 import it.petrillo.jbomberman.view.menu.MenuPanel;
 
 import java.awt.event.MouseAdapter;
@@ -37,9 +35,10 @@ public class GameManager implements ModelObserver, GameStateListener {
 
     private static GameManager gameManagerInstance;
     public static GameState GAME_STATE = GameState.MENU;
-    private final GameFrame gameFrame = new GameFrame();
+    private final GameFrame gameFrame;
+    private final GameFrame menuFrame;
+    private GameFrame endingFrame;
     private final GamePanel gamePanel = new GamePanel();
-    private final MenuFrame menuFrame = new MenuFrame();
     private final MenuPanel menuPanel = new MenuPanel();
     private final PlayerPanel playerPanel = new PlayerPanel();
     private final Bomberman bomberman = Bomberman.getPlayerInstance();
@@ -52,11 +51,13 @@ public class GameManager implements ModelObserver, GameStateListener {
      * Initializes the GameManager by setting up UI components and registering observers.
      */
     private GameManager() {
+        gameFrame = new GameFrame();
         gameFrame.setLayout(new BorderLayout());
         gameFrame.add(gamePanel,BorderLayout.CENTER);
         gameFrame.add(playerPanel,BorderLayout.NORTH);
         gameFrame.pack();
         gameFrame.setLocationRelativeTo(null);
+        menuFrame = new GameFrame();
         menuFrame.add(menuPanel);
         menuFrame.pack();
         bomberman.addObserver(playerPanel);
@@ -93,7 +94,7 @@ public class GameManager implements ModelObserver, GameStateListener {
     /**
      * Starts the game by transitioning from the menu to the actual gameplay.
      */
-    public void startGame() {
+    private void startGame() {
         System.out.println("****HAVE A GOOD TIME PLAYING JBOMBERMAN!****");
         gamePanel.startThread();
         gameFrame.setVisible(true);
@@ -117,7 +118,7 @@ public class GameManager implements ModelObserver, GameStateListener {
      * @param nickname The nickname of the current player.
      */
     private void setCurrentPlayerData (String nickname) {
-        JsonObject playerRecord = getPlayerRecordIfExist(nickname);
+        JsonObject playerRecord = getPlayerRecord(nickname);
         if (playerRecord != null)
             currentPlayerData = parsePlayerRecord(playerRecord);
         else
@@ -129,7 +130,7 @@ public class GameManager implements ModelObserver, GameStateListener {
      *
      * @param nickname The nickname of the current player.
      */
-    private JsonObject getPlayerRecordIfExist(String nickname) {
+    private JsonObject getPlayerRecord(String nickname) {
         JsonArray players = database.getAsJsonArray("players");
         for (JsonElement record : players) {
             JsonObject playerRecord = record.getAsJsonObject();
@@ -236,8 +237,8 @@ public class GameManager implements ModelObserver, GameStateListener {
         gamePanel.stopThread();
         Timer exitTimer = new Timer(1000, e -> {
             updateDatabase();
-            EndingFrame endingFrame = new EndingFrame(false,currentPlayerData);
-            showEndingFrame(endingFrame);
+            EndingPanel endingPanel = new EndingPanel(false,currentPlayerData);
+            showEndingFrame(endingPanel);
         });
         exitTimer.setRepeats(false);
         exitTimer.start();
@@ -258,8 +259,8 @@ public class GameManager implements ModelObserver, GameStateListener {
         gamePanel.stopThread();
         Timer exitTimer = new Timer(1000, e -> {
             updateDatabase();
-            EndingFrame endingFrame = new EndingFrame(true,currentPlayerData);
-            showEndingFrame(endingFrame);
+            EndingPanel endingPanel = new EndingPanel(true,currentPlayerData);
+            showEndingFrame(endingPanel);
         });
         exitTimer.setRepeats(false);
         exitTimer.start();
@@ -293,18 +294,22 @@ public class GameManager implements ModelObserver, GameStateListener {
     /**
      * Displays the ending frame and handles user interaction after the game ends.
      *
-     * @param endingFrame The ending frame to be displayed.
+     * @param endingPanel The ending frame to be displayed.
      */
-    private void showEndingFrame(EndingFrame endingFrame) {
-        endingFrame.getRestartButton().addMouseListener(new MouseAdapter() {
+    private void showEndingFrame(EndingPanel endingPanel) {
+        endingFrame = new GameFrame();
+
+        endingPanel.getRestartButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 System.out.println("****RESTARTING!****");
-                endingFrame.setVisible(false);
+                endingPanel.setVisible(false);
                 playerPanel.uploadPlayerData(currentPlayerData);
                 restartGame();
             }
         });
+        endingFrame.add(endingPanel);
+        endingFrame.pack();
         endingFrame.setLocationRelativeTo(null);
         endingFrame.setVisible(true);
     }

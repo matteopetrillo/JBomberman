@@ -4,9 +4,7 @@ import com.google.gson.JsonElement;
 import it.petrillo.jbomberman.model.*;
 import it.petrillo.jbomberman.model.characters.Bomberman;
 import it.petrillo.jbomberman.model.gamemap.GameMap;
-import it.petrillo.jbomberman.util.GameStateListener;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +95,7 @@ public class LevelManager {
      *
      * @return True if the game is finished, false otherwise.
      */
-    public boolean isGameFinished() {
+    private boolean isGameFinished() {
         String fileName = "GameConfig/Level"+(currentLvl+1)+".json";
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
@@ -113,7 +111,7 @@ public class LevelManager {
      *
      * @return True if the level is finished, false otherwise.
      */
-    public boolean isLevelFinished() {
+    private boolean isLevelFinished() {
         return enemyManager.getEnemies().isEmpty();
     }
 

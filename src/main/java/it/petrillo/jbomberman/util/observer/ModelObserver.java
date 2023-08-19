@@ -1,4 +1,6 @@
-package it.petrillo.jbomberman.util;
+package it.petrillo.jbomberman.util.observer;
+
+import it.petrillo.jbomberman.util.NotificationType;
 
 /**
  * The ModelObserver interface defines the contract for objects that observe changes in a model.

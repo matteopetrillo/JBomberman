@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 /**
  * The ExplosionManager class manages the explosions in the game, including their updates and cleanup.
  */
-public class ExplosionManager {
+public class  ExplosionManager {
 
     private static ExplosionManager explosionManagerInstance;
     private final List<Explosion> explosionList = new ArrayList<>();
+
+    private ExplosionManager() {}
 
     /**
      * Updates all explosions, removing those that are no longer visible.

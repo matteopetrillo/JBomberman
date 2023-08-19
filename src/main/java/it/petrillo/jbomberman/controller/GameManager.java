@@ -36,9 +36,7 @@ public class GameManager implements ModelObserver, GameStateListener {
     private static GameManager gameManagerInstance;
     public static GameState GAME_STATE = GameState.MENU;
     private final GameFrame gameFrame;
-    private final GameFrame menuFrame;
     private final GamePanel gamePanel = new GamePanel();
-    private final MenuPanel menuPanel = new MenuPanel();
     private final PlayerPanel playerPanel = new PlayerPanel();
     private final Bomberman bomberman = Bomberman.getPlayerInstance();
     private final LevelManager levelManager = LevelManager.getInstance();
@@ -56,9 +54,6 @@ public class GameManager implements ModelObserver, GameStateListener {
         gameFrame.add(playerPanel,BorderLayout.NORTH);
         gameFrame.pack();
         gameFrame.setLocationRelativeTo(null);
-        menuFrame = new GameFrame();
-        menuFrame.add(menuPanel);
-        menuFrame.pack();
         bomberman.addObserver(playerPanel);
         bomberman.addObserver(this);
         levelManager.setGameStateListener(this);
@@ -69,7 +64,11 @@ public class GameManager implements ModelObserver, GameStateListener {
     /**
      * Opens the game menu, allowing players to choose their nickname and avatar before starting the game.
      */
-    public void openGame() {
+    public void openMenu() {
+        GameFrame menuFrame = new GameFrame();
+        MenuPanel menuPanel = new MenuPanel();
+        menuFrame.add(menuPanel);
+        menuFrame.pack();
         System.out.println("****WELCOME TO JBOMBERMAN!****");
         audioManager.playMenuMusic();
         menuPanel.getPlayButton().addActionListener(e -> {
@@ -87,7 +86,6 @@ public class GameManager implements ModelObserver, GameStateListener {
         });
         menuFrame.setLocationRelativeTo(null);
         menuFrame.setVisible(true);
-
     }
 
     /**

@@ -37,7 +37,6 @@ public class GameManager implements ModelObserver, GameStateListener {
     public static GameState GAME_STATE = GameState.MENU;
     private final GameFrame gameFrame;
     private final GameFrame menuFrame;
-    private GameFrame endingFrame;
     private final GamePanel gamePanel = new GamePanel();
     private final MenuPanel menuPanel = new MenuPanel();
     private final PlayerPanel playerPanel = new PlayerPanel();
@@ -297,7 +296,7 @@ public class GameManager implements ModelObserver, GameStateListener {
      * @param endingPanel The ending frame to be displayed.
      */
     private void showEndingFrame(EndingPanel endingPanel) {
-        endingFrame = new GameFrame();
+        GameFrame endingFrame = new GameFrame();
 
         endingPanel.getRestartButton().addMouseListener(new MouseAdapter() {
             @Override

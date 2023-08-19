@@ -1,4 +1,4 @@
-package it.petrillo.jbomberman.view.game;
+package it.petrillo.jbomberman.view;
 
 import javax.swing.*;
 

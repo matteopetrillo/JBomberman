@@ -1,4 +1,4 @@
-package it.petrillo.jbomberman.view;
+package it.petrillo.jbomberman.view.ending;
 
 import it.petrillo.jbomberman.util.UserData;
 

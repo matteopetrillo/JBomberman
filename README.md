@@ -40,4 +40,4 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For questions or comments, you can reach me at [commercial@matteopetrillo.info).
+For questions or comments, you can reach me at commercial@matteopetrillo.info .

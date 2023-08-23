@@ -41,9 +41,9 @@ public class CollisionManager implements CollisionListener {
         int yIndex = y / TILE_SIZE;
 
         boolean tileWalkable = gameMap.getTileFromCoords(xIndex, yIndex).isWalkable();
-        List<GameObject> gameObjects = ObjectsManager.getInstance().getObjectsFromCoords(xIndex, yIndex);
 
-        if (!gameObjects.isEmpty()) {
+        if (!ObjectsManager.getInstance().isCellEmpty(xIndex,yIndex)) {
+            List<GameObject> gameObjects = ObjectsManager.getInstance().getObjectsFromCoords(xIndex, yIndex);
             return tileWalkable && gameObjects.stream().noneMatch(GameObject::isSolid);
         }
 

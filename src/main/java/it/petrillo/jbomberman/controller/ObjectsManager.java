@@ -6,14 +6,12 @@ import it.petrillo.jbomberman.model.*;
 import it.petrillo.jbomberman.model.characters.Bomberman;
 import it.petrillo.jbomberman.model.gamemap.GameMap;
 import it.petrillo.jbomberman.model.gamemap.MapTile;
-import it.petrillo.jbomberman.model.objects.Bomb;
-import it.petrillo.jbomberman.model.objects.GameObject;
-import it.petrillo.jbomberman.model.objects.PowerUp;
-import it.petrillo.jbomberman.model.objects.SoftBlock;
+import it.petrillo.jbomberman.model.objects.*;
 import it.petrillo.jbomberman.util.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static it.petrillo.jbomberman.util.GameConstants.TILE_SIZE;
@@ -44,7 +42,7 @@ public class ObjectsManager {
             int x = element.getAsJsonObject().get("x").getAsInt();
             int y = element.getAsJsonObject().get("y").getAsInt();
             String type = element.getAsJsonObject().get("type").getAsString();
-            PowerUp powerUp = GameEntityFactory.createPowerUp(x,y,type);
+            PowerUp powerUp = GameEntityFactory.createPowerUp(x,y, PowerUpType.valueOf(type));
             objects.add(powerUp);
             collisionManager.addCollidable(powerUp);
         }
@@ -108,8 +106,7 @@ public class ObjectsManager {
      * @param y The y-coordinate of the grid cell.
      */
     public void dropBomb(int x, int y) {
-        List<GameObject> o = getObjectsFromCoords(x,y);
-        if (o.isEmpty() && bomberman.canDropBomb()) {
+        if (isCellEmpty(x,y) && bomberman.canDropBomb()) {
             objects.add((GameEntityFactory.createBomb(x, y)));
             bomberman.alterBombReleased(1);
             AudioManager.getAudioManagerInstance().play("/SFX/bomb_dropped_sfx.wav",-16f);
@@ -138,10 +135,10 @@ public class ObjectsManager {
             }
             int newX = xIndex + dx[i];
             int newY = yIndex + dy[i];
-            List<GameObject> objectList = getObjectsFromCoords(newX,newY);
             if (gameMap.getTileFromCoords(newX,newY).getTileType() == MapTile.TileType.WALL)
                 continue;
-            else if (!objectList.isEmpty()) {
+            else if (isCellEmpty(newX,newY)) {
+                List<GameObject> objectList = getObjectsFromCoords(newX,newY);
                 for (GameObject obj : objectList) {
                     if (obj instanceof SoftBlock)
                         ((SoftBlock) obj).setExploding(true);
@@ -171,6 +168,20 @@ public class ObjectsManager {
         return objects.stream()
                 .filter(obj -> obj.getX()/TILE_SIZE == x && obj.getY()/TILE_SIZE == y)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Checks if a cell at the specified coordinates is empty or contains any GameObjects.
+     *
+     * @param x The x-coordinate of the cell.
+     * @param y The y-coordinate of the cell.
+     * @return true if the cell is empty, false if it contains a GameObject.
+     */
+    public boolean isCellEmpty(int x, int y) {
+        Optional<GameObject> objectOptional = objects.stream()
+                            .filter(obj -> obj.getX()/TILE_SIZE == x && obj.getY()/TILE_SIZE == y)
+                            .findAny();
+        return objectOptional.isEmpty();
     }
 
     /**

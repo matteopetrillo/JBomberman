@@ -63,11 +63,10 @@ public class GameEntityFactory {
      * @param y The y-coordinate of the BasicEnemy.
      * @return The newly created BasicEnemy entity.
      */
-    public static Enemy createEnemy(int x, int y, String type) {
+    public static Enemy createEnemy(int x, int y, EnemyType type) {
         return switch (type) {
-            case "BASIC" -> new BasicEnemy(x * TILE_SIZE, y * TILE_SIZE);
-            case "ADVANCED" -> new AdvancedEnemy(x * TILE_SIZE, y * TILE_SIZE);
-            default -> null;
+            case BASIC -> new BasicEnemy(x * TILE_SIZE, y * TILE_SIZE);
+            case ADVANCED -> new AdvancedEnemy(x * TILE_SIZE, y * TILE_SIZE);
         };
     }
 
@@ -79,13 +78,12 @@ public class GameEntityFactory {
      * @param type The type of PowerUp to create ("HEART", "BOMB", "PORTAL").
      * @return The newly created PowerUp entity, or null if the type is not recognized.
      */
-    public static PowerUp createPowerUp(int x, int y, String type) {
+    public static PowerUp createPowerUp(int x, int y, PowerUpType type) {
         return switch (type) {
-            case "HEART" -> new LifeAdder(x * TILE_SIZE, y * TILE_SIZE);
-            case "BOMB" -> new BombAdder(x * TILE_SIZE, y * TILE_SIZE);
-            case "PORTAL" -> new LevelAdvancer(x * TILE_SIZE, y * TILE_SIZE);
-            case "CAKE" -> new ScoreAdder(x * TILE_SIZE, y * TILE_SIZE);
-            default -> null;
+            case HEART -> new LifeAdder(x * TILE_SIZE, y * TILE_SIZE);
+            case BOMB -> new BombAdder(x * TILE_SIZE, y * TILE_SIZE);
+            case PORTAL -> new LevelAdvancer(x * TILE_SIZE, y * TILE_SIZE);
+            case CAKE -> new ScoreAdder(x * TILE_SIZE, y * TILE_SIZE);
         };
     }
 

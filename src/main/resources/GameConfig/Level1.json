@@ -23,17 +23,17 @@
       {
         "x":10,
         "y": 5,
-        "typeID":1
+        "type":"BASIC"
       },
       {
         "x": 8,
         "y": 11,
-        "typeID":1
+        "type":"BASIC"
       },
       {
         "x": 4,
         "y": 9,
-        "typeID":1
+        "type":"BASIC"
       }
     ],
   "sprite_sheets_path":

@@ -7,6 +7,7 @@ import it.petrillo.jbomberman.model.characters.AdvancedEnemy;
 import it.petrillo.jbomberman.model.characters.BasicEnemy;
 import it.petrillo.jbomberman.model.characters.Bomberman;
 import it.petrillo.jbomberman.model.characters.Enemy;
+import it.petrillo.jbomberman.model.objects.EnemyType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,22 +33,15 @@ public class EnemyManager {
         for (JsonElement element : jsonArray) {
             int x = element.getAsJsonObject().get("x").getAsInt();
             int y = element.getAsJsonObject().get("y").getAsInt();
-            int enemyType = element.getAsJsonObject().get("typeID").getAsInt();
-            switch (enemyType) {
-                case 1 -> {
-                    BasicEnemy basicEnemy = (BasicEnemy) GameEntityFactory.createEnemy(x, y, "BASIC");
-                    basicEnemy.setCollisionListener(collisionManager);
-                    enemies.add(basicEnemy);
-                }
-                case 2 -> {
-                    AdvancedEnemy advancedEnemy = (AdvancedEnemy) GameEntityFactory.createEnemy(x, y,"ADVANCED");
-                    advancedEnemy.setCollisionListener(collisionManager);
-                    enemies.add(advancedEnemy);
-                }
-            }
+            EnemyType enemyType = EnemyType.valueOf(element.getAsJsonObject().get("type").getAsString());
+            Enemy enemy = GameEntityFactory.createEnemy(x, y, enemyType);
+            enemies.add(enemy);
 
         }
-        enemies.forEach(collisionManager::addCollidable);
+        for (Enemy enemy : enemies) {
+            enemy.setCollisionListener(collisionManager);
+            collisionManager.addCollidable(enemy);
+        };
     }
 
     /**

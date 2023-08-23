@@ -35,12 +35,12 @@ public class EnemyManager {
             int enemyType = element.getAsJsonObject().get("typeID").getAsInt();
             switch (enemyType) {
                 case 1 -> {
-                    BasicEnemy basicEnemy = GameEntityFactory.createBasicEnemy(x, y);
+                    BasicEnemy basicEnemy = (BasicEnemy) GameEntityFactory.createEnemy(x, y, "BASIC");
                     basicEnemy.setCollisionListener(collisionManager);
                     enemies.add(basicEnemy);
                 }
                 case 2 -> {
-                    AdvancedEnemy advancedEnemy = GameEntityFactory.createAdvancedEnemy(x, y);
+                    AdvancedEnemy advancedEnemy = (AdvancedEnemy) GameEntityFactory.createEnemy(x, y,"ADVANCED");
                     advancedEnemy.setCollisionListener(collisionManager);
                     enemies.add(advancedEnemy);
                 }

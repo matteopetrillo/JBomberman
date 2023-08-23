@@ -2,6 +2,7 @@ package it.petrillo.jbomberman.model;
 
 import it.petrillo.jbomberman.model.characters.AdvancedEnemy;
 import it.petrillo.jbomberman.model.characters.BasicEnemy;
+import it.petrillo.jbomberman.model.characters.Enemy;
 import it.petrillo.jbomberman.model.objects.*;
 import it.petrillo.jbomberman.util.Direction;
 
@@ -56,24 +57,19 @@ public class GameEntityFactory {
     }
 
     /**
-     * Creates and returns a new BasicEnemy entity.
+     * Creates and returns a new Enemy entity.
      *
      * @param x The x-coordinate of the BasicEnemy.
      * @param y The y-coordinate of the BasicEnemy.
      * @return The newly created BasicEnemy entity.
      */
-    public static BasicEnemy createBasicEnemy(int x, int y) {
-        return new BasicEnemy(x*TILE_SIZE,y*TILE_SIZE);
+    public static Enemy createEnemy(int x, int y, String type) {
+        return switch (type) {
+            case "BASIC" -> new BasicEnemy(x * TILE_SIZE, y * TILE_SIZE);
+            case "ADVANCED" -> new AdvancedEnemy(x * TILE_SIZE, y * TILE_SIZE);
+            default -> null;
+        };
     }
-
-    /**
-     * Creates and returns a new AdvancedEnemy entity.
-     *
-     * @param x The x-coordinate of the AdvancedEnemy.
-     * @param y The y-coordinate of the AdvancedEnemy.
-     * @return The newly created AdvancedEnemy entity.
-     */
-    public static AdvancedEnemy createAdvancedEnemy(int x, int y) {return new AdvancedEnemy(x*TILE_SIZE,y*TILE_SIZE);}
 
     /**
      * Creates and returns a new PowerUp entity based on the specified type.

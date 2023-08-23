@@ -80,7 +80,12 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         gameMap.drawMap(g2d);
-        objectsManager.getObjects().forEach(object -> object.draw(g2d));
+        // Classic for-loop instead of an enhanced for-loop to avoid ConcurrentModification caused by double-use
+        // of iterator in updating and drawing methods.
+        List<GameObject> objectList = objectsManager.getObjects();
+        for (int i = 0; i < objectList.size(); i++) {
+            objectList.get(i).draw(g2d);
+        }
         if (GameManager.GAME_STATE == GameManager.GameState.LOADING) {
             if (loadingPanel == null) {
                 loadingPanel = new LoadingPanel(levelManager.getCurrentLvl());
